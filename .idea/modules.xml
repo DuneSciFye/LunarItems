@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/LunarItems.main.iml" filepath="$PROJECT_DIR$/.idea/modules/LunarItems.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.dunescifye.LunarItems.main.iml" filepath="$PROJECT_DIR$/.idea/modules/me.dunescifye.LunarItems.main.iml" />
     </modules>
   </component>
 </project>

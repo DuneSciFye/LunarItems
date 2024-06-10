@@ -2,6 +2,7 @@ package me.dunescifye.lunaritems.listeners;
 
 import me.dunescifye.lunaritems.LunarItems;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
@@ -17,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static me.dunescifye.lunaritems.LunarItems.getPlugin;
 import static me.dunescifye.lunaritems.LunarItems.keyItemID;
 import static me.dunescifye.lunaritems.files.Config.*;
 import static me.dunescifye.lunaritems.utils.Utils.runConsoleCommands;
@@ -42,8 +44,8 @@ public class BlockBreakListener implements Listener {
                 if (itemID.equals("aquatichoe")) {
                     if (b.getBlockData() instanceof Ageable ageable) {
                         if (ageable.getAge() == ageable.getMaximumAge()) {
-                            e.setCancelled(true);
                             Collection<ItemStack> drops = b.getDrops(item);
+                            Location location = b.getLocation();
 
                             if (ThreadLocalRandom.current().nextInt(AquaticHoeFarmKeyChance) == 0) {
                                 runConsoleCommands("crazycrates give v farm 1 " + p.getName(),
@@ -60,17 +62,18 @@ public class BlockBreakListener implements Listener {
                             }
 
                             for (ItemStack drop : drops) {
-                                b.getWorld().dropItemNaturally(b.getLocation(), drop);
+                                b.getWorld().dropItemNaturally(location, drop);
                             }
-
-                            ageable.setAge(1);
-                            b.setBlockData(ageable);
+                            Material material = b.getType();
+                            Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
+                        } else {
+                            e.setCancelled(true);
                         }
                     }
                 } else if (itemID.equals("aquatichoemega")) {
                     if (b.getBlockData() instanceof Ageable ageable) {
                         if (ageable.getAge() == ageable.getMaximumAge()) {
-                            e.setCancelled(true);
+                            Location location = b.getLocation();
                             Collection<ItemStack> drops = b.getDrops(item);
 
                             if (ThreadLocalRandom.current().nextInt(AquaticHoeMegaFarmKeyChance) == 0) {
@@ -88,17 +91,19 @@ public class BlockBreakListener implements Listener {
                             }
 
                             for (ItemStack drop : drops) {
-                                b.getWorld().dropItemNaturally(b.getLocation(), drop);
+                                b.getWorld().dropItemNaturally(location, drop);
                             }
 
-                            ageable.setAge(1);
-                            b.setBlockData(ageable);
+                            Material material = b.getType();
+                            Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
+                        } else {
+                            e.setCancelled(true);
                         }
                     }
                 } else if (itemID.equals("aquatichoe2")) {
                     if (b.getBlockData() instanceof Ageable ageable) {
                         if (ageable.getAge() == ageable.getMaximumAge()) {
-                            e.setCancelled(true);
+                            Location location = b.getLocation();
                             Collection<ItemStack> drops = b.getDrops(item);
 
                             if (ThreadLocalRandom.current().nextInt(AquaticHoe2FarmKeyChance) == 0) {
@@ -116,11 +121,13 @@ public class BlockBreakListener implements Listener {
                             }
 
                             for (ItemStack drop : drops) {
-                                b.getWorld().dropItemNaturally(b.getLocation(), drop);
+                                b.getWorld().dropItemNaturally(location, drop);
                             }
 
-                            ageable.setAge(1);
-                            b.setBlockData(ageable);
+                            Material material = b.getType();
+                            Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
+                        } else {
+                            e.setCancelled(true);
                         }
                     }
                 }
