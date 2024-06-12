@@ -19,8 +19,10 @@ import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static me.dunescifye.lunaritems.LunarItems.getPlugin;
-import static me.dunescifye.lunaritems.LunarItems.keyItemID;
+import static me.dunescifye.lunaritems.files.AquaticItemsConfig.*;
 import static me.dunescifye.lunaritems.files.Config.*;
+import static me.dunescifye.lunaritems.files.NexusItemsConfig.*;
+import static me.dunescifye.lunaritems.utils.Utils.keyItemID;
 import static me.dunescifye.lunaritems.utils.Utils.runConsoleCommands;
 
 public class BlockBreakListener implements Listener {
@@ -49,7 +51,7 @@ public class BlockBreakListener implements Listener {
 
                             if (ThreadLocalRandom.current().nextInt(AquaticHoeFarmKeyChance) == 0) {
                                 runConsoleCommands("crazycrates give v farm 1 " + p.getName(),
-                                        "minecraft:sendmessage @a " + prefix + " &8&l▶ &a" + p.getName() + " &7has won &a1x Farm Key &7from their aquatic hoe!");
+                                        "minecraft:sendmessage @a " + prefix + "&a" + p.getName() + " &7has won &a1x Farm Key &7from their aquatic hoe!");
                             }
                             if (ThreadLocalRandom.current().nextInt(AquaticHoeStackOfCropsChance) == 0) {
                                 drops.add(new ItemStack(b.getType(), 64));
@@ -128,6 +130,30 @@ public class BlockBreakListener implements Listener {
                             Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
                         } else {
                             e.setCancelled(true);
+                        }
+                    }
+                } else if (itemID.equals("nexushoe")) {
+                    if (b.getBlockData() instanceof Ageable ageable) {
+                        if (ageable.getAge() == ageable.getMaximumAge()) {
+                            if (ThreadLocalRandom.current().nextInt(NexusHoePyroFarmingXPChance) == 0) {
+                                runConsoleCommands("pyrofarming addxp " + p.getName() + ThreadLocalRandom.current().nextInt(1, 6));
+                            }
+                        }
+                    }
+                } else if (itemID.equals("nexushoemega")) {
+                    if (b.getBlockData() instanceof Ageable ageable) {
+                        if (ageable.getAge() == ageable.getMaximumAge()) {
+                            if (ThreadLocalRandom.current().nextInt(NexusHoeMegaPyroFarmingXPChance) == 0) {
+                                runConsoleCommands("pyrofarming addxp " + p.getName() + ThreadLocalRandom.current().nextInt(1, 6));
+                            }
+                        }
+                    }
+                } else if (itemID.equals("nexushoeo")) {
+                    if (b.getBlockData() instanceof Ageable ageable) {
+                        if (ageable.getAge() == ageable.getMaximumAge()) {
+                            if (ThreadLocalRandom.current().nextInt(NexusHoeOPyroFarmingXPChance) == 0) {
+                                runConsoleCommands("pyrofarming addxp " + p.getName() + ThreadLocalRandom.current().nextInt(1, 6));
+                            }
                         }
                     }
                 }
