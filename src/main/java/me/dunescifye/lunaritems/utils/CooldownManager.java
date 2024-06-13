@@ -57,7 +57,7 @@ public class CooldownManager {
             message = cooldownMessageSeconds.replace("%seconds%", String.valueOf(duration.toSecondsPart()));
         }
 
-        player.sendMessage(prefix + LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, prefix + message)));
 
     }
 }

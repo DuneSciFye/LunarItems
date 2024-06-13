@@ -1,13 +1,11 @@
 package me.dunescifye.lunaritems.files;
 
 import me.dunescifye.lunaritems.LunarItems;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import static me.dunescifye.lunaritems.utils.ConfigUtils.setupConfig;
 
@@ -22,8 +20,8 @@ public class Config {
 
         prefix = setupConfig("Global.Prefix", config, "&b&lCHILLSMP &8&l▶ ");
         cooldownMessageHours = setupConfig("Messages.CooldownMessage.Hours", config, "&7You can use this again in &a%hours% Hours, %minutes% Minutes, & %seconds% Seconds&7.");
-        cooldownMessageMinutes = setupConfig("Messages.CooldownMessage.Hours", config, "&7You can use this again in &a%minutes% Minutes & %seconds% Seconds&7.");
-        cooldownMessageSeconds = setupConfig("Messages.CooldownMessage.Hours", config, "&7You can use this again in &a%seconds% Seconds&7.");
+        cooldownMessageMinutes = setupConfig("Messages.CooldownMessage.Minutes", config, "&7You can use this again in &a%minutes% Minutes & %seconds% Seconds&7.");
+        cooldownMessageSeconds = setupConfig("Messages.CooldownMessage.Seconds", config, "&7You can use this again in &a%seconds% Seconds&7.");
 
         plugin.saveConfig();
     }

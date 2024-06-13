@@ -13,7 +13,6 @@ public class BlockUtils {
                 for (int z = -radius; z <= radius; z++){
                     Block b = block.getRelative(x, y, z);
                     b.applyBoneMeal(BlockFace.UP);
-                    System.out.println("a");
                 }
             }
         }

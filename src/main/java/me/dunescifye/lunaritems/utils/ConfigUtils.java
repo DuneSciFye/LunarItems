@@ -44,7 +44,7 @@ public class ConfigUtils {
     public static int setupConfig(String path, FileConfiguration config, int defaultValue, int minValue) {
         Logger logger = Bukkit.getLogger();
         if (!config.isSet(path)) {
-            config.addDefault(path, defaultValue);
+            config.set(path, defaultValue);
             return defaultValue;
         }
 
@@ -67,7 +67,7 @@ public class ConfigUtils {
 
     public static String setupConfig(String path, FileConfiguration config, String defaultValue) {
         if (!config.isSet(path)) {
-            config.addDefault(path, defaultValue);
+            config.set(path, defaultValue);
             return defaultValue;
         }
         return config.getString(path);
