@@ -19,12 +19,16 @@ repositories {
     maven {
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
+    maven {
+        url = 'https://maven.playpro.com'
+    }
 }
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
     compileOnly "dev.jorel:commandapi-bukkit-core:9.4.2"
     compileOnly 'me.clip:placeholderapi:2.11.6'
+    compileOnly 'net.coreprotect:coreprotect:22.4'
 }
 
 

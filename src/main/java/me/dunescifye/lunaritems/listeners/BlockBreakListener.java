@@ -22,6 +22,7 @@ import static me.dunescifye.lunaritems.LunarItems.getPlugin;
 import static me.dunescifye.lunaritems.files.AquaticItemsConfig.*;
 import static me.dunescifye.lunaritems.files.Config.*;
 import static me.dunescifye.lunaritems.files.NexusItemsConfig.*;
+import static me.dunescifye.lunaritems.utils.BlockUtils.isNaturallyGenerated;
 import static me.dunescifye.lunaritems.utils.Utils.keyItemID;
 import static me.dunescifye.lunaritems.utils.Utils.runConsoleCommands;
 
@@ -71,6 +72,29 @@ public class BlockBreakListener implements Listener {
                         } else {
                             e.setCancelled(true);
                         }
+                    } else if (b.getType() == Material.SUGAR_CANE) {
+                        if (isNaturallyGenerated(b)) {
+                            Collection<ItemStack> drops = b.getDrops(item);
+                            Location location = b.getLocation();
+
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoeFarmKeyChance) == 0) {
+                                runConsoleCommands("crazycrates give v farm 1 " + p.getName(),
+                                    "minecraft:sendmessage @a " + prefix + "&a" + p.getName() + " &7has won &a1x Farm Key &7from their aquatic hoe!");
+                            }
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoeStackOfCropsChance) == 0) {
+                                drops.add(new ItemStack(b.getType(), 64));
+                            }
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoeAxolotlSpawnEggChance) == 0) {
+                                drops.add(new ItemStack(Material.AXOLOTL_SPAWN_EGG));
+                            }
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoeFrogSpawnEggChance) == 0) {
+                                drops.add(new ItemStack(Material.FROG_SPAWN_EGG));
+                            }
+
+                            for (ItemStack drop : drops) {
+                                b.getWorld().dropItemNaturally(location, drop);
+                            }
+                        }
                     }
                 } else if (itemID.equals("aquatichoemega")) {
                     if (b.getBlockData() instanceof Ageable ageable) {
@@ -101,6 +125,29 @@ public class BlockBreakListener implements Listener {
                         } else {
                             e.setCancelled(true);
                         }
+                    } else if (b.getType() == Material.SUGAR_CANE) {
+                        if (isNaturallyGenerated(b)) {
+                            Location location = b.getLocation();
+                            Collection<ItemStack> drops = b.getDrops(item);
+
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoeMegaFarmKeyChance) == 0) {
+                                runConsoleCommands("crazycrates give v farm 1 " + p.getName(),
+                                    "minecraft:sendmessage @a " + prefix + " &8&l▶ &a" + p.getName() + " &7has won &a1x Farm Key &7from their aquatic hoe!");
+                            }
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoeMegaStackOfCropsChance) == 0) {
+                                drops.add(new ItemStack(b.getType(), 64));
+                            }
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoeMegaAxolotlSpawnEggChance) == 0) {
+                                drops.add(new ItemStack(Material.AXOLOTL_SPAWN_EGG));
+                            }
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoeMegaFrogSpawnEggChance) == 0) {
+                                drops.add(new ItemStack(Material.FROG_SPAWN_EGG));
+                            }
+
+                            for (ItemStack drop : drops) {
+                                b.getWorld().dropItemNaturally(location, drop);
+                            }
+                        }
                     }
                 } else if (itemID.equals("aquatichoe2")) {
                     if (b.getBlockData() instanceof Ageable ageable) {
@@ -130,6 +177,29 @@ public class BlockBreakListener implements Listener {
                             Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
                         } else {
                             e.setCancelled(true);
+                        }
+                    } else if (b.getType() == Material.SUGAR_CANE) {
+                        if (isNaturallyGenerated(b)) {
+                            Location location = b.getLocation();
+                            Collection<ItemStack> drops = b.getDrops(item);
+
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoe2FarmKeyChance) == 0) {
+                                runConsoleCommands("crazycrates give v farm 1 " + p.getName(),
+                                    "minecraft:sendmessage @a " + prefix + " &8&l▶ &a" + p.getName() + " &7has won &a1x Farm Key &7from their aquatic hoe!");
+                            }
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoe2StackOfCropsChance) == 0) {
+                                drops.add(new ItemStack(b.getType(), 64));
+                            }
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoe2AxolotlSpawnEggChance) == 0) {
+                                drops.add(new ItemStack(Material.AXOLOTL_SPAWN_EGG));
+                            }
+                            if (ThreadLocalRandom.current().nextInt(AquaticHoe2FrogSpawnEggChance) == 0) {
+                                drops.add(new ItemStack(Material.FROG_SPAWN_EGG));
+                            }
+
+                            for (ItemStack drop : drops) {
+                                b.getWorld().dropItemNaturally(location, drop);
+                            }
                         }
                     }
                 } else if (itemID.equals("nexushoe")) {
