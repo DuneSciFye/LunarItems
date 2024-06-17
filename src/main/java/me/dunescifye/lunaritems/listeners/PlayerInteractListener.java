@@ -16,8 +16,6 @@ import java.time.Duration;
 
 import static me.dunescifye.lunaritems.utils.BlockUtils.boneMealRadius;
 import static me.dunescifye.lunaritems.utils.CooldownManager.*;
-import static me.dunescifye.lunaritems.utils.Utils.keyItemID;
-import static me.dunescifye.lunaritems.utils.Utils.keyUses;
 
 public class PlayerInteractListener implements Listener {
 
@@ -27,26 +25,27 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
+        if (e.isCancelled()) return;
         Player p = e.getPlayer();
         if (e.getHand() == EquipmentSlot.HAND) {
             ItemStack item = p.getInventory().getItemInMainHand();
             if (item.hasItemMeta()) {
                 ItemMeta meta = item.getItemMeta();
                 PersistentDataContainer container = meta.getPersistentDataContainer();
-                if (container.has(keyItemID, PersistentDataType.STRING)) {
-                    String itemID = container.get(keyItemID, PersistentDataType.STRING);
+                if (container.has(LunarItems.keyItemID, PersistentDataType.STRING)) {
+                    String itemID = container.get(LunarItems.keyItemID, PersistentDataType.STRING);
                     if (itemID.equals("nexushoe")) {
                         if (e.getAction().isRightClick() && p.isSneaking()) {
                             if (hasCooldown(nexusHoeCooldowns, p.getUniqueId())) { //If has cooldown
                                 sendCooldownMessage(p, getRemainingCooldown(nexusHoeCooldowns, p.getUniqueId()));
                             } else { //If doesn't have cooldown
-                                double uses = container.get(keyUses, PersistentDataType.DOUBLE);
+                                double uses = container.get(LunarItems.keyUses, PersistentDataType.DOUBLE);
                                 boneMealRadius(p.getLocation(), 5);
                                 if (uses == 1) { // If out of uses, set cooldown
                                     setCooldown(nexusHoeCooldowns, p.getUniqueId(), Duration.ofMinutes(10));
-                                    container.set(keyUses, PersistentDataType.DOUBLE, 10.0);
+                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, 10.0);
                                 } else {
-                                    container.set(keyUses, PersistentDataType.DOUBLE, uses - 1);
+                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, uses - 1);
                                 }
                                 item.setItemMeta(meta);
                             }
@@ -57,13 +56,13 @@ public class PlayerInteractListener implements Listener {
                             if (hasCooldown(nexusHoeCooldowns, p.getUniqueId())) { //If has cooldown
                                 sendCooldownMessage(p, getRemainingCooldown(nexusHoeCooldowns, p.getUniqueId()));
                             } else { //If doesn't have cooldown
-                                double uses = container.get(keyUses, PersistentDataType.DOUBLE);
+                                double uses = container.get(LunarItems.keyUses, PersistentDataType.DOUBLE);
                                 boneMealRadius(p.getLocation(), 5);
                                 if (uses == 1) { // If out of uses, set cooldown
                                     setCooldown(nexusHoeCooldowns, p.getUniqueId(), Duration.ofMinutes(10));
-                                    container.set(keyUses, PersistentDataType.DOUBLE, 10.0);
+                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, 10.0);
                                 } else {
-                                    container.set(keyUses, PersistentDataType.DOUBLE, uses - 1);
+                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, uses - 1);
                                 }
                                 item.setItemMeta(meta);
                             }
@@ -74,13 +73,13 @@ public class PlayerInteractListener implements Listener {
                             if (hasCooldown(nexusHoeCooldowns, p.getUniqueId())) { //If has cooldown
                                 sendCooldownMessage(p, getRemainingCooldown(nexusHoeCooldowns, p.getUniqueId()));
                             } else { //If doesn't have cooldown
-                                double uses = container.get(keyUses, PersistentDataType.DOUBLE);
+                                double uses = container.get(LunarItems.keyUses, PersistentDataType.DOUBLE);
                                 boneMealRadius(p.getLocation(), 5);
                                 if (uses == 1) { // If out of uses, set cooldown
                                     setCooldown(nexusHoeCooldowns, p.getUniqueId(), Duration.ofMinutes(10));
-                                    container.set(keyUses, PersistentDataType.DOUBLE, 10.0);
+                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, 10.0);
                                 } else {
-                                    container.set(keyUses, PersistentDataType.DOUBLE, uses - 1);
+                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, uses - 1);
                                 }
                                 item.setItemMeta(meta);
                             }

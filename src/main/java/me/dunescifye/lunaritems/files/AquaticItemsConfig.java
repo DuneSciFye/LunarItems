@@ -1,5 +1,6 @@
 package me.dunescifye.lunaritems.files;
 
+import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.utils.ConfigUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -9,8 +10,6 @@ import java.util.List;
 
 import static me.dunescifye.lunaritems.LunarItems.getPlugin;
 import static me.dunescifye.lunaritems.utils.ConfigUtils.setupConfig;
-import static me.dunescifye.lunaritems.utils.Utils.initializeItem;
-import static me.dunescifye.lunaritems.utils.Utils.keyUses;
 
 public class AquaticItemsConfig {
 
@@ -46,7 +45,7 @@ public class AquaticItemsConfig {
             config.addDefault("AquaticHoe.unbreakable", true);
         }
 
-        AquaticHoe = initializeItem("AquaticHoe", aquaticItems, keyUses);
+        AquaticHoe = ConfigUtils.initializeItem("AquaticHoe", aquaticItems, LunarItems.keyUses);
 
         AquaticHoeFarmKeyChance = setupConfig("AquaticHoe.Chances.FarmKey", config, 1000000, 1);
         AquaticHoeStackOfCropsChance = setupConfig("AquaticHoe.Chances.StackOfCrops", config, 2000, 1);

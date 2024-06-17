@@ -1,5 +1,6 @@
 package me.dunescifye.lunaritems.files;
 
+import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.utils.ConfigUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -9,8 +10,6 @@ import java.util.List;
 
 import static me.dunescifye.lunaritems.LunarItems.getPlugin;
 import static me.dunescifye.lunaritems.utils.ConfigUtils.setupConfig;
-import static me.dunescifye.lunaritems.utils.Utils.initializeItem;
-import static me.dunescifye.lunaritems.utils.Utils.keyUses;
 
 public class NexusItemsConfig {
 
@@ -38,7 +37,7 @@ public class NexusItemsConfig {
             config.addDefault("NexusHoe.unbreakable", true);
         }
 
-        NexusHoe = initializeItem("NexusHoe", nexusItems, keyUses);
+        NexusHoe = ConfigUtils.initializeItem("NexusHoe", nexusItems, LunarItems.keyUses);
 
         NexusHoePyroFarmingXPChance = setupConfig("NexusHoe.Chances.PyroFarmingXPChance", config, 4000, 1);
         NexusHoeOPyroFarmingXPChance = setupConfig("NexusHoeO.Chances.PyroFarmingXPChance", config, 4000, 1);

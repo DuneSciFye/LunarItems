@@ -4,3 +4,6 @@ main: me.dunescifye.lunaritems.LunarItems
 api-version: '1.20'
 depend:
   - CommandAPI
+softdepend:
+  - DecentHolograms
+  - GriefPrevention

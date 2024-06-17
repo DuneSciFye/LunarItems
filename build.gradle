@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.github.johnrengelman.shadow" version "7.1.1"
 }
 
 group = 'me.dunescifye'
@@ -22,6 +23,12 @@ repositories {
     maven {
         url = 'https://maven.playpro.com'
     }
+    maven {
+        url = "https://hub.jeff-media.com/nexus/repository/jeff-media-public/"
+    }
+    maven {
+        url = "https://jitpack.io/"
+    }
 }
 
 dependencies {
@@ -29,8 +36,15 @@ dependencies {
     compileOnly "dev.jorel:commandapi-bukkit-core:9.4.2"
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'net.coreprotect:coreprotect:22.4'
+    compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.8'
+    implementation 'com.jeff_media:MorePersistentDataTypes:2.4.0'
+    implementation 'com.jeff-media:custom-block-data:2.2.2'
 }
 
+shadowJar {
+    relocate 'com.jeff_media.customblockdata', 'me.dunescifye.libs.customblockdata'
+    relocate 'com.jeff_media.morepersistentdatatypes', 'me.dunescifye.libs.morepersistentdatatypes'
+}
 
 def targetJavaVersion = 17
 java {

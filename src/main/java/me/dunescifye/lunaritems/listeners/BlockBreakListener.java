@@ -1,6 +1,9 @@
 package me.dunescifye.lunaritems.listeners;
 
+import com.jeff_media.customblockdata.CustomBlockData;
+import com.jeff_media.morepersistentdatatypes.DataType;
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,7 +27,6 @@ import static me.dunescifye.lunaritems.LunarItems.getPlugin;
 import static me.dunescifye.lunaritems.files.AquaticItemsConfig.*;
 import static me.dunescifye.lunaritems.files.Config.prefix;
 import static me.dunescifye.lunaritems.files.NexusItemsConfig.*;
-import static me.dunescifye.lunaritems.utils.Utils.keyItemID;
 
 public class BlockBreakListener implements Listener {
 
@@ -43,8 +45,8 @@ public class BlockBreakListener implements Listener {
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
             PersistentDataContainer container = meta.getPersistentDataContainer();
-            if (container.has(keyItemID, PersistentDataType.STRING)) {
-                String itemID = container.get(keyItemID, PersistentDataType.STRING);
+            if (container.has(LunarItems.keyItemID, PersistentDataType.STRING)) {
+                String itemID = container.get(LunarItems.keyItemID, PersistentDataType.STRING);
                 if (block.getBlockData() instanceof Ageable ageable) {
                     if (ageable.getAge() == ageable.getMaximumAge() || block.getType() == Material.SUGAR_CANE) {
                         Collection<ItemStack> drops = block.getDrops(item);
@@ -75,6 +77,29 @@ public class BlockBreakListener implements Listener {
                         e.setCancelled(true);
                     }
                 }
+            }
+        }
+        //Custom Blocks
+        PersistentDataContainer blockContainer = new CustomBlockData(block, LunarItems.getPlugin());
+        if (blockContainer.has(LunarItems.keyID, PersistentDataType.STRING)) {
+            String blockID = blockContainer.get(LunarItems.keyID, PersistentDataType.STRING);
+            switch (Objects.requireNonNull(blockID)) {
+                case "teleport_pad":
+                    //Drop custom item
+                    Location loc = block.getLocation();
+                    e.setDropItems(false);
+                    block.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
+
+                    //Make linked teleport pad not work
+                    Location targetLocation = blockContainer.get(LunarItems.keyLocation, DataType.LOCATION);
+                    if (targetLocation != null) {
+                        Block targetBlock = block.getWorld().getBlockAt(targetLocation);
+                        PersistentDataContainer targetBlockContainer = new CustomBlockData(targetBlock, LunarItems.getPlugin());
+                        if (Objects.equals(targetBlockContainer.get(LunarItems.keyID, PersistentDataType.STRING), "teleport_pad"))
+                            targetBlockContainer.remove(LunarItems.keyLocation);
+                    }
+
+                    break;
             }
         }
     }
