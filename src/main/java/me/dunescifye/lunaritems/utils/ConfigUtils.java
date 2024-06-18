@@ -78,6 +78,22 @@ public class ConfigUtils {
 
         return value;
     }
+    public static int setupConfig(String path, FileConfiguration config, int defaultValue) {
+        Logger logger = Bukkit.getLogger();
+        if (!config.isSet(path)) {
+            config.set(path, defaultValue);
+            return defaultValue;
+        }
+
+        String valueStr = config.getString(path);
+
+        if (!valueStr.matches("-?\\d+(\\.\\d+)?")) {
+            logger.warning("[CustomItems] " + path + " is not a valid number. Found " + valueStr + ". Using default value of " + defaultValue + ".");
+            return defaultValue;
+        }
+
+        return Integer.parseInt(valueStr);
+    }
 
     public static String setupConfig(String path, FileConfiguration config, String defaultValue) {
         if (!config.isSet(path)) {
@@ -85,6 +101,14 @@ public class ConfigUtils {
             return defaultValue;
         }
         return config.getString(path);
+    }
+
+    public static List<String> setupConfig(String path, FileConfiguration config, List<String> defaultValue) {
+        if (!config.isSet(path)) {
+            config.set(path, defaultValue);
+            return defaultValue;
+        }
+        return config.getStringList(path);
     }
 
     //Item without keys

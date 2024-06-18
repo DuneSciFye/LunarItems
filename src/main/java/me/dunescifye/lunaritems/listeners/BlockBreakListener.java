@@ -2,6 +2,7 @@ package me.dunescifye.lunaritems.listeners;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import com.jeff_media.morepersistentdatatypes.DataType;
+import eu.decentsoftware.holograms.api.DHAPI;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.utils.Utils;
@@ -89,6 +90,11 @@ public class BlockBreakListener implements Listener {
                     Location loc = block.getLocation();
                     e.setDropItems(false);
                     block.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
+
+                    //Remove hologram
+                    String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                    if (hologramID != null)
+                        DHAPI.removeHologram(hologramID);
 
                     //Make linked teleport pad not work
                     Location targetLocation = blockContainer.get(LunarItems.keyLocation, DataType.LOCATION);

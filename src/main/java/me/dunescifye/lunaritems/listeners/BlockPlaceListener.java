@@ -2,8 +2,10 @@ package me.dunescifye.lunaritems.listeners;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import com.jeff_media.morepersistentdatatypes.DataType;
+import eu.decentsoftware.holograms.api.DHAPI;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.files.Config;
 import me.dunescifye.lunaritems.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -20,6 +22,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class BlockPlaceListener implements Listener {
 
@@ -45,7 +48,11 @@ public class BlockPlaceListener implements Listener {
                     case "teleport_pad":
                         PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
                         blockContainer.set(LunarItems.keyID, PersistentDataType.STRING, "teleport_pad");
+                        String hologramID = UUID.randomUUID().toString();
+                        blockContainer.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
+
                         //Hologram
+                        DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.teleport_padHologramOffset, 0), true, BlocksConfig.teleport_padHologram);
 
                         //Second TP Pad
                         if (teleportPadLocations.containsKey(p)) {

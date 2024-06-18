@@ -13,10 +13,17 @@ import static me.dunescifye.lunaritems.LunarItems.getPlugin;
 public class BlocksConfig {
 
     public static ItemStack teleport_pad;
+    public static Integer teleport_padHologramOffset;
+    public static List<String> teleport_padHologram;
 
     public static void setup() {
         ConfigUtils blocksConfig = new ConfigUtils(getPlugin(), "items/blocks.yml");
         FileConfiguration config = blocksConfig.getConfig();
+
+        List<String> hologram = Arrays.asList(
+                "#ff032d&lTeleport Pad",
+                "&f➥ Shift to teleport!"
+        );
 
         if (!config.isSet("teleport_pad")){
             config.addDefault("teleport_pad.name", "&8[#ff032d&lTELEPORT PAD&8]");
@@ -28,14 +35,12 @@ public class BlocksConfig {
             );
             config.addDefault("teleport_pad.lore", lore);
             config.addDefault("teleport_pad.material", "OAK_PRESSURE_PLATE");
-            List<String> hologram = Arrays.asList(
-                "#ff032d&lTeleport Pad",
-                "&f➥ Shift to teleport!"
-            );
             config.addDefault("teleport_pad.hologram", hologram);
         }
 
         teleport_pad = ConfigUtils.initializeItem("teleport_pad", blocksConfig);
+        teleport_padHologram = ConfigUtils.setupConfig("teleport_pad.hologram", config, hologram);
+        teleport_padHologramOffset = ConfigUtils.setupConfig("teleport_pad.hologramOffset", config, 1);
 
         config.options().copyDefaults(true);
         blocksConfig.save();

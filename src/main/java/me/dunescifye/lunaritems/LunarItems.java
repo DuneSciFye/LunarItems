@@ -25,6 +25,7 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyID = new NamespacedKey("lunaritems", "id");
     public static final NamespacedKey keyLocation = new NamespacedKey("lunaritems", "location");
     public static final NamespacedKey keyUses = new NamespacedKey("score", "score-uses");
+    public static final NamespacedKey keyUUID = new NamespacedKey("lunaritems", "uuid");
 
     public static Map<String, ItemStack> items = new HashMap<>();
     public static Map<NamespacedKey, PersistentDataType> dataType = new HashMap<>();
@@ -33,6 +34,8 @@ public final class LunarItems extends JavaPlugin {
     static {
         dataType.put(keyUses, PersistentDataType.DOUBLE);
         defaultValue.put(keyUses, 0.0);
+        dataType.put(keyUUID, PersistentDataType.STRING);
+        defaultValue.put(keyUUID, "");
     }
 
     public static LunarItems getPlugin() {
