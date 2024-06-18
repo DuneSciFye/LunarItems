@@ -18,11 +18,7 @@ public class BlockUtils {
         List<String[]> lookup = getCoreProtect().blockLookup(block, 2147483647);
         if (lookup != null && !lookup.isEmpty()) {
             CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.get(0));
-            if(!parseResult.getPlayer().startsWith("#") && parseResult.getActionId() == 1 && !parseResult.isRolledBack()){
-                return false;
-            } else {
-                return true;
-            }
+            return parseResult.getPlayer().startsWith("#") || parseResult.getActionId() != 1 || parseResult.isRolledBack();
         }
         return true;
     }
@@ -32,14 +28,14 @@ public class BlockUtils {
         Plugin plugin = getServer().getPluginManager().getPlugin("CoreProtect");
 
         // Check that CoreProtect is loaded
-        if (plugin == null || !(plugin instanceof CoreProtect)) {
+        if (!(plugin instanceof CoreProtect)) {
             System.out.println("core protect plugin not found");
             return null;
         }
 
         // Check that the API is enabled
         CoreProtectAPI CoreProtect = ((CoreProtect) plugin).getAPI();
-        if (CoreProtect.isEnabled() == false) {
+        if (!CoreProtect.isEnabled()) {
             System.out.println("core protect api is not enabled");
             return null;
         }

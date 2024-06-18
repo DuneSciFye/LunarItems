@@ -25,8 +25,8 @@ import java.util.logging.Logger;
 
 public class ConfigUtils {
 
-    private File file;
-    private FileConfiguration config;
+    private final File file;
+    private final FileConfiguration config;
 
     public ConfigUtils(Plugin plugin, String path){
         this(plugin.getDataFolder().getAbsolutePath() + "/" + path);
