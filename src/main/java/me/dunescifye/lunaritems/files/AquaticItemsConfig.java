@@ -45,7 +45,7 @@ public class AquaticItemsConfig {
             config.addDefault("AquaticHoe.unbreakable", true);
         }
 
-        AquaticHoe = ConfigUtils.initializeItem("AquaticHoe", aquaticItems, LunarItems.keyUses);
+        AquaticHoe = ConfigUtils.initializeItem("AquaticHoe", config, LunarItems.keyUses);
 
         AquaticHoeFarmKeyChance = setupConfig("AquaticHoe.Chances.FarmKey", config, 1000000, 1);
         AquaticHoeStackOfCropsChance = setupConfig("AquaticHoe.Chances.StackOfCrops", config, 2000, 1);

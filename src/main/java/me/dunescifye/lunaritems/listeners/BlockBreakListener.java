@@ -5,6 +5,9 @@ import com.jeff_media.morepersistentdatatypes.DataType;
 import eu.decentsoftware.holograms.api.DHAPI;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.files.BlocksConfig;
+import me.dunescifye.lunaritems.files.Config;
+import me.dunescifye.lunaritems.files.NexusItemsConfig;
+import me.dunescifye.lunaritems.utils.BlockUtils;
 import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,6 +26,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 
 import static me.dunescifye.lunaritems.LunarItems.getPlugin;
 import static me.dunescifye.lunaritems.files.AquaticItemsConfig.*;
@@ -39,57 +43,61 @@ public class BlockBreakListener implements Listener {
     public void onPlayerBlockBreak(BlockBreakEvent e) {
         if (e.isCancelled()) return;
 
-        Player player = e.getPlayer();
-        Block block = e.getBlock();
-        ItemStack item = player.getInventory().getItemInMainHand();
+        Player p = e.getPlayer();
+        Block b = e.getBlock();
+        ItemStack item = p.getInventory().getItemInMainHand();
 
-        if (item.hasItemMeta()) {
-            ItemMeta meta = item.getItemMeta();
-            PersistentDataContainer container = meta.getPersistentDataContainer();
-            if (container.has(LunarItems.keyItemID, PersistentDataType.STRING)) {
-                String itemID = container.get(LunarItems.keyItemID, PersistentDataType.STRING);
-                if (block.getBlockData() instanceof Ageable ageable) {
-                    if (ageable.getAge() == ageable.getMaximumAge() || block.getType() == Material.SUGAR_CANE) {
-                        Collection<ItemStack> drops = block.getDrops(item);
-                        Location location = block.getLocation();
-
-                        switch (Objects.requireNonNull(itemID)) {
-                            case "aquatichoe":
-                                handleAquaticHoe(drops, player, block, location, AquaticHoeFarmKeyChance, AquaticHoeStackOfCropsChance, AquaticHoeAxolotlSpawnEggChance, AquaticHoeFrogSpawnEggChance);
-                                break;
-                            case "aquatichoemega":
-                                handleAquaticHoe(drops, player, block, location, AquaticHoeMegaFarmKeyChance, AquaticHoeMegaStackOfCropsChance, AquaticHoeMegaAxolotlSpawnEggChance, AquaticHoeMegaFrogSpawnEggChance);
-                                break;
-                            case "aquatichoe2":
-                                handleAquaticHoe(drops, player, block, location, AquaticHoe2FarmKeyChance, AquaticHoe2StackOfCropsChance, AquaticHoe2AxolotlSpawnEggChance, AquaticHoe2FrogSpawnEggChance);
-                                break;
-                            case "nexushoe":
-                                handleNexusHoe(player, NexusHoePyroFarmingXPChance);
-                                break;
-                            case "nexushoemega":
-                                handleNexusHoe(player, NexusHoeMegaPyroFarmingXPChance);
-                                break;
-                            case "nexushoeo":
-                                handleNexusHoe(player, NexusHoeOPyroFarmingXPChance);
-                                break;
-                        }
-                    } else {
-                        //Cancel breaking if plant not fully grown
-                        e.setCancelled(true);
-                    }
+        if (!item.hasItemMeta()) return;
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        String itemID = container.get(LunarItems.keyEIID, PersistentDataType.STRING);
+        if (itemID == null) return;
+        //Hoes
+        if (b.getBlockData() instanceof Ageable ageable) {
+            if (ageable.getAge() == ageable.getMaximumAge() || b.getType() == Material.SUGAR_CANE) {
+                Collection<ItemStack> drops = b.getDrops(item);
+                Location location = b.getLocation();
+                switch (Objects.requireNonNull(itemID)) {
+                    case "aquatichoe" ->
+                        handleAquaticHoe(drops, p, b, location, AquaticHoeFarmKeyChance, AquaticHoeStackOfCropsChance, AquaticHoeAxolotlSpawnEggChance, AquaticHoeFrogSpawnEggChance);
+                    case "aquatichoemega" ->
+                        handleAquaticHoe(drops, p, b, location, AquaticHoeMegaFarmKeyChance, AquaticHoeMegaStackOfCropsChance, AquaticHoeMegaAxolotlSpawnEggChance, AquaticHoeMegaFrogSpawnEggChance);
+                    case "aquatichoe2" ->
+                        handleAquaticHoe(drops, p, b, location, AquaticHoe2FarmKeyChance, AquaticHoe2StackOfCropsChance, AquaticHoe2AxolotlSpawnEggChance, AquaticHoe2FrogSpawnEggChance);
+                    case "nexushoe" ->
+                        handleNexusHoe(p, NexusHoePyroFarmingXPChance);
+                    case "nexushoemega" ->
+                        handleNexusHoe(p, NexusHoeMegaPyroFarmingXPChance);
+                    case "nexushoeo" ->
+                        handleNexusHoe(p, NexusHoeOPyroFarmingXPChance);
+                }
+            } else {
+                //Cancel breaking if plant not fully grown
+                e.setCancelled(true);
+            }
+        }
+        //Not a hoe
+        else {
+            switch (itemID) {
+                case "nexuspick" -> {
+                    BlockUtils.breakInFacing(b, container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 1.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
+                    if (ThreadLocalRandom.current().nextInt(NexusPickOreBlockChance) == 0)
+                        dropOreBlock(b);
+                    if (ThreadLocalRandom.current().nextInt(NexusPickSquidSpawnerChance) == 0)
+                        Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "SQUID").replace("%amount%", "1"));
                 }
             }
         }
         //Custom Blocks
-        PersistentDataContainer blockContainer = new CustomBlockData(block, LunarItems.getPlugin());
+        PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
         if (blockContainer.has(LunarItems.keyID, PersistentDataType.STRING)) {
             String blockID = blockContainer.get(LunarItems.keyID, PersistentDataType.STRING);
             switch (Objects.requireNonNull(blockID)) {
-                case "teleport_pad":
+                case "teleport_pad" -> {
                     //Drop custom item
-                    Location loc = block.getLocation();
+                    Location loc = b.getLocation();
                     e.setDropItems(false);
-                    block.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
+                    b.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
 
                     //Remove hologram
                     String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
@@ -99,16 +107,16 @@ public class BlockBreakListener implements Listener {
                     //Make linked teleport pad not work
                     Location targetLocation = blockContainer.get(LunarItems.keyLocation, DataType.LOCATION);
                     if (targetLocation != null) {
-                        Block targetBlock = block.getWorld().getBlockAt(targetLocation);
+                        Block targetBlock = b.getWorld().getBlockAt(targetLocation);
                         PersistentDataContainer targetBlockContainer = new CustomBlockData(targetBlock, LunarItems.getPlugin());
                         if (Objects.equals(targetBlockContainer.get(LunarItems.keyID, PersistentDataType.STRING), "teleport_pad"))
                             targetBlockContainer.remove(LunarItems.keyLocation);
                     }
-
-                    break;
+                }
             }
         }
     }
+
     private void handleAquaticHoe(Collection<ItemStack> drops, Player player, Block block, Location location, int farmKeyChance, int stackOfCropsChance, int axolotlSpawnEggChance, int frogSpawnEggChance) {
         if (ThreadLocalRandom.current().nextInt(farmKeyChance) == 0) {
             Utils.runConsoleCommands("crazycrates give v farm 1 " + player.getName(), "minecraft:sendmessage @a " + prefix + "&a" + player.getName() + " &7has won &a1x Farm Key &7from their aquatic hoe!");
@@ -138,6 +146,23 @@ public class BlockBreakListener implements Listener {
     private void handleNexusHoe(Player player, int xpChance) {
         if (ThreadLocalRandom.current().nextInt(xpChance) == 0) {
             Utils.runConsoleCommands("pyrofarming addxp " + ThreadLocalRandom.current().nextInt(1, 6) + " " + player.getName());
+        }
+    }
+
+    private void dropOreBlock(Block b) {
+        for (Predicate<Block> predicate : BlockUtils.regularOres) {
+            if (predicate.test(b)) {
+                String material = b.getType().toString();
+                Utils.dropItems(b.getLocation(), new ItemStack(Material.getMaterial(material.substring(0, material.length() - 3) + "BLOCK")));
+                return;
+            }
+        }
+        for (Predicate<Block> predicate : BlockUtils.deepslateOres) {
+            if (predicate.test(b)) {
+                String material = b.getType().toString();
+                Utils.dropItems(b.getLocation(), new ItemStack(Material.getMaterial(material.substring(10, material.length() - 3) + "BLOCK")));
+                return;
+            }
         }
     }
 

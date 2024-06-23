@@ -1,6 +1,7 @@
 package me.dunescifye.lunaritems.listeners;
 
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,69 +26,41 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        if (e.isCancelled()) return;
         Player p = e.getPlayer();
-        if (e.getHand() == EquipmentSlot.HAND) {
-            ItemStack item = p.getInventory().getItemInMainHand();
-            if (item.hasItemMeta()) {
-                ItemMeta meta = item.getItemMeta();
-                PersistentDataContainer container = meta.getPersistentDataContainer();
-                if (container.has(LunarItems.keyItemID, PersistentDataType.STRING)) {
-                    String itemID = container.get(LunarItems.keyItemID, PersistentDataType.STRING);
-                    if (itemID.equals("nexushoe")) {
-                        if (e.getAction().isRightClick() && p.isSneaking()) {
-                            if (hasCooldown(nexusHoeCooldowns, p.getUniqueId())) { //If has cooldown
-                                sendCooldownMessage(p, getRemainingCooldown(nexusHoeCooldowns, p.getUniqueId()));
-                            } else { //If doesn't have cooldown
-                                double uses = container.get(LunarItems.keyUses, PersistentDataType.DOUBLE);
-                                boneMealRadius(p.getLocation(), 5);
-                                if (uses == 1) { // If out of uses, set cooldown
-                                    setCooldown(nexusHoeCooldowns, p.getUniqueId(), Duration.ofMinutes(10));
-                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, 10.0);
-                                } else {
-                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, uses - 1);
-                                }
-                                item.setItemMeta(meta);
-                            }
-                        }
+        if (e.getHand() == EquipmentSlot.OFF_HAND) return;
+        ItemStack item = p.getInventory().getItemInMainHand();
+        if (!item.hasItemMeta()) return;
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        String itemID = container.get(LunarItems.keyEIID, PersistentDataType.STRING);
+        if (itemID == null) return;
+        switch (itemID) {
+            case "nexushoe", "nexushoeo", "nexushoemega" -> {
+                if (e.getAction().isRightClick() && p.isSneaking()) {
+                    //If has cooldown
+                    if (hasCooldown(nexusHoeCooldowns, p.getUniqueId())) {
+                        sendCooldownMessage(p, getRemainingCooldown(nexusHoeCooldowns, p.getUniqueId()));
                     }
-                    else if (itemID.equals("nexushoeo")) {
-                        if (e.getAction().isRightClick() && p.isSneaking()) {
-                            if (hasCooldown(nexusHoeCooldowns, p.getUniqueId())) { //If has cooldown
-                                sendCooldownMessage(p, getRemainingCooldown(nexusHoeCooldowns, p.getUniqueId()));
-                            } else { //If doesn't have cooldown
-                                double uses = container.get(LunarItems.keyUses, PersistentDataType.DOUBLE);
-                                boneMealRadius(p.getLocation(), 5);
-                                if (uses == 1) { // If out of uses, set cooldown
-                                    setCooldown(nexusHoeCooldowns, p.getUniqueId(), Duration.ofMinutes(10));
-                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, 10.0);
-                                } else {
-                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, uses - 1);
-                                }
-                                item.setItemMeta(meta);
-                            }
+                    //If doesn't have cooldown
+                    else {
+                        double uses = container.get(LunarItems.keyUses, PersistentDataType.DOUBLE);
+                        boneMealRadius(p.getLocation(), 5);
+                        // If out of uses, set cooldown
+                        if (uses == 1) {
+                            setCooldown(nexusHoeCooldowns, p.getUniqueId(), Duration.ofMinutes(10));
+                            container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, 10.0);
+                        } else {
+                            container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, uses - 1);
                         }
+                        item.setItemMeta(meta);
                     }
-                    if (itemID.equals("nexushoemega")) {
-                        if (e.getAction().isRightClick() && p.isSneaking()) {
-                            if (hasCooldown(nexusHoeCooldowns, p.getUniqueId())) { //If has cooldown
-                                sendCooldownMessage(p, getRemainingCooldown(nexusHoeCooldowns, p.getUniqueId()));
-                            } else { //If doesn't have cooldown
-                                double uses = container.get(LunarItems.keyUses, PersistentDataType.DOUBLE);
-                                boneMealRadius(p.getLocation(), 5);
-                                if (uses == 1) { // If out of uses, set cooldown
-                                    setCooldown(nexusHoeCooldowns, p.getUniqueId(), Duration.ofMinutes(10));
-                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, 10.0);
-                                } else {
-                                    container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, uses - 1);
-                                }
-                                item.setItemMeta(meta);
-                            }
-                        }
-                    }
+                }
+            }
+            case "nexuspick" -> {
+                if (e.getAction().isRightClick() && p.isSneaking()) {
+                    Utils.updateKey(p, item, meta, container, LunarItems.keyLoreRadius, LunarItems.keyDepth, LunarItems.keyRadius, "Mining Mode", "1x1", 1.0, 0.0, "1x2", 2.0, 0.0, "3x2", 2.0, 1.0, "3x3", 3.0, 1.0,"3x4",  4.0, 1.0, "5x4", 4.0, 2.0, "5x5", 5.0, 2.0);
                 }
             }
         }
     }
-
 }

@@ -21,11 +21,16 @@ public final class LunarItems extends JavaPlugin {
 
     private static LunarItems plugin;
 
-    public static final NamespacedKey keyItemID = new NamespacedKey("executableitems", "ei-id");
+    public static final NamespacedKey keyEIID = new NamespacedKey("executableitems", "ei-id");
     public static final NamespacedKey keyID = new NamespacedKey("lunaritems", "id");
     public static final NamespacedKey keyLocation = new NamespacedKey("lunaritems", "location");
     public static final NamespacedKey keyUses = new NamespacedKey("score", "score-uses");
     public static final NamespacedKey keyUUID = new NamespacedKey("lunaritems", "uuid");
+    public static final NamespacedKey keyRadius = new NamespacedKey("score", "score-radius");
+    public static final NamespacedKey keyDepth = new NamespacedKey("score", "score-depth");
+    public static final NamespacedKey keyDrop = new NamespacedKey("score", "score-drop");
+    public static final NamespacedKey keyLoreDrop = new NamespacedKey("score", "score-loredrop");
+    public static final NamespacedKey keyLoreRadius = new NamespacedKey("score", "score-loreradius");
 
     public static Map<String, ItemStack> items = new HashMap<>();
     public static Map<NamespacedKey, PersistentDataType> dataType = new HashMap<>();
@@ -36,6 +41,16 @@ public final class LunarItems extends JavaPlugin {
         defaultValue.put(keyUses, 0.0);
         dataType.put(keyUUID, PersistentDataType.STRING);
         defaultValue.put(keyUUID, "");
+        dataType.put(keyRadius, PersistentDataType.DOUBLE);
+        dataType.put(keyDepth, PersistentDataType.DOUBLE);
+        dataType.put(keyDrop, PersistentDataType.STRING);
+        dataType.put(keyLoreDrop, PersistentDataType.STRING);
+        dataType.put(keyLoreRadius, PersistentDataType.STRING);
+        defaultValue.put(keyRadius, 0.0);
+        defaultValue.put(keyDepth, 1.0);
+        defaultValue.put(keyDrop, "");
+        defaultValue.put(keyLoreDrop, "Default");
+        defaultValue.put(keyLoreRadius, "1x1");
     }
 
     public static LunarItems getPlugin() {
@@ -65,6 +80,9 @@ public final class LunarItems extends JavaPlugin {
         new BlockPlaceListener().blockPlaceHandler(this);
         new BlockExplodeListener().blockExplodeHandler(this);
         new BlockPistonExtendListener().blockPistonExtendHandler(this);
+        new PlayerItemHeldListener().playerItemHeldHandler(this);
+        new InventoryClickListener().inventoryClickHandler(this);
+        new PlayerSwapHandItemsListener().playerSwapHandItemsHandler(this);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class BlocksConfig {
             config.addDefault("teleport_pad.hologram", hologram);
         }
 
-        teleport_pad = ConfigUtils.initializeItem("teleport_pad", blocksConfig);
+        teleport_pad = ConfigUtils.initializeItem("teleport_pad", config);
         teleport_padHologram = ConfigUtils.setupConfig("teleport_pad.hologram", config, hologram);
         teleport_padHologramOffset = ConfigUtils.setupConfig("teleport_pad.hologramOffset", config, 1);
 

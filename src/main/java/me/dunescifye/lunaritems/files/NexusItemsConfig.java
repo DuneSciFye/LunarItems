@@ -13,9 +13,10 @@ import static me.dunescifye.lunaritems.utils.ConfigUtils.setupConfig;
 
 public class NexusItemsConfig {
 
-    public static ItemStack NexusHoe;
+    public static ItemStack NexusHoe, NexusPick;
 
-    public static int NexusHoePyroFarmingXPChance, NexusHoeOPyroFarmingXPChance, NexusHoeMegaPyroFarmingXPChance;
+    public static int NexusHoePyroFarmingXPChance, NexusHoeOPyroFarmingXPChance, NexusHoeMegaPyroFarmingXPChance, NexusPickOreBlockChance,
+        NexusPickSquidSpawnerChance;
 
     public static void setup() {
         ConfigUtils nexusItems = new ConfigUtils(getPlugin(), "items/NexusItems.yml");
@@ -37,11 +38,14 @@ public class NexusItemsConfig {
             config.addDefault("NexusHoe.unbreakable", true);
         }
 
-        NexusHoe = ConfigUtils.initializeItem("NexusHoe", nexusItems, LunarItems.keyUses);
-
+        NexusHoe = ConfigUtils.initializeItem("NexusHoe", config, LunarItems.keyUses);
         NexusHoePyroFarmingXPChance = setupConfig("NexusHoe.Chances.PyroFarmingXPChance", config, 4000, 1);
         NexusHoeOPyroFarmingXPChance = setupConfig("NexusHoeO.Chances.PyroFarmingXPChance", config, 4000, 1);
         NexusHoeMegaPyroFarmingXPChance = setupConfig("NexusHoeMega.Chances.PyroFarmingXPChance", config, 4000, 1);
+
+        NexusPick = ConfigUtils.initializeItem("NexusPick", config);
+        NexusPickOreBlockChance = ConfigUtils.setupConfig("NexusPick.OreBlockChance", config, 30, 1, List.of("Chance to obtain ore block of mined ore."));
+        NexusPickSquidSpawnerChance = ConfigUtils.setupConfig("NexusPick.SquidSpawnerChance", config, 125000, 1, List.of("Chance to squid spawner   ."));
 
         config.options().copyDefaults(true);
 
