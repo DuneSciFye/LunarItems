@@ -52,6 +52,7 @@ public final class LunarItems extends JavaPlugin {
         defaultValue.put(keyLoreDrop, "Default");
         defaultValue.put(keyLoreRadius, "1x1");
     }
+    public static boolean griefPreventionEnabled;
 
     public static LunarItems getPlugin() {
         return plugin;
@@ -68,6 +69,11 @@ public final class LunarItems extends JavaPlugin {
         registerEvents();
         CustomItemsCommand.register();
         CustomBlockData.registerListener(plugin);
+
+        if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
+            Bukkit.getLogger().info("Detected GriefPrevention, enabling support for it.");
+            griefPreventionEnabled = true;
+        }
 
         logger.info("Lunar Custom Items Enabled.");
 

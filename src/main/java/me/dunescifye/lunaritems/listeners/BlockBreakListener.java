@@ -6,7 +6,6 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.files.Config;
-import me.dunescifye.lunaritems.files.NexusItemsConfig;
 import me.dunescifye.lunaritems.utils.BlockUtils;
 import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.Bukkit;
@@ -80,11 +79,11 @@ public class BlockBreakListener implements Listener {
         else {
             switch (itemID) {
                 case "nexuspick" -> {
-                    BlockUtils.breakInFacing(b, container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 1.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
                     if (ThreadLocalRandom.current().nextInt(NexusPickOreBlockChance) == 0)
                         dropOreBlock(b);
                     if (ThreadLocalRandom.current().nextInt(NexusPickSquidSpawnerChance) == 0)
                         Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "SQUID").replace("%amount%", "1"));
+                    BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 1.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
                 }
             }
         }
