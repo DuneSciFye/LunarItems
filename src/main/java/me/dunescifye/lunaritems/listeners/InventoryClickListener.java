@@ -1,6 +1,10 @@
 package me.dunescifye.lunaritems.listeners;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.files.NexusItemsConfig;
+import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,8 +50,10 @@ public class InventoryClickListener implements Listener {
                 String itemID = container.get(LunarItems.keyEIID, PersistentDataType.STRING);
                 if (itemID != null) {
                     switch (itemID) {
-                        case "nexuspick" ->
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, -1, 2));
+                        case "nexuspick" -> {
+                            if (!Utils.isInRegion(p, NexusItemsConfig.NexusPickSpeedRegionBlackList))
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, -1, 2));
+                        }
                     }
                 }
             }

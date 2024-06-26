@@ -78,6 +78,19 @@ public class BlockUtils {
         block -> block.getType().equals(Material.SMOKER),
         block -> Tag.SHULKER_BOXES.isTagged(block.getType())
     );
+    public static List<Predicate<Block>> axeWhitelist = List.of(
+        block -> Tag.MINEABLE_AXE.isTagged(block.getType()),
+        block -> Tag.LEAVES.isTagged(block.getType())
+    );
+    public static List<Predicate<Block>> axeBlacklist = List.of(
+        block -> block.getType().equals(Material.BARREL),
+        block -> block.getType().equals(Material.CHEST),
+        block -> block.getType().equals(Material.TRAPPED_CHEST),
+        block -> Tag.ALL_SIGNS.isTagged(block.getType())
+    );
+    public static List<Predicate<Block>> shovelWhitelist = List.of(
+        block -> Tag.MINEABLE_SHOVEL.isTagged(block.getType())
+    );
 
 
     public static boolean isInsideClaim(final Player player, final Location blockLocation) {
@@ -163,6 +176,84 @@ public class BlockUtils {
                                         break block;
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (ItemStack item : mergeSimilarItemStacks(drops)){
+            b.getWorld().dropItemNaturally(b.getLocation(), item);
+        }
+    }
+
+    //Breaks blocks in direction player is facing. Updates block b to air. Only whitelist.
+    public static void breakInFacing(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist) {
+        depth = depth < 1 ? 1 : depth -1;
+        double pitch = p.getLocation().getPitch();
+        int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
+        if (pitch < -45) {
+            yStart = 0;
+            yEnd = depth;
+        } else if (pitch > 45) {
+            yStart = -depth;
+            yEnd = 0;
+        } else {
+            switch (p.getFacing()) {
+                case NORTH -> {
+                    zStart = -depth;
+                    zEnd = 0;
+                }
+                case SOUTH -> {
+                    zStart = 0;
+                    zEnd = depth;
+                }
+                case WEST -> {
+                    xStart = -depth;
+                    xEnd = 0;
+                }
+                case EAST -> {
+                    xStart = 0;
+                    xEnd = depth;
+                }
+            }
+        }
+        ItemStack heldItem = p.getInventory().getItemInMainHand();
+
+        //If GriefPrevention enabled
+        Collection<ItemStack> drops = new ArrayList<>();
+        if (LunarItems.griefPreventionEnabled) {
+            for (int x = xStart; x <= xEnd; x++) {
+                for (int y = yStart; y <= yEnd; y++) {
+                    for (int z = zStart; z <= zEnd; z++) {
+                        Block relative = b.getRelative(x, y, z);
+                        //Testing whitelist
+                        block: for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                //Testing claim
+                                Location relativeLocation = relative.getLocation();
+                                if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
+                                    drops.addAll(relative.getDrops(heldItem));
+                                    relative.setType(Material.AIR);
+                                    break block;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int x = xStart; x <= xEnd; x++) {
+                for (int y = yStart; y <= yEnd; y++) {
+                    for (int z = zStart; z <= zEnd; z++) {
+                        Block relative = b.getRelative(x, y, z);
+                        //Testing whitelist
+                        block: for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                drops.addAll(relative.getDrops(heldItem));
+                                relative.setType(Material.AIR);
+                                break block;
                             }
                         }
                     }

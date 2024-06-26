@@ -217,7 +217,7 @@ public class ConfigUtils {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
-        meta.getPersistentDataContainer().set(LunarItems.keyEIID, PersistentDataType.STRING, itemID);
+        meta.getPersistentDataContainer().set(LunarItems.keyEIID, PersistentDataType.STRING, itemID.toLowerCase());
         if (config.isSet(itemID + ".name")) {
             String name = config.getString(itemID + ".name");
             if (name.contains("§")) {
@@ -321,7 +321,7 @@ public class ConfigUtils {
 
         //Setting PDC's
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        container.set(LunarItems.keyEIID, PersistentDataType.STRING, itemID);
+        container.set(LunarItems.keyEIID, PersistentDataType.STRING, itemID.toLowerCase());
         for (NamespacedKey key : data) {
             container.set(key, LunarItems.dataType.get(key), LunarItems.defaultValue.get(key));
         }

@@ -10,7 +10,7 @@ public class Config {
     private static FileConfiguration config;
 
     public static String prefix, cooldownMessageHours, cooldownMessageMinutes, cooldownMessageSeconds, invalidTargetLocation,
-        teleportPadPlaceFirstMessage, teleportPadPlaceSecondMessage, changeVariableMessage, spawnerCommand;
+        teleportPadPlaceFirstMessage, teleportPadPlaceSecondMessage, changeVariableMessage, spawnerCommand, infinitePouchCommand;
     public static void setup(LunarItems plugin) {
         config = plugin.getConfig();
 
@@ -23,6 +23,7 @@ public class Config {
         teleportPadPlaceSecondMessage = ConfigUtils.setupConfig("Messages.Blocks.TeleportPad.PlaceSecond", config, "&aLinked this teleport pad to the one at %x% %y% %z%!");
         changeVariableMessage = ConfigUtils.setupConfig("Messages.ChangeVariableMessage", config, "&aSet %variable% to %content%!", List.of("Message to send when cycling through item settings."));
         spawnerCommand = ConfigUtils.setupConfig("Commands.SpawnerCommand", config, "ss give %player% %type% %amount%", List.of("Command used to give spawners. %player% for player name, %type% for spawner type, %amount% for amount."));
+        infinitePouchCommand = ConfigUtils.setupConfig("NexusAxe.InfinitePouchCommand", config, "superpouches:pouches give %player% infpouch0 1 1");
 
 
         plugin.saveConfig();

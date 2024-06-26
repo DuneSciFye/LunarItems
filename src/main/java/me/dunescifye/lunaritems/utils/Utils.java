@@ -1,5 +1,8 @@
 package me.dunescifye.lunaritems.utils;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.files.Config;
@@ -121,5 +124,12 @@ public class Utils {
             loreList.replaceAll(component -> component.replaceText(config));
 
         return loreList;
+    }
+
+    public static boolean isInRegion(Player p, List<String> regions) {
+        for (ProtectedRegion rg : WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(p.getLocation()))) {
+            if (regions.contains(rg.getId().toLowerCase())) return true;
+        }
+        return false;
     }
 }

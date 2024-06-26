@@ -1,5 +1,8 @@
 package me.dunescifye.lunaritems.commands;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.lunaritems.LunarItems;
@@ -10,6 +13,8 @@ import me.dunescifye.lunaritems.files.NexusItemsConfig;
 import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class CustomItemsCommand {
 
@@ -37,7 +42,7 @@ public class CustomItemsCommand {
                                 Utils.dropItems(p.getLocation(), p.getUniqueId(), LunarItems.items.get(key));
                             }
                             else {
-                                p.sendMessage("Item not found!");
+                                sender.sendMessage("Item not found!");
                             }
                         })
                         .then(new IntegerArgument("Amount", 1)
@@ -51,9 +56,10 @@ public class CustomItemsCommand {
                                     Utils.dropItems(p.getLocation(), p.getUniqueId(), item);
                                 }
                                 else {
-                                    p.sendMessage("Item not found!");
+                                    sender.sendMessage("Item not found!");
                                 }
-                            }))
+                            })
+                        )
                     )
                 )
             )

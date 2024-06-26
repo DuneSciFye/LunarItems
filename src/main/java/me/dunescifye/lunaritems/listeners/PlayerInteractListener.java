@@ -56,7 +56,7 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
             }
-            case "nexuspick" -> {
+            case "nexuspick", "nexuspicko", "nexuspicku", "nexuspickmega", "nexusaxe", "nexusaxeo", "nexusaxeu", "nexusaxemega", "nexusshovel", "nexusshovelo", "nexusshovelmega" -> {
                 if (e.getAction().isRightClick() && p.isSneaking())
                     Utils.updateKey(p, item, meta, container, LunarItems.keyLoreRadius, LunarItems.keyDepth, LunarItems.keyRadius, "Mining Mode", "1x1", 1.0, 0.0, "1x2", 2.0, 0.0, "3x2", 2.0, 1.0, "3x3", 3.0, 1.0,"3x4",  4.0, 1.0, "5x4", 4.0, 2.0, "5x5", 5.0, 2.0);
             }

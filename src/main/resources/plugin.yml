@@ -1,9 +1,11 @@
 name: LunarItems
 version: '${version}'
 main: me.dunescifye.lunaritems.LunarItems
+description: Plugin helper for EI
 api-version: '1.20'
 depend:
   - CommandAPI
 softdepend:
   - DecentHolograms
   - GriefPrevention
+  - WorldGuard
