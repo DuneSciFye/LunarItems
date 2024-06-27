@@ -104,6 +104,12 @@ public class BlockBreakListener implements Listener {
                 case "nexusshovelmega" ->
                     handleNexusShovel(b, p, container, NexusShovelMegaSpawnerChance, NexusShovelMegaInfinitePouchChance);
             }
+            if (itemID.contains("ancienttpick"))
+                BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
+            else if (itemID.contains("ancienttshovel"))
+                BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
+            else if (itemID.contains("ancienttaxe"))
+                BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
         }
         //Custom Blocks
         PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
