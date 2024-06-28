@@ -1,13 +1,17 @@
 package me.dunescifye.lunaritems.listeners;
 
+import com.jeff_media.customblockdata.CustomBlockData;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.utils.BlockUtils;
 import me.dunescifye.lunaritems.utils.CooldownManager;
 import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -58,5 +62,6 @@ public class PlayerInteractListener implements Listener {
             if (e.getAction().isRightClick() && p.isSneaking())
                 Utils.updateKey(p, item, meta, container, LunarItems.keyLoreRadius, LunarItems.keyDepth, LunarItems.keyRadius, "Mining Mode", "1x1", 1.0, 0.0, "1x2", 2.0, 0.0, "3x2", 2.0, 1.0, "3x3", 3.0, 1.0, "3x4", 4.0, 1.0, "5x4", 4.0, 2.0, "5x5", 5.0, 2.0);
         }
+
     }
 }
