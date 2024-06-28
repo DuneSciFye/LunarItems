@@ -3,7 +3,6 @@ package me.dunescifye.lunaritems;
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
 import me.dunescifye.lunaritems.commands.CustomItemsCommand;
-import me.dunescifye.lunaritems.commands.SpawnNoDamageFireworkCommand;
 import me.dunescifye.lunaritems.commands.WallOfFireCommand;
 import me.dunescifye.lunaritems.files.AquaticItemsConfig;
 import me.dunescifye.lunaritems.files.BlocksConfig;
@@ -34,7 +33,6 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyDrop = new NamespacedKey("score", "score-drop");
     public static final NamespacedKey keyLoreDrop = new NamespacedKey("score", "score-loredrop");
     public static final NamespacedKey keyLoreRadius = new NamespacedKey("score", "score-loreradius");
-    public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
 
     public static Map<String, ItemStack> items = new HashMap<>();
     public static Map<NamespacedKey, PersistentDataType> dataType = new HashMap<>();
@@ -93,19 +91,16 @@ public final class LunarItems extends JavaPlugin {
         new PlayerItemHeldListener().playerItemHeldHandler(this);
         new InventoryClickListener().inventoryClickHandler(this);
         new PlayerSwapHandItemsListener().playerSwapHandItemsHandler(this);
-        new EntityDamageByEntityListener().entityDamageByEntityHandler(this);
     }
 
     private void registerCommands() {
         CustomItemsCommand.register();
         WallOfFireCommand.register();
-        SpawnNoDamageFireworkCommand.register();
     }
 
     @Override
     public void onDisable() {
         CommandAPI.unregister("customitems");
         CommandAPI.unregister("walloffire");
-        CommandAPI.unregister("spawnnodamagefirework");
     }
 }
