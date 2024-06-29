@@ -5,6 +5,7 @@ import com.jeff_media.morepersistentdatatypes.DataType;
 import eu.decentsoftware.holograms.api.DHAPI;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.files.AncienttItemsConfig;
 import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.files.Config;
 import me.dunescifye.lunaritems.files.NexusItemsConfig;
@@ -31,6 +32,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
 import static me.dunescifye.lunaritems.LunarItems.getPlugin;
+import static me.dunescifye.lunaritems.LunarItems.keyBlocksBroken;
 import static me.dunescifye.lunaritems.files.AquaticItemsConfig.*;
 import static me.dunescifye.lunaritems.files.Config.prefix;
 import static me.dunescifye.lunaritems.files.NexusItemsConfig.*;
@@ -61,17 +63,21 @@ public class BlockBreakListener implements Listener {
                 Location location = b.getLocation();
                 switch (Objects.requireNonNull(itemID)) {
                     case "aquatichoe" ->
-                        handleAquaticHoe(drops, p, b, location, AquaticHoeFarmKeyChance, AquaticHoeStackOfCropsChance, AquaticHoeAxolotlSpawnEggChance, AquaticHoeFrogSpawnEggChance);
+                        handleAquaticHoe(drops, p, b, location, AquaticHoeFarmKeyChance, AquaticHoeStackOfCropsChance, AquaticHoeAxolotlSpawnEggChance, AquaticHoeFrogSpawnEggChance, AquaticHoeAxolotlSpawnerChance, AquaticHoeFrogSpawnerChance);
                     case "aquatichoemega" ->
-                        handleAquaticHoe(drops, p, b, location, AquaticHoeMegaFarmKeyChance, AquaticHoeMegaStackOfCropsChance, AquaticHoeMegaAxolotlSpawnEggChance, AquaticHoeMegaFrogSpawnEggChance);
+                        handleAquaticHoe(drops, p, b, location, AquaticHoeMegaFarmKeyChance, AquaticHoeMegaStackOfCropsChance, AquaticHoeMegaAxolotlSpawnEggChance, AquaticHoeMegaFrogSpawnEggChance, AquaticHoeMegaAxolotlSpawnerChance, AquaticHoeMegaFrogSpawnerChance);
                     case "aquatichoe2" ->
-                        handleAquaticHoe(drops, p, b, location, AquaticHoe2FarmKeyChance, AquaticHoe2StackOfCropsChance, AquaticHoe2AxolotlSpawnEggChance, AquaticHoe2FrogSpawnEggChance);
+                        handleAquaticHoe(drops, p, b, location, AquaticHoe2FarmKeyChance, AquaticHoe2StackOfCropsChance, AquaticHoe2AxolotlSpawnEggChance, AquaticHoe2FrogSpawnEggChance, AquaticHoe2AxolotlSpawnerChance, AquaticHoe2FrogSpawnerChance);
                     case "nexushoe" ->
                         handleNexusHoe(p, NexusHoePyroFarmingXPChance);
                     case "nexushoemega" ->
                         handleNexusHoe(p, NexusHoeMegaPyroFarmingXPChance);
                     case "nexushoeo" ->
                         handleNexusHoe(p, NexusHoeOPyroFarmingXPChance);
+                    case "ancientthoe", "ancientthoeo" ->
+                        handleAncienttHoe(drops, p, b, location, item, meta, container, AncienttItemsConfig.AncienttHoeParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeFireworkChance, AncienttItemsConfig.AncienttHoeFarmKeyChance, AncienttItemsConfig.AncienttHoeParrotSpawnerChance, AncienttItemsConfig.AncienttHoeInfiniteSeedPouchChance);
+                    case "ancientthoemega"->
+                        handleAncienttHoe(drops, p, b, location, item, meta, container, AncienttItemsConfig.AncienttHoeMegaParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeMegaFireworkChance, AncienttItemsConfig.AncienttHoeMegaFarmKeyChance, AncienttItemsConfig.AncienttHoeMegaParrotSpawnerChance, AncienttItemsConfig.AncienttHoeMegaInfiniteSeedPouchChance);
                 }
             } else {
                 //Cancel breaking if plant not fully grown
@@ -152,11 +158,11 @@ public class BlockBreakListener implements Listener {
         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
     }
 
-    private void handleNexusPick(Block b, Player p, PersistentDataContainer container, int OreBlockChance, int SquidSpawnerChance) {
+    private void handleNexusPick(Block b, Player p, PersistentDataContainer container, int OreBlockChance, int glowSquidSpawnerChance) {
         if (ThreadLocalRandom.current().nextInt(OreBlockChance) == 0)
             dropOreBlock(b);
-        if (ThreadLocalRandom.current().nextInt(SquidSpawnerChance) == 0)
-            Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "SQUID").replace("%amount%", "1"));
+        if (ThreadLocalRandom.current().nextInt(glowSquidSpawnerChance) == 0)
+            Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "GLOW_SQUID").replace("%amount%", "1"));
         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
     }
 
@@ -168,18 +174,30 @@ public class BlockBreakListener implements Listener {
         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
     }
 
-    private void handleAquaticHoe(Collection<ItemStack> drops, Player player, Block block, Location location, int farmKeyChance, int stackOfCropsChance, int axolotlSpawnEggChance, int frogSpawnEggChance) {
+    private void handleAquaticHoe(Collection<ItemStack> drops, Player p, Block block, Location location, int farmKeyChance, int stackOfCropsChance, int axolotlSpawnEggChance, int frogSpawnEggChance, int axolotlSpawnerChance, int frogSpawnerChance) {
         if (ThreadLocalRandom.current().nextInt(farmKeyChance) == 0) {
-            Utils.runConsoleCommands("crazycrates give v farm 1 " + player.getName(), "minecraft:sendmessage @a " + prefix + "&a" + player.getName() + " &7has won &a1x Farm Key &7from their aquatic hoe!");
+            Utils.runConsoleCommands("crazycrates give v farm 1 " + p.getName(), "minecraft:sendmessage @a " + prefix + "&a" + p.getName() + " &7has won &a1x Farm Key &7from their aquatic hoe!");
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "1x Farm Key")));
         }
         if (ThreadLocalRandom.current().nextInt(stackOfCropsChance) == 0) {
             drops.add(new ItemStack(block.getType(), 64));
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "a Stack of Crops")));
         }
         if (ThreadLocalRandom.current().nextInt(axolotlSpawnEggChance) == 0) {
             drops.add(new ItemStack(Material.AXOLOTL_SPAWN_EGG));
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "an Axolotl Spawn Egg")));
         }
         if (ThreadLocalRandom.current().nextInt(frogSpawnEggChance) == 0) {
             drops.add(new ItemStack(Material.FROG_SPAWN_EGG));
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "a Frog Spawn Egg")));
+        }
+        if (ThreadLocalRandom.current().nextInt(axolotlSpawnerChance) == 0) {
+            Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "AXOLOTL").replace("%amount%", "1"));
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "an Axolotl Spawner")));
+        }
+        if (ThreadLocalRandom.current().nextInt(frogSpawnerChance) == 0) {
+            Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "FROG").replace("%amount%", "1"));
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "a Frog Spawner")));
         }
 
         //Drop drops at location
@@ -187,11 +205,51 @@ public class BlockBreakListener implements Listener {
             block.getWorld().dropItemNaturally(location, drop);
         }
 
-        //Auto replant except for Sugar Cane
+        //Auto replant except for Sugar Cane, doesn't require seed
         if (block.getType() != Material.SUGAR_CANE) {
             Material material = block.getType();
             Bukkit.getScheduler().runTask(getPlugin(), () -> block.setType(material));
         }
+    }
+
+    private void handleAncienttHoe(Collection<ItemStack> drops, Player p, Block block, Location location, ItemStack item, ItemMeta meta, PersistentDataContainer container, int parrotSpawnEggChance, int fireworkChance, int farmKeyChance, int parrotSpawnerChance, int infiniteSeedPouchChance) {
+        if (ThreadLocalRandom.current().nextInt(farmKeyChance) == 0) {
+            Utils.runConsoleCommands("crazycrates give v farm 1 " + p.getName(), "minecraft:sendmessage @a " + prefix + "&a" + p.getName() + " &7has won &a1x Farm Key &7from their aquatic hoe!");
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "1x Farm Key")));
+        }
+        if (ThreadLocalRandom.current().nextInt(parrotSpawnEggChance) == 0) {
+            drops.add(new ItemStack(Material.PARROT_SPAWN_EGG));
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "a Parrot Spawn Egg")));
+        }
+        if (ThreadLocalRandom.current().nextInt(fireworkChance) == 0) {
+            drops.add(new ItemStack(Material.FIREWORK_ROCKET));
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "a Firework Rocket")));
+        }
+        if (ThreadLocalRandom.current().nextInt(parrotSpawnerChance) == 0) {
+            Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "PARROT").replace("%amount%", "1"));
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "1x Parrot Spawner")));
+        }
+        if (ThreadLocalRandom.current().nextInt(infiniteSeedPouchChance) == 0) {
+            Utils.runConsoleCommands(Config.infinitePouchCommand.replace("%type%", AncienttItemsConfig.AncienttHoeInfiniteSeedPouchID));
+            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "1x Infinite Seed Pouch")));
+        }
+
+        //Drop drops at location
+        for (ItemStack drop : drops) {
+            block.getWorld().dropItemNaturally(location, drop);
+        }
+
+        //Auto replant except for Sugar Cane, doesn't require seed
+        if (block.getType() != Material.SUGAR_CANE) {
+            Material material = block.getType();
+            Bukkit.getScheduler().runTask(getPlugin(), () -> block.setType(material));
+        }
+
+        //Update blocks broken var
+        double blocksBroken = container.get(keyBlocksBroken, PersistentDataType.DOUBLE);
+        container.set(keyBlocksBroken, PersistentDataType.DOUBLE, blocksBroken + 1);
+        meta.lore(Utils.updateLore(item, String.valueOf((int) blocksBroken), String.valueOf((int) blocksBroken + 1)));
+        item.setItemMeta(meta);
     }
 
     private void handleNexusHoe(Player player, int xpChance) {

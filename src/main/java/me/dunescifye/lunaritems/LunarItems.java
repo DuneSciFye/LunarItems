@@ -4,10 +4,7 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
 import me.dunescifye.lunaritems.commands.CustomItemsCommand;
 import me.dunescifye.lunaritems.commands.WallOfFireCommand;
-import me.dunescifye.lunaritems.files.AquaticItemsConfig;
-import me.dunescifye.lunaritems.files.BlocksConfig;
-import me.dunescifye.lunaritems.files.Config;
-import me.dunescifye.lunaritems.files.NexusItemsConfig;
+import me.dunescifye.lunaritems.files.*;
 import me.dunescifye.lunaritems.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -33,6 +30,7 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyDrop = new NamespacedKey("score", "score-drop");
     public static final NamespacedKey keyLoreDrop = new NamespacedKey("score", "score-loredrop");
     public static final NamespacedKey keyLoreRadius = new NamespacedKey("score", "score-loreradius");
+    public static final NamespacedKey keyBlocksBroken = new NamespacedKey("score", "score-blocksharvested");
 
     public static Map<String, ItemStack> items = new HashMap<>();
     public static Map<NamespacedKey, PersistentDataType> dataType = new HashMap<>();
@@ -68,6 +66,7 @@ public final class LunarItems extends JavaPlugin {
         AquaticItemsConfig.setup();
         NexusItemsConfig.setup();
         BlocksConfig.setup();
+        AncienttItemsConfig.setup();
         registerEvents();
         registerCommands();
         CustomBlockData.registerListener(plugin);

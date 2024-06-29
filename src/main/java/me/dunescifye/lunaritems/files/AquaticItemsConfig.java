@@ -15,9 +15,9 @@ public class AquaticItemsConfig {
 
     public static ItemStack AquaticHoe;
 
-    public static int AquaticHoeFarmKeyChance, AquaticHoeStackOfCropsChance, AquaticHoeAxolotlSpawnEggChance, AquaticHoeFrogSpawnEggChance,
-        AquaticHoeMegaFarmKeyChance, AquaticHoeMegaStackOfCropsChance, AquaticHoeMegaAxolotlSpawnEggChance, AquaticHoeMegaFrogSpawnEggChance,
-        AquaticHoe2FarmKeyChance, AquaticHoe2StackOfCropsChance, AquaticHoe2AxolotlSpawnEggChance, AquaticHoe2FrogSpawnEggChance;
+    public static int AquaticHoeFarmKeyChance, AquaticHoeStackOfCropsChance, AquaticHoeAxolotlSpawnEggChance, AquaticHoeFrogSpawnEggChance, AquaticHoeAxolotlSpawnerChance, AquaticHoeFrogSpawnerChance,
+        AquaticHoeMegaFarmKeyChance, AquaticHoeMegaStackOfCropsChance, AquaticHoeMegaAxolotlSpawnEggChance, AquaticHoeMegaFrogSpawnEggChance, AquaticHoeMegaAxolotlSpawnerChance, AquaticHoeMegaFrogSpawnerChance,
+        AquaticHoe2FarmKeyChance, AquaticHoe2StackOfCropsChance, AquaticHoe2AxolotlSpawnEggChance, AquaticHoe2FrogSpawnEggChance, AquaticHoe2AxolotlSpawnerChance, AquaticHoe2FrogSpawnerChance;
 
     public static void setup() {
         ConfigUtils aquaticItems = new ConfigUtils(getPlugin(), "items/AquaticItems.yml");
@@ -51,14 +51,20 @@ public class AquaticItemsConfig {
         AquaticHoeStackOfCropsChance = setupConfig("AquaticHoe.Chances.StackOfCrops", config, 2000, 1);
         AquaticHoeAxolotlSpawnEggChance = setupConfig("AquaticHoe.Chances.AxolotlSpawnEgg", config, 5000, 1);
         AquaticHoeFrogSpawnEggChance = setupConfig("AquaticHoe.Chances.FrogSpawnEgg", config, 5000, 1);
+        AquaticHoeAxolotlSpawnerChance = setupConfig("AquaticHoe.Chances.AxolotlSpawner", config, 5000, 1);
+        AquaticHoeFrogSpawnerChance = setupConfig("AquaticHoe.Chances.FrogSpawner", config, 5000, 1);
         AquaticHoeMegaFarmKeyChance = setupConfig("AquaticHoeMega.Chances.FarmKey", config, 1000000, 1);
         AquaticHoeMegaStackOfCropsChance = setupConfig("AquaticHoeMega.Chances.StackOfCrops", config, 2000, 1);
         AquaticHoeMegaAxolotlSpawnEggChance = setupConfig("AquaticHoeMega.Chances.AxolotlSpawnEgg", config, 5000, 1);
         AquaticHoeMegaFrogSpawnEggChance = setupConfig("AquaticHoeMega.Chances.FrogSpawnEgg", config, 5000, 1);
+        AquaticHoeMegaAxolotlSpawnerChance = setupConfig("AquaticHoeMega.Chances.AxolotlSpawner", config, 5000, 1);
+        AquaticHoeMegaFrogSpawnerChance = setupConfig("AquaticHoeMega.Chances.FrogSpawner", config, 5000, 1);
         AquaticHoe2FarmKeyChance = setupConfig("AquaticHoe2.Chances.FarmKey", config, 1000000, 1);
         AquaticHoe2StackOfCropsChance = setupConfig("AquaticHoe2.Chances.StackOfCrops", config, 2000, 1);
         AquaticHoe2AxolotlSpawnEggChance = setupConfig("AquaticHoe2.Chances.AxolotlSpawnEgg", config, 5000, 1);
         AquaticHoe2FrogSpawnEggChance = setupConfig("AquaticHoe2.Chances.FrogSpawnEgg", config, 5000, 1);
+        AquaticHoe2AxolotlSpawnerChance = setupConfig("AquaticHoe2.Chances.AxolotlSpawner", config, 5000, 1);
+        AquaticHoe2FrogSpawnerChance = setupConfig("AquaticHoe2.Chances.FrogSpawner", config, 5000, 1);
 
         config.options().copyDefaults(true);
 

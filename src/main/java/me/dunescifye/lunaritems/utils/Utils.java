@@ -48,31 +48,30 @@ public class Utils {
 
 
     //Update lore and PDC for two variables
-    public static void updateKey(Player p, ItemStack item, ItemMeta meta, PersistentDataContainer container, NamespacedKey key, NamespacedKey keyLore, String variable, Object... matchers){
+    public static void updateKey(Player p, ItemStack item, ItemMeta meta, PersistentDataContainer container, NamespacedKey key1, NamespacedKey key2, String variable, Object... matchers){
         //Add first two to the list again, allows for cycling back
         List<Object> newMatchers = new ArrayList<>(Arrays.asList(matchers));
         newMatchers.add(matchers[0]);
         newMatchers.add(matchers[1]);
         //Obtain current keys
-        Object oldState = container.get(key, LunarItems.dataType.get(key));
-        Object oldStateLore = container.get(keyLore, LunarItems.dataType.get(keyLore));
-        //Set new keys to first values in key's get messed up
-        Object newState =  matchers[0];
-        Object newStateLore = matchers[1];
+        Object oldKey1 = container.get(key1, LunarItems.dataType.get(key1));
+        //Set new keys to first values in case key's get messed up
+        Object newKey1 =  matchers[0];
+        Object newKey2 =  matchers[1];
         //Match key to our list
         for (int i = 0; i < newMatchers.size(); i+=2) {
-            if (Objects.equals(oldState, newMatchers.get(i))) {
-                newState = newMatchers.get(i + 2);
-                newStateLore = newMatchers.get(i + 3);
+            if (Objects.equals(oldKey1, newMatchers.get(i))) {
+                newKey1 = newMatchers.get(i + 2);
+                newKey2 = newMatchers.get(i + 3);
                 break;
             }
         }
         //Send player message
-        sendPlayerChangeVariableMessage(p, Config.changeVariableMessage, variable, String.valueOf(newStateLore));
+        sendPlayerChangeVariableMessage(p, Config.changeVariableMessage, variable, String.valueOf(newKey1));
         //Update PDC, lore, and Meta
-        container.set(key, LunarItems.dataType.get(key), newState);
-        container.set(keyLore, LunarItems.dataType.get(keyLore), newStateLore);
-        meta.lore(updateLore(item, String.valueOf(oldStateLore), String.valueOf(newStateLore)));
+        container.set(key1, LunarItems.dataType.get(key1), newKey1);
+        container.set(key2, LunarItems.dataType.get(key2), newKey2);
+        meta.lore(updateLore(item, String.valueOf(oldKey1), String.valueOf(newKey1)));
         item.setItemMeta(meta);
     }
     //Update lore and PDC for three variables
