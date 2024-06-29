@@ -100,6 +100,16 @@ public class BlockUtils {
     public static boolean isWilderness(Location location) {
         return GriefPrevention.instance.dataStore.getClaimAt(location, true, null) == null;
     }
+
+    public static boolean notInBlacklist(Block b, List<Predicate<Block>> blacklist) {
+        for (Predicate<Block> blacklisted : blacklist) {
+            if (blacklisted.test(b)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     //Breaks blocks in direction player is facing. Updates block b to air.
     public static void breakInFacing(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
         depth = depth < 1 ? 1 : depth -1;
@@ -141,18 +151,16 @@ public class BlockUtils {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
                         //Testing whitelist
-                        block: for (Predicate<Block> whitelisted : whitelist) {
+                        for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
                                 //Testing blacklist
-                                for (Predicate<Block> blacklisted : blacklist) {
-                                    if (!blacklisted.test(relative)) {
-                                        //Testing claim
-                                        Location relativeLocation = relative.getLocation();
-                                        if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
-                                            drops.addAll(relative.getDrops(heldItem));
-                                            relative.setType(Material.AIR);
-                                            break block;
-                                        }
+                                if (notInBlacklist(relative, blacklist)) {
+                                    //Testing claim
+                                    Location relativeLocation = relative.getLocation();
+                                    if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
+                                        drops.addAll(relative.getDrops(heldItem));
+                                        relative.setType(Material.AIR);
+                                        break;
                                     }
                                 }
                             }
@@ -166,15 +174,13 @@ public class BlockUtils {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
                         //Testing whitelist
-                        block: for (Predicate<Block> whitelisted : whitelist) {
+                        for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
                                 //Testing blacklist
-                                for (Predicate<Block> blacklisted : blacklist) {
-                                    if (!blacklisted.test(relative)) {
-                                        drops.addAll(relative.getDrops(heldItem));
-                                        relative.setType(Material.AIR);
-                                        break block;
-                                    }
+                                if (notInBlacklist(relative, blacklist)) {
+                                    drops.addAll(relative.getDrops(heldItem));
+                                    relative.setType(Material.AIR);
+                                    break;
                                 }
                             }
                         }
@@ -229,14 +235,14 @@ public class BlockUtils {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
                         //Testing whitelist
-                        block: for (Predicate<Block> whitelisted : whitelist) {
+                        for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
                                 //Testing claim
                                 Location relativeLocation = relative.getLocation();
                                 if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
                                     drops.addAll(relative.getDrops(heldItem));
                                     relative.setType(Material.AIR);
-                                    break block;
+                                    break;
                                 }
                             }
                         }
@@ -249,11 +255,11 @@ public class BlockUtils {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
                         //Testing whitelist
-                        block: for (Predicate<Block> whitelisted : whitelist) {
+                        for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
                                 drops.addAll(relative.getDrops(heldItem));
                                 relative.setType(Material.AIR);
-                                break block;
+                                break;
                             }
                         }
                     }

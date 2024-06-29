@@ -109,15 +109,15 @@ public class Utils {
 
 
     public static void sendPlayerChangeVariableMessage(Player player, String message, String variable, String content){
-        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message.replace("%player%", player.getName()).replace("%variable%", variable).replace("%content%", content))));
+        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, Config.prefix + message.replace("%player%", player.getName()).replace("%variable%", variable).replace("%content%", content))));
     }
 
     public static List<Component> updateLore(ItemStack item, String matcher, String replacement){
         List<Component> loreList = item.lore();
 
         TextReplacementConfig config = TextReplacementConfig.builder()
-            .match(" " + matcher)
-            .replacement(replacement)
+            .match(" " + matcher + " ")
+            .replacement(" " + replacement + " ")
             .build();
 
         if (loreList != null)
