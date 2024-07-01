@@ -58,6 +58,9 @@ public class PlayerInteractListener implements Listener {
                     item.setItemMeta(meta);
                 }
             }
+        } else if (itemID.equals("nexuspickmega") || itemID.equals("nexusaxemega") || itemID.equals("nexusshovelmega")) {
+            if (e.getAction().isRightClick() && p.isSneaking())
+                Utils.updateKey(p, item, meta, container, LunarItems.keyLoreRadius, LunarItems.keyDepth, LunarItems.keyRadius, "Mining Mode", "1x1", 1.0, 0.0, "1x2", 2.0, 0.0, "3x2", 2.0, 1.0, "3x3", 3.0, 1.0, "3x4", 4.0, 1.0, "5x4", 4.0, 2.0, "5x5", 5.0, 2.0, "7x7", 7.0, 3.0);
         } else if (itemID.contains("nexuspick") || itemID.contains("nexusaxe") || itemID.contains("nexusshovel") || itemID.contains("ancienttpick") || itemID.contains("ancienttshovel") ||itemID.contains("ancienttaxe")) {
             if (e.getAction().isRightClick() && p.isSneaking())
                 Utils.updateKey(p, item, meta, container, LunarItems.keyLoreRadius, LunarItems.keyDepth, LunarItems.keyRadius, "Mining Mode", "1x1", 1.0, 0.0, "1x2", 2.0, 0.0, "3x2", 2.0, 1.0, "3x3", 3.0, 1.0, "3x4", 4.0, 1.0, "5x4", 4.0, 2.0, "5x5", 5.0, 2.0);

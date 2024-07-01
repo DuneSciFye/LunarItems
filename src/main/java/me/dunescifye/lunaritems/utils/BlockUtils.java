@@ -67,6 +67,11 @@ public class BlockUtils {
     public static List<Predicate<Block>> pickaxeWhitelist = List.of(
         block -> Tag.MINEABLE_PICKAXE.isTagged(block.getType())
     );
+    public static List<Predicate<Block>> ancienttPickaxeWhitelist = List.of(
+        block -> Tag.MINEABLE_PICKAXE.isTagged(block.getType()),
+        block -> block.getType().equals(Material.WATER),
+        block -> block.getType().equals(Material.LAVA)
+    );
     public static List<Predicate<Block>> pickaxeBlacklist = List.of(
         block -> block.getType().equals(Material.SPAWNER),
         block -> block.getType().equals(Material.GILDED_BLACKSTONE),
@@ -82,6 +87,12 @@ public class BlockUtils {
         block -> Tag.MINEABLE_AXE.isTagged(block.getType()),
         block -> Tag.LEAVES.isTagged(block.getType())
     );
+    public static List<Predicate<Block>> ancienttAxeWhitelist = List.of(
+        block -> Tag.MINEABLE_AXE.isTagged(block.getType()),
+        block -> Tag.LEAVES.isTagged(block.getType()),
+        block -> block.getType().equals(Material.WATER),
+        block -> block.getType().equals(Material.LAVA)
+    );
     public static List<Predicate<Block>> axeBlacklist = List.of(
         block -> block.getType().equals(Material.BARREL),
         block -> block.getType().equals(Material.CHEST),
@@ -90,6 +101,11 @@ public class BlockUtils {
     );
     public static List<Predicate<Block>> shovelWhitelist = List.of(
         block -> Tag.MINEABLE_SHOVEL.isTagged(block.getType())
+    );
+    public static List<Predicate<Block>> ancienttShovelWhitelist = List.of(
+        block -> Tag.MINEABLE_SHOVEL.isTagged(block.getType()),
+        block -> block.getType().equals(Material.WATER),
+        block -> block.getType().equals(Material.LAVA)
     );
 
 
@@ -150,6 +166,7 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        if (relative.equals(b)) break;
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
@@ -173,6 +190,7 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        if (relative.equals(b)) break;
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
