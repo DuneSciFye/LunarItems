@@ -84,8 +84,8 @@ public class Utils {
         //Obtain current keys
         Object oldKey1 = container.get(key1, LunarItems.dataType.get(key1));
         //Set new keys to first values in case key's get messed up
-        Object newKey1 =  matchers[0];
-        Object newKey2 =  matchers[1];
+        Object newKey1 = matchers[0];
+        Object newKey2 = matchers[1];
         Object newKey3 = matchers[2];
         //Match key to our list
         for (int i = 0; i < newMatchers.size(); i+=3) {

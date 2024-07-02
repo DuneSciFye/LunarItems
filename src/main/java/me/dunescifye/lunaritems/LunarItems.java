@@ -4,6 +4,7 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
 import me.dunescifye.lunaritems.commands.CustomItemsCommand;
 import me.dunescifye.lunaritems.commands.ResetLoreCommand;
+import me.dunescifye.lunaritems.commands.UpdateLoreCommand;
 import me.dunescifye.lunaritems.commands.WallOfFireCommand;
 import me.dunescifye.lunaritems.files.*;
 import me.dunescifye.lunaritems.listeners.*;
@@ -58,11 +59,19 @@ public final class LunarItems extends JavaPlugin {
     public static LunarItems getPlugin() {
         return plugin;
     }
+    /*
+    @Override
+    public void onLoad() {
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
+    }
+
+     */
     @Override
     public void onEnable() {
         Logger logger = Bukkit.getLogger();
 
         plugin = this;
+        //CommandAPI.onEnable();
         Config.setup(this);
         AquaticItemsConfig.setup();
         NexusItemsConfig.setup();
@@ -97,11 +106,16 @@ public final class LunarItems extends JavaPlugin {
         CustomItemsCommand.register();
         WallOfFireCommand.register();
         ResetLoreCommand.register();
+        UpdateLoreCommand.register();
     }
 
     @Override
     public void onDisable() {
         CommandAPI.unregister("customitems");
         CommandAPI.unregister("walloffire");
+        CommandAPI.unregister("resetlore");
+        CommandAPI.unregister("updatelore");
+
+        //CommandAPI.onDisable();
     }
 }
