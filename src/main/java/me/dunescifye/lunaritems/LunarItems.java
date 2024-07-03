@@ -60,17 +60,20 @@ public final class LunarItems extends JavaPlugin {
     public static LunarItems getPlugin() {
         return plugin;
     }
+    /*
     @Override
     public void onLoad() {
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
     }
+
+     */
 
     @Override
     public void onEnable() {
         Logger logger = Bukkit.getLogger();
 
         plugin = this;
-        CommandAPI.onEnable();
+        //CommandAPI.onEnable();
         Config.setup(this);
         AquaticItemsConfig.setup();
         NexusItemsConfig.setup();
@@ -113,6 +116,6 @@ public final class LunarItems extends JavaPlugin {
         CommandAPI.unregister("resetlore");
         CommandAPI.unregister("updatelore");
 
-        CommandAPI.onDisable();
+        //CommandAPI.onDisable();
     }
 }
