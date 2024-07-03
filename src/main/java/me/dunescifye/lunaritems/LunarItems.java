@@ -2,6 +2,7 @@ package me.dunescifye.lunaritems;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.lunaritems.commands.CustomItemsCommand;
 import me.dunescifye.lunaritems.commands.ResetLoreCommand;
 import me.dunescifye.lunaritems.commands.UpdateLoreCommand;
@@ -59,19 +60,17 @@ public final class LunarItems extends JavaPlugin {
     public static LunarItems getPlugin() {
         return plugin;
     }
-    /*
     @Override
     public void onLoad() {
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
     }
 
-     */
     @Override
     public void onEnable() {
         Logger logger = Bukkit.getLogger();
 
         plugin = this;
-        //CommandAPI.onEnable();
+        CommandAPI.onEnable();
         Config.setup(this);
         AquaticItemsConfig.setup();
         NexusItemsConfig.setup();
@@ -97,9 +96,7 @@ public final class LunarItems extends JavaPlugin {
         new BlockPlaceListener().blockPlaceHandler(this);
         new BlockExplodeListener().blockExplodeHandler(this);
         new BlockPistonExtendListener().blockPistonExtendHandler(this);
-        new PlayerItemHeldListener().playerItemHeldHandler(this);
-        new InventoryClickListener().inventoryClickHandler(this);
-        new PlayerSwapHandItemsListener().playerSwapHandItemsHandler(this);
+        new EntityDeathListener().entityDeathHandler(this);
     }
 
     private void registerCommands() {
@@ -116,6 +113,6 @@ public final class LunarItems extends JavaPlugin {
         CommandAPI.unregister("resetlore");
         CommandAPI.unregister("updatelore");
 
-        //CommandAPI.onDisable();
+        CommandAPI.onDisable();
     }
 }
