@@ -23,7 +23,7 @@ public class Config {
         teleportPadPlaceSecondMessage = ConfigUtils.setupConfig("Messages.Blocks.TeleportPad.PlaceSecond", config, "&aLinked this teleport pad to the one at %x% %y% %z%!");
         changeVariableMessage = ConfigUtils.setupConfig("Messages.ChangeVariableMessage", config, "&aSet %variable% to %content%!", List.of("Message to send when cycling through item settings."));
         spawnerCommand = ConfigUtils.setupConfig("Commands.SpawnerCommand", config, "ss give %player% %type% %amount%", List.of("Command used to give spawners. %player% for player name, %type% for spawner type, %amount% for amount."));
-        infinitePouchCommand = ConfigUtils.setupConfig("NexusAxe.InfinitePouchCommand", config, "superpouches:pouches give %player% %type% 1 1", List.of("Command used for infinite pouches. Use %player% for player name and %type% for pouch id"));
+        infinitePouchCommand = ConfigUtils.setupConfig("Commands.InfinitePouchCommand", config, "superpouches:pouches give %player% %type% 1 1", List.of("Command used for infinite pouches. Use %player% for player name and %type% for pouch id"));
         receiveItemMessage = ConfigUtils.setupConfig("Messages.ReceiveItemMessage", config, "&7You received %item%.", List.of("Message when player receives item from drop. For example spawners, keys, spawn eggs, etc. Typically in format of '1x Parrot Spawner'"));
 
 
