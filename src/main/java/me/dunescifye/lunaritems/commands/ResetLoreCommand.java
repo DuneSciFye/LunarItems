@@ -30,21 +30,28 @@ public class ResetLoreCommand {
                     try {
                         String currentValue = container.get(key, PersistentDataType.STRING);
                         Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " temp");
+                        Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
+                        /*
                         Bukkit.getScheduler().runTask(LunarItems.getPlugin(), () -> {
                             ItemMeta meta = item.getItemMeta();
                             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, currentValue);
                             item.setItemMeta(meta);
                         });
+                         */
                         break;
                     }
                     catch (IllegalArgumentException e) {
                         double currentValue = container.get(key, PersistentDataType.DOUBLE);
                         Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " 432.324");
+                        Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
+                        /*
                         Bukkit.getScheduler().runTask(LunarItems.getPlugin(), () -> {
                             ItemMeta meta = item.getItemMeta();
                             meta.getPersistentDataContainer().set(key, PersistentDataType.DOUBLE, currentValue);
                             item.setItemMeta(meta);
                         });
+
+                         */
                         break;
                     }
                 }

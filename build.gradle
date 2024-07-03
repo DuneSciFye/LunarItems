@@ -32,6 +32,7 @@ repositories {
     maven {
         url = "https://maven.enginehub.org/repo/"
     }
+    maven { url = "https://s01.oss.sonatype.org/content/repositories/snapshots" }
 }
 
 dependencies {
@@ -44,7 +45,7 @@ dependencies {
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
     implementation 'com.jeff_media:MorePersistentDataTypes:2.4.0'
     implementation 'com.jeff-media:custom-block-data:2.2.2'
-    //implementation "dev.jorel:commandapi-bukkit-shade:9.5.0"
+    //implementation "dev.jorel:commandapi-bukkit-shade:9.6.0-SNAPSHOT"
 }
 
 shadowJar {

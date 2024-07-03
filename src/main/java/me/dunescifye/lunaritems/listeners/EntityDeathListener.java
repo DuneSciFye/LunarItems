@@ -23,6 +23,7 @@ public class EntityDeathListener implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
+    //Armor
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         Entity entity = e.getEntity();
@@ -36,26 +37,30 @@ public class EntityDeathListener implements Listener {
         PersistentDataContainer helmetContainer, chestplateContainer, leggingsContainer, bootsContainer;
         String helmetID = "", chestplateID = "", leggingsID = "", bootsID = "";
         //Obtaining armor info
-        if (helmet != null && helmet.hasItemMeta()) {
-            helmetMeta = helmet.getItemMeta();
-            helmetContainer = helmetMeta.getPersistentDataContainer();
-            helmetID = helmetContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
-        }
-        if (chestplate != null && chestplate.hasItemMeta()) {
-            chestplateMeta = chestplate.getItemMeta();
-            chestplateContainer = chestplateMeta.getPersistentDataContainer();
-            chestplateID = chestplateContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
-        }
-        if (leggings != null && leggings.hasItemMeta()) {
-            leggingsMeta = leggings.getItemMeta();
-            leggingsContainer = leggingsMeta.getPersistentDataContainer();
-            leggingsID = leggingsContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
-        }
-        if (boots != null && boots.hasItemMeta()) {
-            bootsMeta = boots.getItemMeta();
-            bootsContainer = bootsMeta.getPersistentDataContainer();
-            bootsID = bootsContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
-        }
+        if (helmet == null || !helmet.hasItemMeta()) return;
+        helmetMeta = helmet.getItemMeta();
+        helmetContainer = helmetMeta.getPersistentDataContainer();
+        helmetID = helmetContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+        if (helmetID == null) return;
+
+        if (chestplate == null || !chestplate.hasItemMeta()) return;
+        chestplateMeta = chestplate.getItemMeta();
+        chestplateContainer = chestplateMeta.getPersistentDataContainer();
+        chestplateID = chestplateContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+        if (chestplateID == null) return;
+
+        if (leggings == null || !leggings.hasItemMeta()) return;
+        leggingsMeta = leggings.getItemMeta();
+        leggingsContainer = leggingsMeta.getPersistentDataContainer();
+        leggingsID = leggingsContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+        if (leggingsID == null) return;
+
+        if (boots == null || boots.hasItemMeta()) return;
+        bootsMeta = boots.getItemMeta();
+        bootsContainer = bootsMeta.getPersistentDataContainer();
+        bootsID = bootsContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+        if (bootsID == null) return;
+
         //Ancient armor double mob drops
         if (helmetID.contains("ancientthelm") && chestplateID.contains("ancienttchest") && leggingsID.contains("ancienttlegs") && bootsID.contains("ancienttboots")) {
             if (!(entity instanceof Player)) {
