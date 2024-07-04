@@ -116,9 +116,25 @@ public class BlockBreakListener implements Listener {
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttShovelWhitelist);
             else if (itemID.contains("ancienttaxe"))
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttAxeWhitelist, BlockUtils.axeBlacklist);
-            //5x5 Mining
-            else if (itemID.contains("septembershovel"))
-                BlockUtils.
+            else if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
+                //BreakInFacing
+                if (container.has(LunarItems.keyDepth, PersistentDataType.DOUBLE)) {
+                    if (itemID.contains("rabbitaxe"))
+                        BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
+                    else if (itemID.contains("rabbitpick"))
+                        BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
+                    else if (itemID.contains("rabbitshovel"))
+                        BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
+                } else {
+                    //BreakInRadius
+                    if (itemID.contains("septembershovel") || itemID.contains("cratershovel") || itemID.contains("cloudshovel") || itemID.contains("decembershovel") || itemID.contains("dragonshovel") || itemID.contains("twistedshovel"))
+                        BlockUtils.breakInRadius(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
+                    else if (itemID.contains("septemberpick") || itemID.contains("craterpickaxe") || itemID.contains("cloudpick") || itemID.contains("decemberpick") || itemID.contains("dragonpick") || itemID.contains("twistedpick"))
+                        BlockUtils.breakInRadius(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
+                    else if (itemID.contains("septemberaxe") || itemID.contains("cloudaxe") || itemID.contains("decemberaxe") || itemID.contains("dragonaxe") || itemID.contains("novemberaxe") || itemID.contains("twistedaxe"))
+                        BlockUtils.breakInRadius(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
+                }
+            }
         }
         //Custom Blocks
         PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());

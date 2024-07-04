@@ -291,6 +291,113 @@ public class BlockUtils {
             b.getWorld().dropItemNaturally(b.getLocation(), item);
         }
     }
+    //Breaks blocks in direction player is facing. Updates block b to air.
+    public static void breakInRadius(Block b, int radius, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
+        ItemStack heldItem = p.getInventory().getItemInMainHand();
+
+        //If GriefPrevention enabled
+        Collection<ItemStack> drops = new ArrayList<>();
+        if (LunarItems.griefPreventionEnabled) {
+            for (int x = -radius; x <= radius; x++){
+                for (int y = -radius; y <= radius; y++){
+                    for (int z = -radius; z <= radius; z++){
+                        Block relative = b.getRelative(x, y, z);
+                        if (relative.equals(b)) continue;
+                        //Testing whitelist
+                        for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                //Testing blacklist
+                                if (notInBlacklist(relative, blacklist)) {
+                                    //Testing claim
+                                    Location relativeLocation = relative.getLocation();
+                                    if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
+                                        drops.addAll(relative.getDrops(heldItem));
+                                        relative.setType(Material.AIR);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int x = -radius; x <= radius; x++){
+                for (int y = -radius; y <= radius; y++){
+                    for (int z = -radius; z <= radius; z++){
+                        Block relative = b.getRelative(x, y, z);
+                        if (relative.equals(b)) continue;
+                        //Testing whitelist
+                        for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                //Testing blacklist
+                                if (notInBlacklist(relative, blacklist)) {
+                                    drops.addAll(relative.getDrops(heldItem));
+                                    relative.setType(Material.AIR);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (ItemStack item : mergeSimilarItemStacks(drops)){
+            b.getWorld().dropItemNaturally(b.getLocation(), item);
+        }
+    }
+
+    //Breaks blocks in direction player is facing. Updates block b to air. Only whitelist.
+    public static void breakInRadius(Block b, int radius, Player p, List<Predicate<Block>> whitelist) {
+        ItemStack heldItem = p.getInventory().getItemInMainHand();
+
+        //If GriefPrevention enabled
+        Collection<ItemStack> drops = new ArrayList<>();
+        if (LunarItems.griefPreventionEnabled) {
+            for (int x = -radius; x <= radius; x++){
+                for (int y = -radius; y <= radius; y++){
+                    for (int z = -radius; z <= radius; z++){
+                        Block relative = b.getRelative(x, y, z);
+                        if (relative.equals(b)) continue;
+                        //Testing whitelist
+                        for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                //Testing claim
+                                Location relativeLocation = relative.getLocation();
+                                if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
+                                    drops.addAll(relative.getDrops(heldItem));
+                                    relative.setType(Material.AIR);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int x = -radius; x <= radius; x++){
+                for (int y = -radius; y <= radius; y++){
+                    for (int z = -radius; z <= radius; z++){
+                        Block relative = b.getRelative(x, y, z);
+                        if (relative.equals(b)) continue;
+                        //Testing whitelist
+                        for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                drops.addAll(relative.getDrops(heldItem));
+                                relative.setType(Material.AIR);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (ItemStack item : mergeSimilarItemStacks(drops)){
+            b.getWorld().dropItemNaturally(b.getLocation(), item);
+        }
+    }
 
     public static Collection<ItemStack> mergeSimilarItemStacks(Collection<ItemStack> itemStacks) {
         Map<Material, ItemStack> mergedStacksMap = new HashMap<>();
