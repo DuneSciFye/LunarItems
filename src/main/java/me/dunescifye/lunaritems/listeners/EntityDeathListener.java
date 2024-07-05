@@ -55,7 +55,7 @@ public class EntityDeathListener implements Listener {
         leggingsID = leggingsContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
         if (leggingsID == null) return;
 
-        if (boots == null || boots.hasItemMeta()) return;
+        if (boots == null || !boots.hasItemMeta()) return;
         bootsMeta = boots.getItemMeta();
         bootsContainer = bootsMeta.getPersistentDataContainer();
         bootsID = bootsContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
