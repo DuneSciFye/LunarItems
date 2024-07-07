@@ -86,30 +86,6 @@ public class BlockBreakListener implements Listener {
         }
         //Not a hoe
         else {
-            switch (itemID) {
-                case "nexuspick" ->
-                    handleNexusPick(b, p, container, NexusPickOreBlockChance, NexusPickSquidSpawnerChance);
-                case "nexuspicko" ->
-                    handleNexusPick(b, p, container, NexusPickOOreBlockChance, NexusPickOSquidSpawnerChance);
-                case "nexuspicku" ->
-                    handleNexusPick(b, p, container, NexusPickUOreBlockChance, NexusPickUSquidSpawnerChance);
-                case "nexuspickmega" ->
-                    handleNexusPick(b, p, container, NexusPickMegaOreBlockChance, NexusPickMegaSquidSpawnerChance);
-                case "nexusaxe" ->
-                    handleNexusAxe(b, p, container, NexusAxeInfinitePouchChance, NexusAxeGlowSquidSpawnerChance);
-                case "nexusaxeo" ->
-                    handleNexusAxe(b, p, container, NexusAxeOInfinitePouchChance, NexusAxeOGlowSquidSpawnerChance);
-                case "nexusaxeu" ->
-                    handleNexusAxe(b, p, container, NexusAxeUInfinitePouchChance, NexusAxeUGlowSquidSpawnerChance);
-                case "nexusaxemega" ->
-                    handleNexusAxe(b, p, container, NexusAxeMegaInfinitePouchChance, NexusAxeMegaGlowSquidSpawnerChance);
-                case "nexusshovel" ->
-                    handleNexusShovel(b, p, container, NexusShovelSpawnerChance, NexusShovelInfinitePouchChance);
-                case "nexusshovelo" ->
-                    handleNexusShovel(b, p, container, NexusShovelOSpawnerChance, NexusShovelOInfinitePouchChance);
-                case "nexusshovelmega" ->
-                    handleNexusShovel(b, p, container, NexusShovelMegaSpawnerChance, NexusShovelMegaInfinitePouchChance);
-            }
             if (itemID.contains("ancienttpick"))
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttPickaxeWhitelist, BlockUtils.pickaxeBlacklist);
             else if (itemID.contains("ancienttshovel"))
@@ -119,11 +95,11 @@ public class BlockBreakListener implements Listener {
             else if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
                 //BreakInFacing
                 if (container.has(LunarItems.keyDepth, PersistentDataType.DOUBLE)) {
-                    if (itemID.contains("rabbitaxe"))
+                    if (itemID.contains("rabbitaxe") || itemID.contains("nexusaxe"))
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
-                    else if (itemID.contains("rabbitpick"))
+                    else if (itemID.contains("rabbitpick") || itemID.contains("nexuspick"))
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
-                    else if (itemID.contains("rabbitshovel"))
+                    else if (itemID.contains("rabbitshovel") || itemID.contains("nexusshovel"))
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
                 } else {
                     //BreakInRadius
@@ -163,34 +139,6 @@ public class BlockBreakListener implements Listener {
                 }
             }
         }
-    }
-
-    private void handleNexusShovel(Block b, Player p, PersistentDataContainer container, int SpawnerChance, int InfinitePouchChance) {
-        if (ThreadLocalRandom.current().nextInt(SpawnerChance) == 0) {
-            Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", NexusShovelSpawnerType).replace("%amount%", "1"));
-            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + NexusShovelSpawnerMessage));
-        }
-        if (ThreadLocalRandom.current().nextInt(InfinitePouchChance) == 0) {
-            Utils.runConsoleCommands(Config.infinitePouchCommand.replace("%player%", p.getName()));
-            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + NexusShovelInfinitePouchMessage));
-        }
-        BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
-    }
-
-    private void handleNexusPick(Block b, Player p, PersistentDataContainer container, int OreBlockChance, int glowSquidSpawnerChance) {
-        if (ThreadLocalRandom.current().nextInt(OreBlockChance) == 0)
-            dropOreBlock(b);
-        if (ThreadLocalRandom.current().nextInt(glowSquidSpawnerChance) == 0)
-            Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "GLOW_SQUID").replace("%amount%", "1"));
-        BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
-    }
-
-    private void handleNexusAxe(Block b, Player p, PersistentDataContainer container, int InfinitePouchChance, int GlowSquidSpawnerChance) {
-        if (ThreadLocalRandom.current().nextInt(InfinitePouchChance) == 0)
-            Utils.runConsoleCommands(Config.infinitePouchCommand.replace("%player%", p.getName()));
-        if (ThreadLocalRandom.current().nextInt(GlowSquidSpawnerChance) == 0)
-            Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "GLOW_SQUID").replace("%amount%", "1"));
-        BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
     }
 
     private void handleAquaticHoe(Collection<ItemStack> drops, Player p, Block block, Location location, int farmKeyChance, int stackOfCropsChance, int axolotlSpawnEggChance, int frogSpawnEggChance, int axolotlSpawnerChance, int frogSpawnerChance) {

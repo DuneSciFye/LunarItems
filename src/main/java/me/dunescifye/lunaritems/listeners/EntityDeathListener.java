@@ -66,7 +66,7 @@ public class EntityDeathListener implements Listener {
             if (!(entity instanceof Player)) {
                 List<ItemStack> drops = e.getDrops();
                 for (ItemStack drop : drops) {
-                    drop.setAmount(drop.getAmount() * 2);
+                    entity.getWorld().dropItemNaturally(entity.getLocation(), drop);
                 }
             }
         }
