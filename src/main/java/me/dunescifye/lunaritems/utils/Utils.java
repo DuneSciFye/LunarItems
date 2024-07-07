@@ -32,17 +32,34 @@ public class Utils {
     //Drop item at player
     public static void dropItems(Location location, ItemStack... items) {
         for (ItemStack item : items) {
-            Item drop = location.getWorld().dropItemNaturally(location, item);
-            drop.setPickupDelay(0);
+            if (item.getAmount() > 64) {
+                while (item.getAmount() > 0) {
+                    Item drop = location.getWorld().dropItemNaturally(location, item);
+                    item.setAmount(item.getAmount() - 64);
+                    drop.setPickupDelay(0);
+                }
+            } else {
+                Item drop = location.getWorld().dropItemNaturally(location, item);
+                drop.setPickupDelay(0);
+            }
         }
     }
 
     //Drop item with owner
     public static void dropItems(Location location, UUID uuid, ItemStack... items) {
         for (ItemStack item : items) {
-            Item drop = location.getWorld().dropItemNaturally(location, item);
-            drop.setPickupDelay(0);
-            drop.setOwner(uuid);
+            if (item.getAmount() > 64) {
+                while (item.getAmount() > 0) {
+                    Item drop = location.getWorld().dropItemNaturally(location, item);
+                    item.setAmount(item.getAmount() - 64);
+                    drop.setPickupDelay(0);
+                    drop.setOwner(uuid);
+                }
+            } else {
+                Item drop = location.getWorld().dropItemNaturally(location, item);
+                drop.setPickupDelay(0);
+                drop.setOwner(uuid);
+            }
         }
     }
 
