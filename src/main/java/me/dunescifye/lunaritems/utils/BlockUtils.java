@@ -108,7 +108,6 @@ public class BlockUtils {
         block -> block.getType().equals(Material.LAVA)
     );
 
-
     public static boolean isInsideClaim(final Player player, final Location blockLocation) {
         final DataStore dataStore = GriefPrevention.instance.dataStore;
         return dataStore.getClaimAt(blockLocation, false, dataStore.getPlayerData(player.getUniqueId()).lastClaim) != null;
@@ -124,6 +123,15 @@ public class BlockUtils {
             }
         }
         return true;
+    }
+
+    public static boolean inWhitelist(Block b, List<Predicate<Block>> whitelist) {
+        for (Predicate<Block> predicate : whitelist) {
+            if (predicate.test(b)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //Breaks blocks in direction player is facing. Updates block b to air.

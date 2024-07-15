@@ -86,28 +86,28 @@ public class BlockBreakListener implements Listener {
         }
         //Not a hoe
         else {
-            if (itemID.contains("ancienttpick"))
+            if (BlockUtils.inWhitelist(b, BlockUtils.ancienttPickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && itemID.contains("ancienttpick"))
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttPickaxeWhitelist, BlockUtils.pickaxeBlacklist);
-            else if (itemID.contains("ancienttshovel"))
+            else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttShovelWhitelist) && itemID.contains("ancienttshovel"))
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttShovelWhitelist);
-            else if (itemID.contains("ancienttaxe"))
+            else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttAxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && itemID.contains("ancienttaxe"))
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttAxeWhitelist, BlockUtils.axeBlacklist);
             else if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
                 //BreakInFacing
                 if (container.has(LunarItems.keyDepth, PersistentDataType.DOUBLE)) {
-                    if (itemID.contains("rabbitaxe") || itemID.contains("nexusaxe"))
+                    if (BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && (itemID.contains("rabbitaxe") || itemID.contains("nexusaxe")))
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
-                    else if (itemID.contains("rabbitpick") || itemID.contains("nexuspick"))
+                    else if (BlockUtils.inWhitelist(b, BlockUtils.pickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && (itemID.contains("rabbitpick") || itemID.contains("nexuspick")))
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
-                    else if (itemID.contains("rabbitshovel") || itemID.contains("nexusshovel"))
+                    else if (BlockUtils.inWhitelist(b, BlockUtils.shovelWhitelist)  && (itemID.contains("rabbitshovel") || itemID.contains("nexusshovel")))
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
                 } else {
                     //BreakInRadius
-                    if (itemID.contains("septembershovel") || itemID.contains("cratershovel") || itemID.contains("cloudshovel") || itemID.contains("decembershovel") || itemID.contains("dragonshovel") || itemID.contains("twistedshovel"))
+                    if (BlockUtils.inWhitelist(b, BlockUtils.shovelWhitelist) && (itemID.contains("septembershovel") || itemID.contains("cratershovel") || itemID.contains("cloudshovel") || itemID.contains("decembershovel") || itemID.contains("dragonshovel") || itemID.contains("twistedshovel")))
                         BlockUtils.breakInRadius(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
-                    else if (itemID.contains("septemberpick") || itemID.contains("craterpickaxe") || itemID.contains("cloudpick") || itemID.contains("decemberpick") || itemID.contains("dragonpick") || itemID.contains("twistedpick"))
+                    else if (BlockUtils.inWhitelist(b, BlockUtils.pickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && (itemID.contains("septemberpick") || itemID.contains("craterpickaxe") || itemID.contains("cloudpick") || itemID.contains("decemberpick") || itemID.contains("dragonpick") || itemID.contains("twistedpick")))
                         BlockUtils.breakInRadius(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
-                    else if (itemID.contains("septemberaxe") || itemID.contains("cloudaxe") || itemID.contains("decemberaxe") || itemID.contains("dragonaxe") || itemID.contains("novemberaxe") || itemID.contains("twistedaxe"))
+                    else if (BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && (itemID.contains("septemberaxe") || itemID.contains("cloudaxe") || itemID.contains("decemberaxe") || itemID.contains("dragonaxe") || itemID.contains("novemberaxe") || itemID.contains("twistedaxe")))
                         BlockUtils.breakInRadius(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
                 }
             }
