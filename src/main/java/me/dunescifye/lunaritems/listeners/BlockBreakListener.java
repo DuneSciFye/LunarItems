@@ -95,19 +95,19 @@ public class BlockBreakListener implements Listener {
             else if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
                 //BreakInFacing
                 if (container.has(LunarItems.keyDepth, PersistentDataType.DOUBLE)) {
-                    if (BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && (itemID.contains("rabbitaxe") || itemID.contains("nexusaxe")))
+                    if (BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && item.getType().equals(Material.NETHERITE_AXE))
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
-                    else if (BlockUtils.inWhitelist(b, BlockUtils.pickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && (itemID.contains("rabbitpick") || itemID.contains("nexuspick")))
+                    else if (BlockUtils.inWhitelist(b, BlockUtils.pickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist)&& item.getType().equals(Material.NETHERITE_PICKAXE))
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
-                    else if (BlockUtils.inWhitelist(b, BlockUtils.shovelWhitelist)  && (itemID.contains("rabbitshovel") || itemID.contains("nexusshovel")))
+                    else if (BlockUtils.inWhitelist(b, BlockUtils.shovelWhitelist) && item.getType().equals(Material.NETHERITE_SHOVEL))
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
                 } else {
                     //BreakInRadius
-                    if (BlockUtils.inWhitelist(b, BlockUtils.shovelWhitelist) && (itemID.contains("septembershovel") || itemID.contains("cratershovel") || itemID.contains("cloudshovel") || itemID.contains("decembershovel") || itemID.contains("dragonshovel") || itemID.contains("twistedshovel")))
+                    if (BlockUtils.inWhitelist(b, BlockUtils.shovelWhitelist) && item.getType().equals(Material.NETHERITE_SHOVEL))
                         BlockUtils.breakInRadius(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
-                    else if (BlockUtils.inWhitelist(b, BlockUtils.pickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && (itemID.contains("septemberpick") || itemID.contains("craterpickaxe") || itemID.contains("cloudpick") || itemID.contains("decemberpick") || itemID.contains("dragonpick") || itemID.contains("twistedpick")))
+                    else if (BlockUtils.inWhitelist(b, BlockUtils.pickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && item.getType().equals(Material.NETHERITE_PICKAXE))
                         BlockUtils.breakInRadius(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
-                    else if (BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && (itemID.contains("septemberaxe") || itemID.contains("cloudaxe") || itemID.contains("decemberaxe") || itemID.contains("dragonaxe") || itemID.contains("novemberaxe") || itemID.contains("twistedaxe")))
+                    else if (BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && item.getType().equals(Material.NETHERITE_AXE))
                         BlockUtils.breakInRadius(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
                 }
             }
