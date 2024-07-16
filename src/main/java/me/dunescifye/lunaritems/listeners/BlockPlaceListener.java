@@ -40,13 +40,13 @@ public class BlockPlaceListener implements Listener {
 
         if (item.hasItemMeta()) {
             PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
-            if (container.has(LunarItems.keyID)) {
-                String blockID = container.get(LunarItems.keyID, PersistentDataType.STRING);
+            if (container.has(LunarItems.keyEIID)) {
+                String blockID = container.get(LunarItems.keyEIID, PersistentDataType.STRING);
                 assert blockID != null;
                 switch (blockID) {
-                    case "teleport_pad":
+                    case "teleport_pad" -> {
                         PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
-                        blockContainer.set(LunarItems.keyID, PersistentDataType.STRING, "teleport_pad");
+                        blockContainer.set(LunarItems.keyEIID, PersistentDataType.STRING, "teleport_pad");
                         String hologramID = UUID.randomUUID().toString();
                         blockContainer.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
 
@@ -73,7 +73,7 @@ public class BlockPlaceListener implements Listener {
                             teleportPadLocations.put(p, b.getLocation().toCenterLocation());
                             p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(p, Config.prefix + Config.teleportPadPlaceFirstMessage)));
                         }
-                        break;
+                    }
                 }
             }
         }

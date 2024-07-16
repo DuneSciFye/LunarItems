@@ -21,7 +21,7 @@ public class BlockExplodeListener implements Listener {
     public void onEntityExplode(EntityExplodeEvent e) {
         for (Block block : new ArrayList<>(e.blockList())) {
             PersistentDataContainer container = new CustomBlockData(block, LunarItems.getPlugin());
-            if (container.has(LunarItems.keyID))
+            if (container.has(LunarItems.keyEIID))
                 e.blockList().remove(block);
         }
 

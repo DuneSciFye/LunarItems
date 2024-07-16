@@ -23,7 +23,7 @@ public class BlockPistonExtendListener implements Listener {
         List<Block> blocks = e.getBlocks();
         for (Block block : blocks) {
             PersistentDataContainer container = new CustomBlockData(block, LunarItems.getPlugin());
-            String blockID = container.get(LunarItems.keyID, PersistentDataType.STRING);
+            String blockID = container.get(LunarItems.keyEIID, PersistentDataType.STRING);
             if (blockID != null) {
                 switch (blockID) {
                     case "teleport_pad":

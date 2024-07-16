@@ -24,7 +24,6 @@ public final class LunarItems extends JavaPlugin {
     private static LunarItems plugin;
 
     public static final NamespacedKey keyEIID = new NamespacedKey("executableitems", "ei-id");
-    public static final NamespacedKey keyID = new NamespacedKey("lunaritems", "id");
     public static final NamespacedKey keyLocation = new NamespacedKey("lunaritems", "location");
     public static final NamespacedKey keyUses = new NamespacedKey("score", "score-uses");
     public static final NamespacedKey keyUUID = new NamespacedKey("lunaritems", "uuid");
@@ -34,6 +33,7 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyLoreDrop = new NamespacedKey("score", "score-loredrop");
     public static final NamespacedKey keyLoreRadius = new NamespacedKey("score", "score-loreradius");
     public static final NamespacedKey keyBlocksBroken = new NamespacedKey("score", "score-blocksharvested");
+    public static final NamespacedKey keyVeinMine = new NamespacedKey("score", "score-veinmine");
 
     public static Map<String, ItemStack> items = new HashMap<>();
     public static Map<NamespacedKey, PersistentDataType> dataType = new HashMap<>();
@@ -60,10 +60,13 @@ public final class LunarItems extends JavaPlugin {
     public static LunarItems getPlugin() {
         return plugin;
     }
+    /*
     @Override
     public void onLoad() {
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
     }
+
+     */
 
 
 
@@ -72,7 +75,7 @@ public final class LunarItems extends JavaPlugin {
         Logger logger = Bukkit.getLogger();
 
         plugin = this;
-        CommandAPI.onEnable();
+        //CommandAPI.onEnable();
         Config.setup(this);
         AquaticItemsConfig.setup();
         NexusItemsConfig.setup();
@@ -99,6 +102,7 @@ public final class LunarItems extends JavaPlugin {
         new BlockExplodeListener().blockExplodeHandler(this);
         new BlockPistonExtendListener().blockPistonExtendHandler(this);
         new EntityDeathListener().entityDeathHandler(this);
+        new EntityDamageListener().entityDamageHandler(this);
     }
 
     private void registerCommands() {
@@ -115,6 +119,6 @@ public final class LunarItems extends JavaPlugin {
         CommandAPI.unregister("resetlore");
         CommandAPI.unregister("updatelore");
 
-        CommandAPI.onDisable();
+        //CommandAPI.onDisable();
     }
 }

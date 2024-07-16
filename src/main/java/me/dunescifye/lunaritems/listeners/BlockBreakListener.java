@@ -15,6 +15,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
@@ -49,6 +50,36 @@ public class BlockBreakListener implements Listener {
 
         Player p = e.getPlayer();
         Block b = e.getBlock();
+
+
+        //Custom Blocks
+        PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
+        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+            String blockID = blockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+            switch (Objects.requireNonNull(blockID)) {
+                case "teleport_pad" -> {
+                    //Drop custom item
+                    Location loc = b.getLocation();
+                    e.setDropItems(false);
+                    b.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
+
+                    //Remove hologram
+                    String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                    if (hologramID != null)
+                        DHAPI.removeHologram(hologramID);
+
+                    //Make linked teleport pad not work
+                    Location targetLocation = blockContainer.get(LunarItems.keyLocation, DataType.LOCATION);
+                    if (targetLocation != null) {
+                        Block targetBlock = b.getWorld().getBlockAt(targetLocation);
+                        PersistentDataContainer targetBlockContainer = new CustomBlockData(targetBlock, LunarItems.getPlugin());
+                        if (Objects.equals(targetBlockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING), "teleport_pad"))
+                            targetBlockContainer.remove(LunarItems.keyLocation);
+                    }
+                }
+            }
+        }
+
         ItemStack item = p.getInventory().getItemInMainHand();
 
         if (!item.hasItemMeta()) return;
@@ -86,12 +117,22 @@ public class BlockBreakListener implements Listener {
         }
         //Not a hoe
         else {
+            //Ancient Tools
             if (BlockUtils.inWhitelist(b, BlockUtils.ancienttPickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && itemID.contains("ancienttpick"))
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttPickaxeWhitelist, BlockUtils.pickaxeBlacklist);
             else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttShovelWhitelist) && itemID.contains("ancienttshovel"))
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttShovelWhitelist);
             else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttAxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && itemID.contains("ancienttaxe"))
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttAxeWhitelist, BlockUtils.axeBlacklist);
+            //Aether Axe
+            else if (itemID.contains("aetheraxe") && BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist)) {
+                String drop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
+                if (Objects.equals(drop, "")) {
+                    BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
+                } else {
+                    BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist, "_SAPLING", Material.getMaterial(container.get(LunarItems.keyDrop, PersistentDataType.STRING)));
+                }
+            }
             else if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
                 //BreakInFacing
                 if (container.has(LunarItems.keyDepth, PersistentDataType.DOUBLE)) {
@@ -112,33 +153,7 @@ public class BlockBreakListener implements Listener {
                 }
             }
         }
-        //Custom Blocks
-        PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
-        if (blockContainer.has(LunarItems.keyID, PersistentDataType.STRING)) {
-            String blockID = blockContainer.get(LunarItems.keyID, PersistentDataType.STRING);
-            switch (Objects.requireNonNull(blockID)) {
-                case "teleport_pad" -> {
-                    //Drop custom item
-                    Location loc = b.getLocation();
-                    e.setDropItems(false);
-                    b.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
 
-                    //Remove hologram
-                    String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
-                    if (hologramID != null)
-                        DHAPI.removeHologram(hologramID);
-
-                    //Make linked teleport pad not work
-                    Location targetLocation = blockContainer.get(LunarItems.keyLocation, DataType.LOCATION);
-                    if (targetLocation != null) {
-                        Block targetBlock = b.getWorld().getBlockAt(targetLocation);
-                        PersistentDataContainer targetBlockContainer = new CustomBlockData(targetBlock, LunarItems.getPlugin());
-                        if (Objects.equals(targetBlockContainer.get(LunarItems.keyID, PersistentDataType.STRING), "teleport_pad"))
-                            targetBlockContainer.remove(LunarItems.keyLocation);
-                    }
-                }
-            }
-        }
     }
 
     private void handleAquaticHoe(Collection<ItemStack> drops, Player p, Block block, Location location, int farmKeyChance, int stackOfCropsChance, int axolotlSpawnEggChance, int frogSpawnEggChance, int axolotlSpawnerChance, int frogSpawnerChance) {

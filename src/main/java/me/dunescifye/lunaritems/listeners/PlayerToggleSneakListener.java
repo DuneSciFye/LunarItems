@@ -32,15 +32,15 @@ public class PlayerToggleSneakListener implements Listener {
         if (e.isSneaking()) {
             if (b.getType() != Material.AIR) {
                 PersistentDataContainer container = new CustomBlockData(b, LunarItems.getPlugin());
-                if (container.has(LunarItems.keyID, PersistentDataType.STRING)) {
-                    String blockID = container.get(LunarItems.keyID, PersistentDataType.STRING);
+                if (container.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+                    String blockID = container.get(LunarItems.keyEIID, PersistentDataType.STRING);
 
                     assert blockID != null;
                     switch (blockID) {
                         case "teleport_pad":
                             Location targetLoc = container.get(LunarItems.keyLocation, DataType.LOCATION);
                             if (targetLoc == null
-                                || !Objects.equals(new CustomBlockData(targetLoc.getBlock(), LunarItems.getPlugin()).get(LunarItems.keyID, PersistentDataType.STRING), "teleport_pad")) {
+                                || !Objects.equals(new CustomBlockData(targetLoc.getBlock(), LunarItems.getPlugin()).get(LunarItems.keyEIID, PersistentDataType.STRING), "teleport_pad")) {
                                 p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(
                                     PlaceholderAPI.setPlaceholders(p, Config.prefix + Config.invalidTargetLocation)
                                 ));
