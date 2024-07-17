@@ -60,9 +60,6 @@ public class PlayerInteractListener implements Listener {
                         item.setItemMeta(meta);
                     }
                 }
-            } else if (itemID.contains("aetheraxe")) {
-                Snowball snowball = p.getWorld().spawn(p.getLocation(), Snowball.class);
-                snowball.setItem(new ItemStack(Material.NETHERITE_AXE));
             }
         }
 
