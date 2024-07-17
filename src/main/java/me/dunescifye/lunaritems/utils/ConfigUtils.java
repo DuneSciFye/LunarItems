@@ -252,6 +252,7 @@ public class ConfigUtils {
                 meta.addItemFlags(ItemFlag.valueOf(itemFlag.toUpperCase()));
             }
         }
+
         ConfigurationSection attributesSection = config.getConfigurationSection(itemID + ".attributes");
         if (attributesSection != null) {
             for (String key : attributesSection.getKeys(false)) {

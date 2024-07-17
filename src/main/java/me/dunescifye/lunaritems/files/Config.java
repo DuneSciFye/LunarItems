@@ -7,12 +7,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.List;
 
 public class Config {
-    private static FileConfiguration config;
 
     public static String prefix, cooldownMessageHours, cooldownMessageMinutes, cooldownMessageSeconds, invalidTargetLocation,
         teleportPadPlaceFirstMessage, teleportPadPlaceSecondMessage, changeVariableMessage, spawnerCommand, infinitePouchCommand, receiveItemMessage;
     public static void setup(LunarItems plugin) {
-        config = plugin.getConfig();
+        FileConfiguration config = plugin.getConfig();
 
         prefix = ConfigUtils.setupConfig("Global.Prefix", config, "&b&lSURVIVAL &8&l▶ ");
         cooldownMessageHours = ConfigUtils.setupConfig("Messages.CooldownMessage.Hours", config, "&7You can use this again in &a%hours% Hours, %minutes% Minutes, & %seconds% Seconds&7.");
