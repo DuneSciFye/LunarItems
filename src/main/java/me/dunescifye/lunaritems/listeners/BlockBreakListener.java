@@ -3,31 +3,30 @@ package me.dunescifye.lunaritems.listeners;
 import com.jeff_media.customblockdata.CustomBlockData;
 import com.jeff_media.morepersistentdatatypes.DataType;
 import eu.decentsoftware.holograms.api.DHAPI;
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.files.AncienttItemsConfig;
 import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.files.Config;
-import me.dunescifye.lunaritems.files.NexusItemsConfig;
 import me.dunescifye.lunaritems.utils.BlockUtils;
 import me.dunescifye.lunaritems.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
@@ -50,8 +49,6 @@ public class BlockBreakListener implements Listener {
 
         Player p = e.getPlayer();
         Block b = e.getBlock();
-
-
         //Custom Blocks
         PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
         if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
@@ -127,12 +124,34 @@ public class BlockBreakListener implements Listener {
             //Aether Axe
             else if (itemID.contains("aetheraxe") && BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist)) {
                 String drop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
+                if (p.hasMetadata("ignoreBlockBreak")) {
+                    if (Objects.equals(drop, "")) return;
+                    World world = b.getWorld();
+                    Location loc = b.getLocation();
+                    List<Item> items = new ArrayList<>();
+                    for (ItemStack itemStack : new ArrayList<>(b.getDrops(item))) {
+                        if (itemStack.getType().toString().contains("_SAPLING")) {
+                            items.add(world.dropItemNaturally(loc, new ItemStack(Material.getMaterial(drop))));
+                        }
+                        else {
+                            items.add(world.dropItemNaturally(loc, itemStack));
+                        }
+                    }
+                    b.getDrops().clear();
+
+                    // Trigger the BlockDropItemEvent manually
+                    BlockDropItemEvent dropEvent = new BlockDropItemEvent(b, b.getState(), p, items);
+                    Bukkit.getServer().getPluginManager().callEvent(dropEvent);
+
+                    return;
+                }
                 if (Objects.equals(drop, "")) {
                     BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
                 } else {
-                    BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist, "_SAPLING", Material.getMaterial(container.get(LunarItems.keyDrop, PersistentDataType.STRING)));
+                    BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist, "_SAPLING", Material.getMaterial(drop));
                 }
             }
+
             else if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
                 //BreakInFacing
                 if (container.has(LunarItems.keyDepth, PersistentDataType.DOUBLE)) {
