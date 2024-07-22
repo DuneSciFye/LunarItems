@@ -1,17 +1,23 @@
 package me.dunescifye.lunaritems.utils;
 
+import com.jeff_media.customblockdata.CustomBlockData;
 import me.dunescifye.lunaritems.LunarItems;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
@@ -341,7 +347,13 @@ public class BlockUtils {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
                         //Ignore actual block broken
-                        if (relative.equals(b)) continue;
+                        if (relative.equals(b)) {
+                            for (ItemStack drop : relative.getDrops(heldItem)) {
+                                if (drop.getType().toString().contains(dropFromContains)) drops.add(new ItemStack(dropTo, drop.getAmount()));
+                                else drops.add(drop);
+                            }
+                            continue;
+                        }
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
@@ -369,7 +381,13 @@ public class BlockUtils {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
                         //Ignore actual block broken
-                        if (relative.equals(b)) continue;
+                        if (relative.equals(b)) {
+                            for (ItemStack drop : relative.getDrops(heldItem)) {
+                                if (drop.getType().toString().contains(dropFromContains)) drops.add(new ItemStack(dropTo, drop.getAmount()));
+                                else drops.add(drop);
+                            }
+                            continue;
+                        }
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
@@ -506,8 +524,6 @@ public class BlockUtils {
                 }
             }
         }
-        ItemStack heldItem = p.getInventory().getItemInMainHand();
-
         //If GriefPrevention enabled
         Collection<ItemStack> drops = new ArrayList<>();
         if (LunarItems.griefPreventionEnabled) {
@@ -515,16 +531,19 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
-                        if (relative.equals(b)) continue;
-                        //Testing whitelist
                         String material = relative.getType().toString();
+                        if (relative.equals(b)) {
+                            b.getDrops().clear();
+                            drops.add(new ItemStack(Material.getMaterial(append + material)));
+                            continue;
+                        }
+                        //Testing whitelist
                         if (material.contains(contains)) {
                             //Testing claim
                             Location relativeLocation = relative.getLocation();
                             if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
                                 drops.add(new ItemStack(Material.getMaterial(append + material)));
                                 relative.setType(Material.AIR);
-                                break;
                             }
                         }
                     }
@@ -535,13 +554,11 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
-                        if (relative.equals(b)) continue;
                         //Testing whitelist
                         String material = relative.getType().toString();
                         if (material.contains(contains)) {
                             drops.add(new ItemStack(Material.getMaterial(append + material)));
                             relative.setType(Material.AIR);
-                            break;
                         }
                     }
                 }
