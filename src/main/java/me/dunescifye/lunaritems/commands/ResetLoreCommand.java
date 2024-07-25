@@ -26,7 +26,7 @@ public class ResetLoreCommand {
                 Set<NamespacedKey> keys = container.getKeys();
 
                 for (NamespacedKey key : keys) {
-                    if (key.equals(LunarItems.keyEIID)) continue;
+                    if (key.equals(LunarItems.keyEIID) || !key.value().startsWith("score-")) continue;
                     try {
                         String currentValue = container.get(key, PersistentDataType.STRING);
                         Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " temp");
@@ -41,9 +41,15 @@ public class ResetLoreCommand {
                         break;
                     }
                     catch (IllegalArgumentException e) {
-                        double currentValue = container.get(key, PersistentDataType.DOUBLE);
-                        Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " 432.324");
-                        Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
+                        try {
+                            double currentValue = container.get(key, PersistentDataType.DOUBLE);
+                            Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " 432.324");
+                            Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
+                        } catch (IllegalArgumentException error) {
+                            int currentValue = container.get(key, PersistentDataType.INTEGER);
+                            Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " 3892798");
+                            Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
+                        }
                         /*
                         Bukkit.getScheduler().runTask(LunarItems.getPlugin(), () -> {
                             ItemMeta meta = item.getItemMeta();

@@ -1,7 +1,9 @@
 package me.dunescifye.lunaritems.listeners;
 
 import com.jeff_media.customblockdata.CustomBlockData;
+import eu.decentsoftware.holograms.api.DHAPI;
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.utils.BlockUtils;
 import me.dunescifye.lunaritems.utils.CooldownManager;
 import me.dunescifye.lunaritems.utils.Utils;
@@ -21,6 +23,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.time.Duration;
+import java.util.UUID;
 
 public class PlayerInteractListener implements Listener {
 
@@ -32,6 +35,30 @@ public class PlayerInteractListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (e.getHand() == EquipmentSlot.OFF_HAND) return;
+
+
+        if (e.getAction().isLeftClick()) {
+            Block b = e.getClickedBlock();
+            if (b != null) {
+                if (p.isSneaking()) {
+                    PersistentDataContainer pdc = new CustomBlockData(b, LunarItems.getPlugin());
+                    String blockID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
+                    if (blockID != null) {
+                        if (blockID.equals("teleport_pad")) {
+                            String uuid = pdc.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                            if (uuid != null) {
+                                DHAPI.removeHologram(uuid);
+                                pdc.remove(LunarItems.keyUUID);
+                            } else {
+                                String hologramID = UUID.randomUUID().toString();
+                                pdc.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
+                                DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.teleport_padHologramOffset, 0), true, BlocksConfig.teleport_padHologram);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         ItemStack item = p.getInventory().getItemInMainHand();
         if (!item.hasItemMeta()) return;
