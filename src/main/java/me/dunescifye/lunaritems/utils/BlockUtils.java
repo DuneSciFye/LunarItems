@@ -266,7 +266,10 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
-                        if (relative.equals(b)) drops.add(new ItemStack(material));
+                        if (relative.equals(b)) {
+                            drops.add(new ItemStack(material));
+                            continue;
+                        }
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
@@ -287,7 +290,10 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
-                        if (relative.equals(b)) drops.add(new ItemStack(material));
+                        if (relative.equals(b)) {
+                            drops.add(new ItemStack(material));
+                            continue;
+                        }
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
@@ -453,7 +459,10 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
-                        if (relative.equals(b)) continue;
+                        if (relative.equals(b)) {
+                            drops.addAll(relative.getDrops(heldItem));
+                            continue;
+                        }
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
@@ -474,7 +483,10 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
-                        if (relative.equals(b)) continue;
+                        if (relative.equals(b)) {
+                            drops.addAll(relative.getDrops(heldItem));
+                            continue;
+                        }
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {

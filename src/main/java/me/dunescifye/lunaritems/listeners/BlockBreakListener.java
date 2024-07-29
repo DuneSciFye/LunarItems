@@ -13,10 +13,8 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -46,10 +44,8 @@ public class BlockBreakListener implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerBlockBreak(BlockBreakEvent e) {
-        if (e.isCancelled()) return;
-
         Player p = e.getPlayer();
         Block b = e.getBlock();
         //Custom Blocks
