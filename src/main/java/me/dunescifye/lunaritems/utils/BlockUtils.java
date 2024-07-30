@@ -257,7 +257,6 @@ public class BlockUtils {
                 }
             }
         }
-        ItemStack heldItem = p.getInventory().getItemInMainHand();
 
         //If GriefPrevention enabled
         Collection<ItemStack> drops = new ArrayList<>();
