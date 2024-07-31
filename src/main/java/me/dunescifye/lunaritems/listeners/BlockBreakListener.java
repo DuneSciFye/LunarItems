@@ -116,8 +116,10 @@ public class BlockBreakListener implements Listener {
             //Ancient Tools
             if (BlockUtils.inWhitelist(b, BlockUtils.ancienttPickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && itemID.contains("ancienttpick"))
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttPickaxeWhitelist, BlockUtils.pickaxeBlacklist);
-            else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttShovelWhitelist) && itemID.contains("ancienttshovel"))
+            else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttShovelWhitelist) && itemID.contains("ancienttshovel")) {
+                e.setDropItems(false);
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttShovelWhitelist);
+            }
             else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttAxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && itemID.contains("ancienttaxe"))
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttAxeWhitelist, BlockUtils.axeBlacklist);
             //Aether Axe
