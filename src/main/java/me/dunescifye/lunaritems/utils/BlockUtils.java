@@ -317,6 +317,91 @@ public class BlockUtils {
         }
     }
 
+    //Breaks blocks in direction player is facing. Updates block b to air. Only whitelist. Replaces all drops with material.
+    public static void breakInFacing(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist, Material material) {
+        depth = depth < 1 ? 1 : depth -1;
+        double pitch = p.getLocation().getPitch();
+        int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
+        if (pitch < -45) {
+            yStart = 0;
+            yEnd = depth;
+        } else if (pitch > 45) {
+            yStart = -depth;
+            yEnd = 0;
+        } else {
+            switch (p.getFacing()) {
+                case NORTH -> {
+                    zStart = -depth;
+                    zEnd = 0;
+                }
+                case SOUTH -> {
+                    zStart = 0;
+                    zEnd = depth;
+                }
+                case WEST -> {
+                    xStart = -depth;
+                    xEnd = 0;
+                }
+                case EAST -> {
+                    xStart = 0;
+                    xEnd = depth;
+                }
+            }
+        }
+
+        //If GriefPrevention enabled
+        Collection<ItemStack> drops = new ArrayList<>();
+        if (LunarItems.griefPreventionEnabled) {
+            for (int x = xStart; x <= xEnd; x++) {
+                for (int y = yStart; y <= yEnd; y++) {
+                    for (int z = zStart; z <= zEnd; z++) {
+                        Block relative = b.getRelative(x, y, z);
+                        if (relative.equals(b)) {
+                            drops.add(new ItemStack(material));
+                            continue;
+                        }
+                        //Testing whitelist
+                        for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative) && notInBlacklist(relative, blacklist)) {
+                                //Testing claim
+                                Location relativeLocation = relative.getLocation();
+                                if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
+                                    drops.add(new ItemStack(material));
+                                    relative.setType(Material.AIR);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int x = xStart; x <= xEnd; x++) {
+                for (int y = yStart; y <= yEnd; y++) {
+                    for (int z = zStart; z <= zEnd; z++) {
+                        Block relative = b.getRelative(x, y, z);
+                        if (relative.equals(b)) {
+                            drops.add(new ItemStack(material));
+                            continue;
+                        }
+                        //Testing whitelist
+                        for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                drops.add(new ItemStack(material));
+                                relative.setType(Material.AIR);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (ItemStack item : mergeSimilarItemStacks(drops)){
+            b.getWorld().dropItemNaturally(b.getLocation(), item);
+        }
+    }
+
     //Breaks blocks in direction player is facing. Updates block b to air. Replaces drop A with drop B
     public static void breakInFacing(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist, String dropFromContains, Material dropTo) {
         depth = depth < 1 ? 1 : depth -1;
