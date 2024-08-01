@@ -114,14 +114,18 @@ public class BlockBreakListener implements Listener {
         //Not a hoe
         else {
             //Ancient Tools
-            if (BlockUtils.inWhitelist(b, BlockUtils.ancienttPickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && itemID.contains("ancienttpick"))
+            if (BlockUtils.inWhitelist(b, BlockUtils.ancienttPickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && itemID.contains("ancienttpick")) {
+                e.setDropItems(false);
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttPickaxeWhitelist, BlockUtils.pickaxeBlacklist);
+            }
             else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttShovelWhitelist) && itemID.contains("ancienttshovel")) {
                 e.setDropItems(false);
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttShovelWhitelist);
             }
-            else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttAxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && itemID.contains("ancienttaxe"))
+            else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttAxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && itemID.contains("ancienttaxe")) {
+                e.setDropItems(false);
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttAxeWhitelist, BlockUtils.axeBlacklist);
+            }
             //Aether Axe
             else if (itemID.contains("aetheraxe") && BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist)) {
                 String drop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
