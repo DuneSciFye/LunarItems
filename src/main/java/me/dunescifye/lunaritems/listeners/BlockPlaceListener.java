@@ -74,6 +74,15 @@ public class BlockPlaceListener implements Listener {
                             p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(p, Config.prefix + Config.teleportPadPlaceFirstMessage)));
                         }
                     }
+                    case "elevator" -> {
+                        PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
+                        blockContainer.set(LunarItems.keyEIID, PersistentDataType.STRING, "elevator");
+                        String hologramID = UUID.randomUUID().toString();
+                        blockContainer.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
+
+                        //Hologram
+                        DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.elevatorHologramOffset, 0), true, BlocksConfig.elevatorHologram);
+                    }
                 }
             }
         }
