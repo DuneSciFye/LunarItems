@@ -16,6 +16,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
@@ -592,6 +593,93 @@ public class BlockUtils {
 
         for (ItemStack item : mergeSimilarItemStacks(drops)){
             b.getWorld().dropItemNaturally(b.getLocation(), item);
+        }
+    }
+    //Breaks blocks in direction player is facing. Updates block b to air. Only whitelist. AutoPickup
+    public static void breakInFacingAutoPickup(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist) {
+        depth = depth < 1 ? 1 : depth -1;
+        double pitch = p.getLocation().getPitch();
+        int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
+        if (pitch < -45) {
+            yStart = 0;
+            yEnd = depth;
+        } else if (pitch > 45) {
+            yStart = -depth;
+            yEnd = 0;
+        } else {
+            switch (p.getFacing()) {
+                case NORTH -> {
+                    zStart = -depth;
+                    zEnd = 0;
+                }
+                case SOUTH -> {
+                    zStart = 0;
+                    zEnd = depth;
+                }
+                case WEST -> {
+                    xStart = -depth;
+                    xEnd = 0;
+                }
+                case EAST -> {
+                    xStart = 0;
+                    xEnd = depth;
+                }
+            }
+        }
+        ItemStack heldItem = p.getInventory().getItemInMainHand();
+
+        //If GriefPrevention enabled
+        Collection<ItemStack> drops = new ArrayList<>();
+        if (LunarItems.griefPreventionEnabled) {
+            for (int x = xStart; x <= xEnd; x++) {
+                for (int y = yStart; y <= yEnd; y++) {
+                    for (int z = zStart; z <= zEnd; z++) {
+                        Block relative = b.getRelative(x, y, z);
+                        if (relative.equals(b)) {
+                            drops.addAll(relative.getDrops(heldItem));
+                            continue;
+                        }
+                        //Testing whitelist
+                        for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                //Testing claim
+                                Location relativeLocation = relative.getLocation();
+                                if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
+                                    drops.addAll(relative.getDrops(heldItem));
+                                    relative.setType(Material.AIR);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int x = xStart; x <= xEnd; x++) {
+                for (int y = yStart; y <= yEnd; y++) {
+                    for (int z = zStart; z <= zEnd; z++) {
+                        Block relative = b.getRelative(x, y, z);
+                        if (relative.equals(b)) {
+                            drops.addAll(relative.getDrops(heldItem));
+                            continue;
+                        }
+                        //Testing whitelist
+                        for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                drops.addAll(relative.getDrops(heldItem));
+                                relative.setType(Material.AIR);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        PlayerInventory inv = p.getInventory();
+        for (ItemStack item : mergeSimilarItemStacks(drops)){
+            if (inv.firstEmpty() == -1) b.getWorld().dropItemNaturally(b.getLocation(), item);
+            else inv.addItem(item);
         }
     }
 
