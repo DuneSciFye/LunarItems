@@ -44,7 +44,6 @@ public class PlayerToggleSneakListener implements Listener {
                                 p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(
                                     PlaceholderAPI.setPlaceholders(p, Config.prefix + Config.invalidTargetLocation)
                                 ));
-                                return;
                             } else {
                                 targetLoc.setYaw(p.getYaw());
                                 targetLoc.setPitch(p.getPitch());
@@ -57,7 +56,7 @@ public class PlayerToggleSneakListener implements Listener {
                                 PersistentDataContainer relativeContainer = new CustomBlockData(relative, LunarItems.getPlugin());
                                 String relativeID = relativeContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
                                 if (relativeID == null) continue;
-                                p.teleport(relative.getLocation());
+                                p.teleport(relative.getLocation().toCenterLocation());
                                 break;
                             }
                         }
