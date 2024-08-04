@@ -128,17 +128,16 @@ public class BlockBreakListener implements Listener {
             }
             //Aether Axe
             else if (itemID.contains("aetheraxe") && BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist)) {
+                e.setDropItems(false);
                 String drop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
                 if (p.hasMetadata("ignoreBlockBreak")) {
-                    if (Objects.equals(drop, "")) return;
+                    List<Item> items = new ArrayList<>();
                     World world = b.getWorld();
                     Location loc = b.getLocation();
-                    List<Item> items = new ArrayList<>();
                     for (ItemStack itemStack : new ArrayList<>(b.getDrops(item))) {
-                        if (itemStack.getType().toString().contains("_SAPLING")) {
+                        if (itemStack.getType().toString().contains("_SAPLING") && !Objects.equals(drop, "")) {
                             items.add(world.dropItemNaturally(loc, new ItemStack(Material.getMaterial(drop))));
-                        }
-                        else {
+                        } else {
                             items.add(world.dropItemNaturally(loc, itemStack));
                         }
                     }
@@ -151,9 +150,9 @@ public class BlockBreakListener implements Listener {
                     return;
                 }
                 if (Objects.equals(drop, "")) {
-                    BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
+                    BlockUtils.breakInFacingAutoPickup(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
                 } else {
-                    BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist, "_SAPLING", Material.getMaterial(drop));
+                    BlockUtils.breakInFacingAutoPickup(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist, "_SAPLING", Material.getMaterial(drop));
                 }
             } else if (itemID.contains("aethershovel") && BlockUtils.inWhitelist(b, BlockUtils.shovelWhitelist)) {
                 e.setDropItems(false);

@@ -34,6 +34,7 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyLoreRadius = new NamespacedKey("score", "score-loreradius");
     public static final NamespacedKey keyBlocksBroken = new NamespacedKey("score", "score-blocksharvested");
     public static final NamespacedKey keyVeinMine = new NamespacedKey("score", "score-veinmine");
+    public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
 
     public static Map<String, ItemStack> items = new HashMap<>();
     public static Map<NamespacedKey, PersistentDataType> dataType = new HashMap<>();
