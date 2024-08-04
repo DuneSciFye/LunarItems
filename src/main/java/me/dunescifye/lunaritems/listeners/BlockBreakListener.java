@@ -73,6 +73,19 @@ public class BlockBreakListener implements Listener {
                             targetBlockContainer.remove(LunarItems.keyLocation);
                     }
                 }
+                case "elevator" -> {
+                    System.out.println("aaaaaaaa");
+                    //Drop custom item
+                    Location loc = b.getLocation();
+                    e.setDropItems(false);
+                    b.getWorld().dropItemNaturally(loc, BlocksConfig.elevator);
+
+                    //Remove hologram
+                    String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                    if (hologramID != null)
+                        DHAPI.removeHologram(hologramID);
+
+                }
             }
         }
 

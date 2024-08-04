@@ -37,21 +37,29 @@ public class PlayerToggleSneakListener implements Listener {
 
                     assert blockID != null;
                     switch (blockID) {
-                        case "teleport_pad":
+                        case "teleport_pad" -> {
                             Location targetLoc = container.get(LunarItems.keyLocation, DataType.LOCATION);
                             if (targetLoc == null
                                 || !Objects.equals(new CustomBlockData(targetLoc.getBlock(), LunarItems.getPlugin()).get(LunarItems.keyEIID, PersistentDataType.STRING), "teleport_pad")) {
                                 p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(
                                     PlaceholderAPI.setPlaceholders(p, Config.prefix + Config.invalidTargetLocation)
                                 ));
-                                return;
-                            }
-                            else {
+                            } else {
                                 targetLoc.setYaw(p.getYaw());
                                 targetLoc.setPitch(p.getPitch());
                                 p.teleport(targetLoc);
                             }
-                            break;
+                        }
+                        case "elevator" -> {
+                            for (int y = -1; y > -100; y--) {
+                                Block relative = b.getRelative(0, y, 0);
+                                PersistentDataContainer relativeContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                                String relativeID = relativeContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+                                if (relativeID == null) continue;
+                                p.teleport(relative.getLocation().toCenterLocation());
+                                break;
+                            }
+                        }
                     }
                 }
             }
