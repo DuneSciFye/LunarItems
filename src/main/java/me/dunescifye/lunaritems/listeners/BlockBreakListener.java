@@ -20,6 +20,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -44,6 +46,59 @@ public class BlockBreakListener implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
+    @EventHandler
+    public void onBlockDrop(ItemSpawnEvent e) {
+        Block b = e.getLocation().getBlock();
+        //Custom Blocks
+        PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
+        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+            if (!e.getEntity().getItemStack().hasItemMeta()) {
+                e.setCancelled(true);
+            }
+        }
+    }
+    @EventHandler
+    public void onBlockBreak(BlockPhysicsEvent e) {
+        Block b = e.getBlock();
+        if (e.getChangedType() != Material.AIR) return;
+        //Custom Blocks
+        PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
+        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+            String blockID = blockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+            switch (Objects.requireNonNull(blockID)) {
+                case "teleport_pad" -> {
+                    //Drop custom item
+                    Location loc = b.getLocation();
+                    b.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
+
+                    //Remove hologram
+                    String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                    if (hologramID != null)
+                        DHAPI.removeHologram(hologramID);
+
+                    //Make linked teleport pad not work
+                    Location targetLocation = blockContainer.get(LunarItems.keyLocation, DataType.LOCATION);
+                    if (targetLocation != null) {
+                        Block targetBlock = b.getWorld().getBlockAt(targetLocation);
+                        PersistentDataContainer targetBlockContainer = new CustomBlockData(targetBlock, LunarItems.getPlugin());
+                        if (Objects.equals(targetBlockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING), "teleport_pad"))
+                            targetBlockContainer.remove(LunarItems.keyLocation);
+                    }
+                }
+                case "elevator" -> {
+                    //Drop custom item
+                    Location loc = b.getLocation();
+                    b.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
+
+                    //Remove hologram
+                    String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                    if (hologramID != null)
+                        DHAPI.removeHologram(hologramID);
+
+                }
+            }
+        }
+    }
     @EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerBlockBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
@@ -74,7 +129,6 @@ public class BlockBreakListener implements Listener {
                     }
                 }
                 case "elevator" -> {
-                    System.out.println("aaaaaaaa");
                     //Drop custom item
                     Location loc = b.getLocation();
                     e.setDropItems(false);
