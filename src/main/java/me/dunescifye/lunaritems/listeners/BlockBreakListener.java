@@ -48,6 +48,7 @@ public class BlockBreakListener implements Listener {
 
     @EventHandler
     public void onBlockDrop(ItemSpawnEvent e) {
+        System.out.println("a");
         Block b = e.getLocation().getBlock();
         //Custom Blocks
         PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
@@ -65,6 +66,7 @@ public class BlockBreakListener implements Listener {
         PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
         if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
             String blockID = blockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+            System.out.println("b");
             switch (Objects.requireNonNull(blockID)) {
                 case "teleport_pad" -> {
                     //Drop custom item
@@ -97,10 +99,12 @@ public class BlockBreakListener implements Listener {
 
                 }
             }
+            blockContainer.remove(LunarItems.keyEIID);
         }
     }
     @EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerBlockBreak(BlockBreakEvent e) {
+        System.out.println("c");
         Player p = e.getPlayer();
         Block b = e.getBlock();
         //Custom Blocks
