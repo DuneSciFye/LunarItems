@@ -89,7 +89,7 @@ public class BlockBreakListener implements Listener {
                 case "elevator" -> {
                     //Drop custom item
                     Location loc = b.getLocation();
-                    b.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
+                    b.getWorld().dropItemNaturally(loc, BlocksConfig.elevator);
 
                     //Remove hologram
                     String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
