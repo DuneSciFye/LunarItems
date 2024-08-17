@@ -44,15 +44,28 @@ public class PlayerInteractListener implements Listener {
                     PersistentDataContainer pdc = new CustomBlockData(b, LunarItems.getPlugin());
                     String blockID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
                     if (blockID != null) {
-                        if (blockID.equals("teleport_pad")) {
-                            String uuid = pdc.get(LunarItems.keyUUID, PersistentDataType.STRING);
-                            if (uuid != null) {
-                                DHAPI.removeHologram(uuid);
-                                pdc.remove(LunarItems.keyUUID);
-                            } else {
-                                String hologramID = UUID.randomUUID().toString();
-                                pdc.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
-                                DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.teleport_padHologramOffset, 0), true, BlocksConfig.teleport_padHologram);
+                        switch (blockID) {
+                            case "teleport_pad" -> {
+                                String uuid = pdc.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                                if (uuid != null) {
+                                    DHAPI.removeHologram(uuid);
+                                    pdc.remove(LunarItems.keyUUID);
+                                } else {
+                                    String hologramID = UUID.randomUUID().toString();
+                                    pdc.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
+                                    DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.teleport_padHologramOffset, 0), true, BlocksConfig.teleport_padHologram);
+                                }
+                            }
+                            case "elevator" -> {
+                                String uuid = pdc.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                                if (uuid != null) {
+                                    DHAPI.removeHologram(uuid);
+                                    pdc.remove(LunarItems.keyUUID);
+                                } else {
+                                    String hologramID = UUID.randomUUID().toString();
+                                    pdc.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
+                                    DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.elevatorHologramOffset, 0), true, BlocksConfig.elevatorHologram);
+                                }
                             }
                         }
                     }
