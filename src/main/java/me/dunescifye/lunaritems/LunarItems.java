@@ -2,7 +2,6 @@ package me.dunescifye.lunaritems;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.lunaritems.commands.CustomItemsCommand;
 import me.dunescifye.lunaritems.commands.ResetLoreCommand;
 import me.dunescifye.lunaritems.commands.UpdateLoreCommand;
@@ -33,8 +32,6 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyLoreDrop = new NamespacedKey("score", "score-loredrop");
     public static final NamespacedKey keyLoreRadius = new NamespacedKey("score", "score-loreradius");
     public static final NamespacedKey keyBlocksBroken = new NamespacedKey("score", "score-blocksharvested");
-    public static final NamespacedKey keyVeinMine = new NamespacedKey("score", "score-veinmine");
-    public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
 
     public static Map<String, ItemStack> items = new HashMap<>();
     public static Map<NamespacedKey, PersistentDataType> dataType = new HashMap<>();
@@ -56,24 +53,15 @@ public final class LunarItems extends JavaPlugin {
         defaultValue.put(keyLoreDrop, "Default");
         defaultValue.put(keyLoreRadius, "1x1");
     }
-    public static boolean griefPreventionEnabled;
+    public static boolean griefPreventionEnabled, decentHologramsEnabled;
 
     public static LunarItems getPlugin() {
         return plugin;
     }
-    /*
-    @Override
-    public void onLoad() {
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
-    }
-
-     */
-
-
 
     @Override
     public void onEnable() {
-        Logger logger = Bukkit.getLogger();
+        Logger logger = this.getLogger();
 
         plugin = this;
         //CommandAPI.onEnable();
@@ -87,12 +75,16 @@ public final class LunarItems extends JavaPlugin {
         CustomBlockData.registerListener(plugin);
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
-            Bukkit.getLogger().info("Detected GriefPrevention, enabling support for it.");
+            logger.info("Detected GriefPrevention, enabling support for it.");
             griefPreventionEnabled = true;
         }
 
-        logger.info("Lunar Custom Items Enabled.");
+        if (Bukkit.getPluginManager().isPluginEnabled("DecentHolograms")) {
+            logger.info("Detected DecentHolograms, enabling support for it.");
+            decentHologramsEnabled = true;
+        }
 
+        logger.info("Lunar Custom Items Enabled.");
     }
 
     private void registerEvents() {

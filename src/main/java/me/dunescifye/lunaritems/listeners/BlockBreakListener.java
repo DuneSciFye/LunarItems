@@ -54,8 +54,9 @@ public class BlockBreakListener implements Listener {
         if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
             if (!e.getEntity().getItemStack().hasItemMeta()) {
                 e.setCancelled(true);
+            } else {
+                blockContainer.remove(LunarItems.keyEIID);
             }
-            blockContainer.remove(LunarItems.keyEIID);
         }
     }
     @EventHandler
@@ -64,38 +65,41 @@ public class BlockBreakListener implements Listener {
         if (e.getChangedType() != Material.AIR) return;
         //Custom Blocks
         PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
-        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
-            String blockID = blockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
-            switch (Objects.requireNonNull(blockID)) {
-                case "teleport_pad" -> {
-                    //Drop custom item
-                    Location loc = b.getLocation();
-                    b.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
+        String blockID = blockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+        if (blockID == null) return;
 
-                    //Remove hologram
+        switch (blockID) {
+            case "teleport_pad" -> {
+                //Drop custom item
+                Location loc = b.getLocation();
+                b.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
+
+                //Remove hologram
+                if (LunarItems.decentHologramsEnabled) {
                     String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
                     if (hologramID != null)
                         DHAPI.removeHologram(hologramID);
-
-                    //Make linked teleport pad not work
-                    Location targetLocation = blockContainer.get(LunarItems.keyLocation, DataType.LOCATION);
-                    if (targetLocation != null) {
-                        Block targetBlock = b.getWorld().getBlockAt(targetLocation);
-                        PersistentDataContainer targetBlockContainer = new CustomBlockData(targetBlock, LunarItems.getPlugin());
-                        if (Objects.equals(targetBlockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING), "teleport_pad"))
-                            targetBlockContainer.remove(LunarItems.keyLocation);
-                    }
                 }
-                case "elevator" -> {
-                    //Drop custom item
-                    Location loc = b.getLocation();
-                    b.getWorld().dropItemNaturally(loc, BlocksConfig.elevator);
 
-                    //Remove hologram
+                //Make linked teleport pad not work
+                Location targetLocation = blockContainer.get(LunarItems.keyLocation, DataType.LOCATION);
+                if (targetLocation != null) {
+                    Block targetBlock = b.getWorld().getBlockAt(targetLocation);
+                    PersistentDataContainer targetBlockContainer = new CustomBlockData(targetBlock, LunarItems.getPlugin());
+                    if (Objects.equals(targetBlockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING), "teleport_pad"))
+                        targetBlockContainer.remove(LunarItems.keyLocation);
+                }
+            }
+            case "elevator" -> {
+                //Drop custom item
+                Location loc = b.getLocation();
+                b.getWorld().dropItemNaturally(loc, BlocksConfig.elevator);
+
+                //Remove hologram
+                if (LunarItems.decentHologramsEnabled) {
                     String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
                     if (hologramID != null)
                         DHAPI.removeHologram(hologramID);
-
                 }
             }
         }
@@ -106,9 +110,9 @@ public class BlockBreakListener implements Listener {
         Block b = e.getBlock();
         //Custom Blocks
         PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
-        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
-            String blockID = blockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
-            switch (Objects.requireNonNull(blockID)) {
+        String blockID = blockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+        if (blockID != null) {
+            switch (blockID) {
                 case "teleport_pad" -> {
                     //Drop custom item
                     Location loc = b.getLocation();
@@ -116,9 +120,11 @@ public class BlockBreakListener implements Listener {
                     b.getWorld().dropItemNaturally(loc, BlocksConfig.teleport_pad);
 
                     //Remove hologram
-                    String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
-                    if (hologramID != null)
-                        DHAPI.removeHologram(hologramID);
+                    if (LunarItems.decentHologramsEnabled) {
+                        String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                        if (hologramID != null)
+                            DHAPI.removeHologram(hologramID);
+                    }
 
                     //Make linked teleport pad not work
                     Location targetLocation = blockContainer.get(LunarItems.keyLocation, DataType.LOCATION);
@@ -129,16 +135,19 @@ public class BlockBreakListener implements Listener {
                             targetBlockContainer.remove(LunarItems.keyLocation);
                     }
                 }
-                case "elevator" -> {
+                case
+                    "elevator" -> {
                     //Drop custom item
                     Location loc = b.getLocation();
                     e.setDropItems(false);
                     b.getWorld().dropItemNaturally(loc, BlocksConfig.elevator);
 
                     //Remove hologram
-                    String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
-                    if (hologramID != null)
-                        DHAPI.removeHologram(hologramID);
+                    if (LunarItems.decentHologramsEnabled) {
+                        String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                        if (hologramID != null)
+                            DHAPI.removeHologram(hologramID);
+                    }
 
                 }
             }
@@ -220,7 +229,9 @@ public class BlockBreakListener implements Listener {
                 if (Objects.equals(drop, "")) {
                     BlockUtils.breakInFacingAutoPickup(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
                 } else {
-                    BlockUtils.breakInFacingAutoPickup(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist, "_SAPLING", Material.getMaterial(drop));
+                    if (drop != null) {
+                        BlockUtils.breakInFacingAutoPickup(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist, "_SAPLING", Material.getMaterial(drop));
+                    }
                 }
             } else if (itemID.contains("aethershovel") && BlockUtils.inWhitelist(b, BlockUtils.shovelWhitelist)) {
                 e.setDropItems(false);

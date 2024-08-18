@@ -2,11 +2,7 @@ package me.dunescifye.lunaritems.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.jeff_media.customblockdata.CustomBlockData;
-import com.jeff_media.morepersistentdatatypes.DataType;
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.lunaritems.LunarItems;
-import me.dunescifye.lunaritems.files.Config;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-
-import java.util.Objects;
 
 public class PlayerJumpListener implements Listener {
 
@@ -42,7 +36,10 @@ public class PlayerJumpListener implements Listener {
                             PersistentDataContainer relativeContainer = new CustomBlockData(relative, LunarItems.getPlugin());
                             String relativeID = relativeContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
                             if (relativeID == null) continue;
-                            p.teleport(relative.getLocation().toCenterLocation());
+                            Location targetLoc = relative.getLocation().toCenterLocation();
+                            targetLoc.setYaw(p.getYaw());
+                            targetLoc.setPitch(p.getPitch());
+                            p.teleport(targetLoc);
                             break;
                         }
                     }

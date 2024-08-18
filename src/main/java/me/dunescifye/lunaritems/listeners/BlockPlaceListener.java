@@ -51,7 +51,9 @@ public class BlockPlaceListener implements Listener {
                         blockContainer.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
 
                         //Hologram
-                        DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.teleport_padHologramOffset, 0), true, BlocksConfig.teleport_padHologram);
+                        if (LunarItems.decentHologramsEnabled) {
+                            DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.teleport_padHologramOffset, 0), true, BlocksConfig.teleport_padHologram);
+                        }
 
                         //Second TP Pad
                         if (teleportPadLocations.containsKey(p)) {
@@ -81,7 +83,9 @@ public class BlockPlaceListener implements Listener {
                         blockContainer.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
 
                         //Hologram
-                        DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.elevatorHologramOffset, 0), true, BlocksConfig.elevatorHologram);
+                        if (LunarItems.decentHologramsEnabled) {
+                            DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.elevatorHologramOffset, 0), true, BlocksConfig.elevatorHologram);
+                        }
                     }
                 }
             }

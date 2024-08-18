@@ -56,7 +56,10 @@ public class PlayerToggleSneakListener implements Listener {
                                 PersistentDataContainer relativeContainer = new CustomBlockData(relative, LunarItems.getPlugin());
                                 String relativeID = relativeContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
                                 if (relativeID == null) continue;
-                                p.teleport(relative.getLocation().toCenterLocation());
+                                Location targetLoc = relative.getLocation().toCenterLocation();
+                                targetLoc.setYaw(p.getYaw());
+                                targetLoc.setPitch(p.getPitch());
+                                p.teleport(targetLoc);
                                 break;
                             }
                         }
