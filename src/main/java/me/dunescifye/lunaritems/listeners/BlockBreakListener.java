@@ -12,7 +12,10 @@ import me.dunescifye.lunaritems.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -362,7 +365,17 @@ public class BlockBreakListener implements Listener {
         //Auto replant except for Sugar Cane, doesn't require seed
         if (block.getType() != Material.SUGAR_CANE) {
             Material material = block.getType();
-            Bukkit.getScheduler().runTask(getPlugin(), () -> block.setType(material));
+            if (block.getBlockData() instanceof Directional directional) {
+                BlockFace face = directional.getFacing();
+                Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                    block.setType(material);
+                    BlockData newData = block.getBlockData();
+                    ((Directional) newData).setFacing(face);
+                    block.setBlockData(newData);
+                });
+            } else {
+                Bukkit.getScheduler().runTask(getPlugin(), () -> block.setType(material));
+            }
         }
 
         //Update blocks broken var
