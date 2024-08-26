@@ -498,6 +498,7 @@ public class BlockUtils {
 
     //Breaks blocks in direction player is facing. Updates block b to air. Replaces drop A with drop B
     public static void breakInFacing(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist, String dropFromContains, Material dropTo) {
+        if (b == null) return;
         depth = depth < 1 ? 1 : depth -1;
         double pitch = p.getLocation().getPitch();
         int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
