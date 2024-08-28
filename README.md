@@ -5,3 +5,6 @@ Installation guide:
 2. Build shadowjar
 3. Upload to /plugins/ folder
 4. Restart the server
+
+Image of Custom Item:
+![image-1](https://github.com/user-attachments/assets/dc219c4a-49ea-4088-b9db-cd5d14148b17)
