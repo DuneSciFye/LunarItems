@@ -181,6 +181,13 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        System.out.println("a");
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+                            System.out.println("b");
+                            continue;
+                        }
                         if (relative.equals(b)) {
                             drops.addAll(relative.getDrops(heldItem));
                             continue;
@@ -208,6 +215,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) {
                             drops.addAll(relative.getDrops(heldItem));
                             continue;
@@ -272,6 +282,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) {
                             drops.addAll(relative.getDrops(heldItem));
                             continue;
@@ -299,6 +312,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) {
                             drops.addAll(relative.getDrops(heldItem));
                             continue;
@@ -375,9 +391,13 @@ public class BlockUtils {
                                 //Testing claim
                                 Location relativeLocation = relative.getLocation();
                                 if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
-                                    drops.add(new ItemStack(material));
-                                    relative.setType(Material.AIR);
-                                    break;
+                                    //Testing custom block
+                                    PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                                    if (!blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+                                        drops.add(new ItemStack(material));
+                                        relative.setType(Material.AIR);
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -396,9 +416,13 @@ public class BlockUtils {
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
-                                drops.add(new ItemStack(material));
-                                relative.setType(Material.AIR);
-                                break;
+                                //Testing custom block
+                                PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                                if (!blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+                                    drops.add(new ItemStack(material));
+                                    relative.setType(Material.AIR);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -460,9 +484,13 @@ public class BlockUtils {
                                 //Testing claim
                                 Location relativeLocation = relative.getLocation();
                                 if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
-                                    drops.add(new ItemStack(material));
-                                    relative.setType(Material.AIR);
-                                    break;
+                                    //Testing custom block
+                                    PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                                    if (!blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+                                        drops.add(new ItemStack(material));
+                                        relative.setType(Material.AIR);
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -481,9 +509,13 @@ public class BlockUtils {
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
                             if (whitelisted.test(relative)) {
-                                drops.add(new ItemStack(material));
-                                relative.setType(Material.AIR);
-                                break;
+                                //Testing custom block
+                                PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                                if (!blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+                                    drops.add(new ItemStack(material));
+                                    relative.setType(Material.AIR);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -537,6 +569,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         //Ignore actual block broken
                         if (relative.equals(b)) {
                             for (ItemStack drop : relative.getDrops(heldItem)) {
@@ -571,6 +606,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         //Ignore actual block broken
                         if (relative.equals(b)) {
                             for (ItemStack drop : relative.getDrops(heldItem)) {
@@ -643,6 +681,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         //Ignore actual block broken
                         if (relative.equals(b)) {
                             for (ItemStack drop : relative.getDrops(heldItem)) {
@@ -677,6 +718,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         //Ignore actual block broken
                         if (relative.equals(b)) {
                             for (ItemStack drop : relative.getDrops(heldItem)) {
@@ -752,6 +796,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) {
                             drops.addAll(relative.getDrops(heldItem));
                             continue;
@@ -776,6 +823,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) {
                             drops.addAll(relative.getDrops(heldItem));
                             continue;
@@ -837,6 +887,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) {
                             drops.addAll(relative.getDrops(heldItem));
                             continue;
@@ -861,6 +914,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) {
                             drops.addAll(relative.getDrops(heldItem));
                             continue;
@@ -923,6 +979,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         String material = relative.getType().toString();
                         if (relative.equals(b)) {
                             b.getDrops().clear();
@@ -946,6 +1005,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         //Testing whitelist
                         String material = relative.getType().toString();
                         if (material.contains(contains)) {
@@ -972,6 +1034,9 @@ public class BlockUtils {
                 for (int y = -radius; y <= radius; y++){
                     for (int z = -radius; z <= radius; z++){
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) continue;
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
@@ -996,6 +1061,9 @@ public class BlockUtils {
                 for (int y = -radius; y <= radius; y++){
                     for (int z = -radius; z <= radius; z++){
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) continue;
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
@@ -1029,6 +1097,9 @@ public class BlockUtils {
                 for (int y = -radius; y <= radius; y++){
                     for (int z = -radius; z <= radius; z++){
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) continue;
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
@@ -1050,6 +1121,9 @@ public class BlockUtils {
                 for (int y = -radius; y <= radius; y++){
                     for (int z = -radius; z <= radius; z++){
                         Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
                         if (relative.equals(b)) continue;
                         //Testing whitelist
                         for (Predicate<Block> whitelisted : whitelist) {
