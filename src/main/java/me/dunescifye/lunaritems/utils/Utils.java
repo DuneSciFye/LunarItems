@@ -88,7 +88,7 @@ public class Utils {
         //Update PDC, lore, and Meta
         container.set(key1, LunarItems.dataType.get(key1), newKey1);
         container.set(key2, LunarItems.dataType.get(key2), newKey2);
-        meta.lore(updateLore(item, String.valueOf(oldKey1), String.valueOf(newKey1)));
+        meta.lore(updateLore(item, " " + oldKey1 + " ", " " + newKey1 + " "));
         item.setItemMeta(meta);
     }
     //Update lore and PDC for three variables
@@ -119,7 +119,7 @@ public class Utils {
         container.set(key1, LunarItems.dataType.get(key1), newKey1);
         container.set(key2, LunarItems.dataType.get(key2), newKey2);
         container.set(key3, LunarItems.dataType.get(key3), newKey3);
-        meta.lore(updateLore(item, String.valueOf(oldKey1), String.valueOf(newKey1)));
+        meta.lore(updateLore(item, " " + oldKey1 + " ", " " + newKey1 + " "));
         item.setItemMeta(meta);
     }
 
@@ -132,8 +132,8 @@ public class Utils {
         List<Component> loreList = item.lore();
 
         TextReplacementConfig config = TextReplacementConfig.builder()
-            .match(" " + matcher + " ")
-            .replacement(" " + replacement + " ")
+            .matchLiteral(matcher)
+            .replacement(replacement)
             .build();
 
         if (loreList != null)

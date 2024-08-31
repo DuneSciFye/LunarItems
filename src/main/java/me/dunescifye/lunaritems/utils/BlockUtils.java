@@ -181,11 +181,9 @@ public class BlockUtils {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
-                        System.out.println("a");
                         //Testing custom block
                         PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
                         if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
-                            System.out.println("b");
                             continue;
                         }
                         if (relative.equals(b)) {
@@ -217,7 +215,9 @@ public class BlockUtils {
                         Block relative = b.getRelative(x, y, z);
                         //Testing custom block
                         PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
-                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+                            continue;
+                        }
                         if (relative.equals(b)) {
                             drops.addAll(relative.getDrops(heldItem));
                             continue;

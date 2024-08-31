@@ -109,7 +109,6 @@ public class BlockBreakListener implements Listener {
     }
     @EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerBlockBreak(BlockBreakEvent e) {
-        System.out.println("a");
         Player p = e.getPlayer();
         Block b = e.getBlock();
         //Custom Blocks
@@ -138,6 +137,7 @@ public class BlockBreakListener implements Listener {
                         if (Objects.equals(targetBlockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING), "teleport_pad"))
                             targetBlockContainer.remove(LunarItems.keyLocation);
                     }
+                    b.setType(Material.AIR);
                 }
                 case
                     "elevator" -> {
@@ -153,6 +153,7 @@ public class BlockBreakListener implements Listener {
                             DHAPI.removeHologram(hologramID);
                     }
 
+                    b.setType(Material.AIR);
                 }
             }
         }
@@ -197,7 +198,6 @@ public class BlockBreakListener implements Listener {
             //Ancient Tools
             if (BlockUtils.inWhitelist(b, BlockUtils.ancienttPickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && itemID.contains("ancienttpick")) {
                 e.setDropItems(false);
-                System.out.println("b");
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttPickaxeWhitelist, BlockUtils.pickaxeBlacklist);
             }
             else if (BlockUtils.inWhitelist(b, BlockUtils.ancienttShovelWhitelist) && itemID.contains("ancienttshovel")) {
@@ -383,7 +383,7 @@ public class BlockBreakListener implements Listener {
         //Update blocks broken var
         double blocksBroken = container.get(keyBlocksBroken, PersistentDataType.DOUBLE);
         container.set(keyBlocksBroken, PersistentDataType.DOUBLE, blocksBroken + 1);
-        meta.lore(Utils.updateLore(item, String.valueOf((int) blocksBroken), String.valueOf((int) blocksBroken + 1)));
+        meta.lore(Utils.updateLore(item, " " + (int) blocksBroken + " ", " " + (int) blocksBroken + 1 + " "));
         item.setItemMeta(meta);
     }
 

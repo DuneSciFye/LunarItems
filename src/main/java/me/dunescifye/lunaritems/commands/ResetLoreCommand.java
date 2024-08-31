@@ -3,10 +3,8 @@ package me.dunescifye.lunaritems.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -27,38 +25,18 @@ public class ResetLoreCommand {
 
                 for (NamespacedKey key : keys) {
                     if (key.equals(LunarItems.keyEIID) || !key.value().startsWith("score-")) continue;
-                    try {
+                    if (container.has(key, PersistentDataType.STRING)) {
                         String currentValue = container.get(key, PersistentDataType.STRING);
                         Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " temp");
                         Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
-                        /*
-                        Bukkit.getScheduler().runTask(LunarItems.getPlugin(), () -> {
-                            ItemMeta meta = item.getItemMeta();
-                            meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, currentValue);
-                            item.setItemMeta(meta);
-                        });
-                         */
-                        break;
-                    }
-                    catch (IllegalArgumentException e) {
-                        try {
-                            double currentValue = container.get(key, PersistentDataType.DOUBLE);
-                            Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " 432.324");
-                            Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
-                        } catch (IllegalArgumentException error) {
-                            int currentValue = container.get(key, PersistentDataType.INTEGER);
-                            Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " 3892798");
-                            Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
-                        }
-                        /*
-                        Bukkit.getScheduler().runTask(LunarItems.getPlugin(), () -> {
-                            ItemMeta meta = item.getItemMeta();
-                            meta.getPersistentDataContainer().set(key, PersistentDataType.DOUBLE, currentValue);
-                            item.setItemMeta(meta);
-                        });
-
-                         */
-                        break;
+                    } else if (container.has(key, PersistentDataType.DOUBLE)) {
+                        double currentValue = container.get(key, PersistentDataType.DOUBLE);
+                        Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " 432.324");
+                        Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
+                    } else if (container.has(key, PersistentDataType.INTEGER)) {
+                        int currentValue = container.get(key, PersistentDataType.INTEGER);
+                        Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " 3892798");
+                        Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
                     }
                 }
             })
