@@ -6,15 +6,13 @@ import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -238,9 +236,7 @@ public class BlockUtils {
             }
         }
 
-        for (ItemStack item : mergeSimilarItemStacks(drops)){
-            b.getWorld().dropItemNaturally(b.getLocation(), item);
-        }
+        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
     }
     //Breaks blocks in direction player is facing. Updates block b to air.
     public static void breakInFacingAutoPickup(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
@@ -337,8 +333,14 @@ public class BlockUtils {
 
         PlayerInventory inv = p.getInventory();
         for (ItemStack item : mergeSimilarItemStacks(drops)){
-            if (inv.firstEmpty() == -1) b.getWorld().dropItemNaturally(b.getLocation(), item);
-            else inv.addItem(item);
+            if (inv.firstEmpty() == -1) {
+                dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+                return;
+            }
+            else {
+                inv.addItem(item);
+                drops.remove(item);
+            }
         }
     }
 
@@ -430,9 +432,7 @@ public class BlockUtils {
             }
         }
 
-        for (ItemStack item : mergeSimilarItemStacks(drops)){
-            b.getWorld().dropItemNaturally(b.getLocation(), item);
-        }
+        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
     }
 
     //Breaks blocks in direction player is facing. Updates block b to air. Only whitelist. Replaces all drops with material.
@@ -523,9 +523,7 @@ public class BlockUtils {
             }
         }
 
-        for (ItemStack item : mergeSimilarItemStacks(drops)){
-            b.getWorld().dropItemNaturally(b.getLocation(), item);
-        }
+        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
     }
 
     //Breaks blocks in direction player is facing. Updates block b to air. Replaces drop A with drop B
@@ -637,9 +635,7 @@ public class BlockUtils {
             }
         }
 
-        for (ItemStack item : mergeSimilarItemStacks(drops)){
-            b.getWorld().dropItemNaturally(b.getLocation(), item);
-        }
+        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
     }
     //Breaks blocks in direction player is facing. Updates block b to air. Replaces drop A with drop B
     public static void breakInFacingAutoPickup(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist, String dropFromContains, Material dropTo) {
@@ -751,8 +747,14 @@ public class BlockUtils {
 
         PlayerInventory inv = p.getInventory();
         for (ItemStack item : mergeSimilarItemStacks(drops)){
-            if (inv.firstEmpty() == -1) b.getWorld().dropItemNaturally(b.getLocation(), item);
-            else inv.addItem(item);
+            if (inv.firstEmpty() == -1) {
+                dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+                return;
+            }
+            else {
+                inv.addItem(item);
+                drops.remove(item);
+            }
         }
     }
 
@@ -843,9 +845,7 @@ public class BlockUtils {
             }
         }
 
-        for (ItemStack item : mergeSimilarItemStacks(drops)){
-            b.getWorld().dropItemNaturally(b.getLocation(), item);
-        }
+        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
     }
     //Breaks blocks in direction player is facing. Updates block b to air. Only whitelist. AutoPickup
     public static void breakInFacingAutoPickup(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist) {
@@ -936,8 +936,14 @@ public class BlockUtils {
 
         PlayerInventory inv = p.getInventory();
         for (ItemStack item : mergeSimilarItemStacks(drops)){
-            if (inv.firstEmpty() == -1) b.getWorld().dropItemNaturally(b.getLocation(), item);
-            else inv.addItem(item);
+            if (inv.firstEmpty() == -1) {
+                dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+                return;
+            }
+            else {
+                inv.addItem(item);
+                drops.remove(item);
+            }
         }
     }
 
@@ -1019,9 +1025,7 @@ public class BlockUtils {
             }
         }
 
-        for (ItemStack item : mergeSimilarItemStacks(drops)){
-            b.getWorld().dropItemNaturally(b.getLocation(), item);
-        }
+        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
     }
     //Breaks blocks in direction player is facing. Updates block b to air.
     public static void breakInRadius(Block b, int radius, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
@@ -1081,9 +1085,7 @@ public class BlockUtils {
             }
         }
 
-        for (ItemStack item : mergeSimilarItemStacks(drops)){
-            b.getWorld().dropItemNaturally(b.getLocation(), item);
-        }
+        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
     }
 
     //Breaks blocks in direction player is facing. Updates block b to air. Only whitelist.
@@ -1138,9 +1140,7 @@ public class BlockUtils {
             }
         }
 
-        for (ItemStack item : mergeSimilarItemStacks(drops)){
-            b.getWorld().dropItemNaturally(b.getLocation(), item);
-        }
+        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
     }
 
     public static Collection<ItemStack> mergeSimilarItemStacks(Collection<ItemStack> itemStacks) {
@@ -1156,6 +1156,19 @@ public class BlockUtils {
             }
         }
         return mergedStacksMap.values();
+    }
+
+
+    public static void dropAllItemStacks(Collection<ItemStack> itemStacks, World world, Location location) {
+        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) {
+            int amount = item.getAmount();
+            while (amount > 64) {
+                item.setAmount(64);
+                world.dropItemNaturally(location, item);
+                amount -= 64;
+            }
+            world.dropItemNaturally(location, item);
+        }
     }
 
     public static boolean isNaturallyGenerated(Block block) {
