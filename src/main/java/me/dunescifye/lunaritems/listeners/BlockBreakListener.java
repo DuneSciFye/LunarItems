@@ -37,8 +37,7 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
-import static me.dunescifye.lunaritems.LunarItems.getPlugin;
-import static me.dunescifye.lunaritems.LunarItems.keyBlocksBroken;
+import static me.dunescifye.lunaritems.LunarItems.*;
 import static me.dunescifye.lunaritems.files.AquaticItemsConfig.*;
 import static me.dunescifye.lunaritems.files.Config.prefix;
 import static me.dunescifye.lunaritems.files.NexusItemsConfig.*;
@@ -165,6 +164,7 @@ public class BlockBreakListener implements Listener {
         PersistentDataContainer container = meta.getPersistentDataContainer();
         String itemID = container.get(LunarItems.keyEIID, PersistentDataType.STRING);
         if (itemID == null) return;
+
         //Hoes
         if (b.getBlockData() instanceof Ageable ageable) {
             if (ageable.getAge() == ageable.getMaximumAge() || b.getType() == Material.SUGAR_CANE) {
@@ -383,7 +383,7 @@ public class BlockBreakListener implements Listener {
         //Update blocks broken var
         double blocksBroken = container.get(keyBlocksBroken, PersistentDataType.DOUBLE);
         container.set(keyBlocksBroken, PersistentDataType.DOUBLE, blocksBroken + 1);
-        meta.lore(Utils.updateLore(item, " " + (int) blocksBroken + " ", " " + (int) blocksBroken + 1 + " "));
+        meta.lore(Utils.updateLore(item, " " + (int) blocksBroken + " ", " " + ((int) blocksBroken + 1) + " "));
         item.setItemMeta(meta);
     }
 
