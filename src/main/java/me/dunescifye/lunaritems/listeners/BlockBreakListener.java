@@ -379,12 +379,14 @@ public class BlockBreakListener implements Listener {
                 Bukkit.getScheduler().runTask(getPlugin(), () -> block.setType(material));
             }
         }
-
+        /*
         //Update blocks broken var
         double blocksBroken = container.get(keyBlocksBroken, PersistentDataType.DOUBLE);
         container.set(keyBlocksBroken, PersistentDataType.DOUBLE, blocksBroken + 1);
         meta.lore(Utils.updateLore(item, " " + (int) blocksBroken + " ", " " + ((int) blocksBroken + 1) + " "));
         item.setItemMeta(meta);
+
+         */
     }
 
     private void handleNexusHoe(Player player, int xpChance) {
