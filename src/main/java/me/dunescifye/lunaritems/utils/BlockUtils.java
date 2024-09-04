@@ -1167,6 +1167,7 @@ public class BlockUtils {
                 world.dropItemNaturally(location, item);
                 amount -= 64;
             }
+            item.setAmount(amount);
             world.dropItemNaturally(location, item);
         }
     }
