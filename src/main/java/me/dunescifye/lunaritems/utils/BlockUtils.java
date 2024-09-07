@@ -239,6 +239,110 @@ public class BlockUtils {
         dropAllItemStacks(drops, b.getWorld(), b.getLocation());
     }
     //Breaks blocks in direction player is facing. Updates block b to air.
+    public static void breakInFacingDoubleOres(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
+        double pitch = p.getLocation().getPitch();
+        int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
+        if (pitch < -45) {
+            yStart = 0;
+            yEnd = depth;
+        } else if (pitch > 45) {
+            yStart = -depth;
+            yEnd = 0;
+        } else {
+            switch (p.getFacing()) {
+                case NORTH -> {
+                    zStart = -depth;
+                    zEnd = 0;
+                }
+                case SOUTH -> {
+                    zStart = 0;
+                    zEnd = depth;
+                }
+                case WEST -> {
+                    xStart = -depth;
+                    xEnd = 0;
+                }
+                case EAST -> {
+                    xStart = 0;
+                    xEnd = depth;
+                }
+            }
+        }
+        ItemStack heldItem = p.getInventory().getItemInMainHand();
+
+        //If GriefPrevention enabled
+        Collection<ItemStack> drops = new ArrayList<>();
+        if (LunarItems.griefPreventionEnabled) {
+            for (int x = xStart; x <= xEnd; x++) {
+                for (int y = yStart; y <= yEnd; y++) {
+                    for (int z = zStart; z <= zEnd; z++) {
+                        Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+                            continue;
+                        }
+                        if (inWhitelist(relative, ores)) {
+                            drops.addAll(relative.getDrops(heldItem));
+                        }
+                        if (relative.equals(b)) {
+                            drops.addAll(relative.getDrops(heldItem));
+                            continue;
+                        }
+                        //Testing whitelist
+                        for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                //Testing blacklist
+                                if (notInBlacklist(relative, blacklist)) {
+                                    //Testing claim
+                                    Location relativeLocation = relative.getLocation();
+                                    if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
+                                        drops.addAll(relative.getDrops(heldItem));
+                                        relative.setType(Material.AIR);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int x = xStart; x <= xEnd; x++) {
+                for (int y = yStart; y <= yEnd; y++) {
+                    for (int z = zStart; z <= zEnd; z++) {
+                        Block relative = b.getRelative(x, y, z);
+                        //Testing custom block
+                        PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
+                        if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+                            continue;
+                        }
+                        if (inWhitelist(relative, ores)) {
+                            drops.addAll(relative.getDrops(heldItem));
+                        }
+                        if (relative.equals(b)) {
+                            drops.addAll(relative.getDrops(heldItem));
+                            continue;
+                        }
+                        //Testing whitelist
+                        for (Predicate<Block> whitelisted : whitelist) {
+                            if (whitelisted.test(relative)) {
+                                //Testing blacklist
+                                if (notInBlacklist(relative, blacklist)) {
+                                    drops.addAll(relative.getDrops(heldItem));
+                                    relative.setType(Material.AIR);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+    }
+    //Breaks blocks in direction player is facing. Updates block b to air.
     public static void breakInFacingAutoPickup(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
         depth = depth < 1 ? 1 : depth -1;
         double pitch = p.getLocation().getPitch();
