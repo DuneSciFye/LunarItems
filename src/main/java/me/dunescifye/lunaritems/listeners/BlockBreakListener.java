@@ -187,6 +187,15 @@ public class BlockBreakListener implements Listener {
                         handleAncienttHoe(drops, p, b, location, item, meta, container, AncienttItemsConfig.AncienttHoeParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeFireworkChance, AncienttItemsConfig.AncienttHoeFarmKeyChance, AncienttItemsConfig.AncienttHoeParrotSpawnerChance, AncienttItemsConfig.AncienttHoeInfiniteSeedPouchChance);
                     case "ancientthoemega"->
                         handleAncienttHoe(drops, p, b, location, item, meta, container, AncienttItemsConfig.AncienttHoeMegaParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeMegaFireworkChance, AncienttItemsConfig.AncienttHoeMegaFarmKeyChance, AncienttItemsConfig.AncienttHoeMegaParrotSpawnerChance, AncienttItemsConfig.AncienttHoeMegaInfiniteSeedPouchChance);
+                    case "twistedhoe", "twistedhoe2", "twistedhoemega" -> {
+                        BlockUtils.dropAllItemStacks(drops, location.getWorld(), location);
+
+                        //Auto replant except for Sugar Cane, doesn't require seed
+                        if (b.getType() != Material.SUGAR_CANE) {
+                            Material material = b.getType();
+                            Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
+                        }
+                    }
                 }
             } else {
                 //Cancel breaking if plant not fully grown

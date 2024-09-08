@@ -19,6 +19,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.*;
 
+import static me.dunescifye.lunaritems.utils.BlockUtils.mergeSimilarItemStacks;
+
 public class Utils {
 
     public static void runConsoleCommands(String... commands){
@@ -62,6 +64,7 @@ public class Utils {
             }
         }
     }
+
 
 
     //Update lore and PDC for two variables

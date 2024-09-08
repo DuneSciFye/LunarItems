@@ -2,6 +2,8 @@ package me.dunescifye.lunaritems.utils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import me.dunescifye.lunaritems.LunarItems;
+import me.ryanhamshire.GriefPrevention.Claim;
+import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.coreprotect.CoreProtect;
@@ -113,9 +115,15 @@ public class BlockUtils {
         block -> block.getType().equals(Material.LAVA)
     );
 
-    public static boolean isInsideClaim(final Player player, final Location blockLocation) {
-        final DataStore dataStore = GriefPrevention.instance.dataStore;
-        return dataStore.getClaimAt(blockLocation, false, dataStore.getPlayerData(player.getUniqueId()).lastClaim) != null;
+    public static boolean isInsideClaim(final Player player, final Location location) {
+        final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
+        if (claim == null) return false;
+        return claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
+    }
+
+    public static boolean isInsideClaimOrWilderness(final Player player, final Location location) {
+        final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
+        return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
     }
     public static boolean isWilderness(Location location) {
         return GriefPrevention.instance.dataStore.getClaimAt(location, true, null) == null;
@@ -240,6 +248,7 @@ public class BlockUtils {
     }
     //Breaks blocks in direction player is facing. Updates block b to air.
     public static void breakInFacingDoubleOres(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
+        depth = depth < 1 ? 1 : depth -1;
         double pitch = p.getLocation().getPitch();
         int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
         if (pitch < -45) {
@@ -272,7 +281,9 @@ public class BlockUtils {
 
         //If GriefPrevention enabled
         Collection<ItemStack> drops = new ArrayList<>();
+        System.out.println("a");
         if (LunarItems.griefPreventionEnabled) {
+            System.out.println("b");
             for (int x = xStart; x <= xEnd; x++) {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
@@ -295,8 +306,7 @@ public class BlockUtils {
                                 //Testing blacklist
                                 if (notInBlacklist(relative, blacklist)) {
                                     //Testing claim
-                                    Location relativeLocation = relative.getLocation();
-                                    if (isInsideClaim(p, relativeLocation) || isWilderness(relativeLocation)) {
+                                    if (isInsideClaimOrWilderness(p, relative.getLocation())) {
                                         drops.addAll(relative.getDrops(heldItem));
                                         relative.setType(Material.AIR);
                                         break;
