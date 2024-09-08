@@ -14,6 +14,7 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -281,9 +282,7 @@ public class BlockUtils {
 
         //If GriefPrevention enabled
         Collection<ItemStack> drops = new ArrayList<>();
-        System.out.println("a");
         if (LunarItems.griefPreventionEnabled) {
-            System.out.println("b");
             for (int x = xStart; x <= xEnd; x++) {
                 for (int y = yStart; y <= yEnd; y++) {
                     for (int z = zStart; z <= zEnd; z++) {
@@ -293,7 +292,7 @@ public class BlockUtils {
                         if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
                             continue;
                         }
-                        if (inWhitelist(relative, ores)) {
+                        if (inWhitelist(relative, ores) && !heldItem.containsEnchantment(Enchantment.SILK_TOUCH)) {
                             drops.addAll(relative.getDrops(heldItem));
                         }
                         if (relative.equals(b)) {
@@ -327,7 +326,7 @@ public class BlockUtils {
                         if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
                             continue;
                         }
-                        if (inWhitelist(relative, ores)) {
+                        if (inWhitelist(relative, ores) && !heldItem.containsEnchantment(Enchantment.SILK_TOUCH)) {
                             drops.addAll(relative.getDrops(heldItem));
                         }
                         if (relative.equals(b)) {
