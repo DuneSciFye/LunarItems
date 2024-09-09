@@ -47,8 +47,7 @@ public class BlockUtils {
         block -> block.getType().equals(Material.EMERALD_ORE),
         block -> block.getType().equals(Material.DEEPSLATE_EMERALD_ORE),
         block -> block.getType().equals(Material.NETHER_GOLD_ORE),
-        block -> block.getType().equals(Material.NETHER_QUARTZ_ORE),
-        block -> block.getType().equals(Material.ANCIENT_DEBRIS)
+        block -> block.getType().equals(Material.NETHER_QUARTZ_ORE)
     );
 
     public static List<Predicate<Block>> regularOres = List.of(
@@ -285,18 +284,11 @@ public class BlockUtils {
         if (LunarItems.griefPreventionEnabled) {
             for (int x = xStart; x <= xEnd; x++) {
                 for (int y = yStart; y <= yEnd; y++) {
-                    for (int z = zStart; z <= zEnd; z++) {
+                    block: for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
                         //Testing custom block
                         PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
                         if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
-                            continue;
-                        }
-                        if (inWhitelist(relative, ores) && !heldItem.containsEnchantment(Enchantment.SILK_TOUCH)) {
-                            drops.addAll(relative.getDrops(heldItem));
-                        }
-                        if (relative.equals(b)) {
-                            drops.addAll(relative.getDrops(heldItem));
                             continue;
                         }
                         //Testing whitelist
@@ -306,6 +298,13 @@ public class BlockUtils {
                                 if (notInBlacklist(relative, blacklist)) {
                                     //Testing claim
                                     if (isInsideClaimOrWilderness(p, relative.getLocation())) {
+                                        if (inWhitelist(relative, ores) && !heldItem.containsEnchantment(Enchantment.SILK_TOUCH)) {
+                                            drops.addAll(relative.getDrops(heldItem));
+                                        }
+                                        if (relative.equals(b)) {
+                                            drops.addAll(relative.getDrops(heldItem));
+                                            continue block;
+                                        }
                                         drops.addAll(relative.getDrops(heldItem));
                                         relative.setType(Material.AIR);
                                         break;
@@ -319,18 +318,11 @@ public class BlockUtils {
         } else {
             for (int x = xStart; x <= xEnd; x++) {
                 for (int y = yStart; y <= yEnd; y++) {
-                    for (int z = zStart; z <= zEnd; z++) {
+                    block: for (int z = zStart; z <= zEnd; z++) {
                         Block relative = b.getRelative(x, y, z);
                         //Testing custom block
                         PersistentDataContainer blockContainer = new CustomBlockData(relative, LunarItems.getPlugin());
                         if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
-                            continue;
-                        }
-                        if (inWhitelist(relative, ores) && !heldItem.containsEnchantment(Enchantment.SILK_TOUCH)) {
-                            drops.addAll(relative.getDrops(heldItem));
-                        }
-                        if (relative.equals(b)) {
-                            drops.addAll(relative.getDrops(heldItem));
                             continue;
                         }
                         //Testing whitelist
@@ -338,6 +330,13 @@ public class BlockUtils {
                             if (whitelisted.test(relative)) {
                                 //Testing blacklist
                                 if (notInBlacklist(relative, blacklist)) {
+                                    if (inWhitelist(relative, ores) && !heldItem.containsEnchantment(Enchantment.SILK_TOUCH)) {
+                                        drops.addAll(relative.getDrops(heldItem));
+                                    }
+                                    if (relative.equals(b)) {
+                                        drops.addAll(relative.getDrops(heldItem));
+                                        continue block;
+                                    }
                                     drops.addAll(relative.getDrops(heldItem));
                                     relative.setType(Material.AIR);
                                     break;
