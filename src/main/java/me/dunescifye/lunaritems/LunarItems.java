@@ -2,6 +2,7 @@ package me.dunescifye.lunaritems;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.lunaritems.commands.CustomItemsCommand;
 import me.dunescifye.lunaritems.commands.ResetLoreCommand;
 import me.dunescifye.lunaritems.commands.UpdateLoreCommand;
@@ -63,11 +64,16 @@ public final class LunarItems extends JavaPlugin {
     }
 
     @Override
+    public void onLoad() {
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
+    }
+
+    @Override
     public void onEnable() {
         Logger logger = this.getLogger();
 
         plugin = this;
-        //CommandAPI.onEnable();
+        CommandAPI.onEnable();
         Config.setup(this);
         AquaticItemsConfig.setup();
         NexusItemsConfig.setup();
@@ -116,6 +122,6 @@ public final class LunarItems extends JavaPlugin {
         CommandAPI.unregister("resetlore");
         CommandAPI.unregister("updatelore");
 
-        //CommandAPI.onDisable();
+        CommandAPI.onDisable();
     }
 }
