@@ -253,48 +253,6 @@ public class ConfigUtils {
             }
         }
 
-        ConfigurationSection attributesSection = config.getConfigurationSection(itemID + ".attributes");
-        if (attributesSection != null) {
-            for (String key : attributesSection.getKeys(false)) {
-                ConfigurationSection attributeConfig = attributesSection.getConfigurationSection(key);
-                if (attributeConfig != null) {
-                    double amount = attributeConfig.isSet("amount") ? attributeConfig.getDouble("amount") : 1.0;
-                    UUID uuid = attributeConfig.isSet("uuid") ? UUID.fromString(attributeConfig.getString("uuid")) : UUID.randomUUID();
-
-                    Attribute attribute = attributeConfig.isSet("attribute") ? Attribute.valueOf(attributeConfig.getString("attribute").toUpperCase()) : Attribute.GENERIC_ARMOR;
-                    AttributeModifier.Operation operation = attributeConfig.isSet("operation") ? AttributeModifier.Operation.valueOf(attributeConfig.getString("operation").toUpperCase()) : AttributeModifier.Operation.ADD_NUMBER;
-                    EquipmentSlot slot = attributeConfig.isSet("slot") ? EquipmentSlot.valueOf(attributeConfig.getString("slot").toUpperCase()) : EquipmentSlot.HAND;
-
-                    AttributeModifier modifier = new AttributeModifier(uuid, key, amount, operation, slot);
-                    meta.addAttributeModifier(attribute, modifier);
-                }
-            }
-        }
-        if (config.isSet(itemID + ".isNetherite")){
-            if ((config.isBoolean(itemID + ".isNetherite"))){
-                if (material == Material.LEATHER_BOOTS){
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "netherite", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET));
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(UUID.randomUUID(), "netherite", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET));
-                    meta.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "netherite", 0.1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET));
-                }
-                else if (material == Material.LEATHER_LEGGINGS){
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "netherite", 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS));
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(UUID.randomUUID(), "netherite", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS));
-                    meta.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "netherite", 0.1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS));
-                }
-                else if (material == Material.LEATHER_CHESTPLATE){
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "netherite", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST));
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(UUID.randomUUID(), "netherite", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST));
-                    meta.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "netherite", 0.1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST));
-                }
-                else if (material == Material.LEATHER_HELMET){
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "netherite", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD));
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(UUID.randomUUID(), "netherite", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD));
-                    meta.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "netherite", 0.1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD));
-                }
-            }
-        }
-
         if (config.isSet(itemID + ".armorColor")) {
             if (meta instanceof LeatherArmorMeta leatherArmorMeta) {
                 leatherArmorMeta.setColor(Color.fromRGB(config.getInt(itemID + ".armorColor")));
@@ -362,49 +320,6 @@ public class ConfigUtils {
         if (config.isSet(itemID + ".itemFlags")){
             for (String itemFlag : config.getStringList(itemID + ".itemFlags")) {
                 meta.addItemFlags(ItemFlag.valueOf(itemFlag.toUpperCase()));
-            }
-        }
-        //Setting item Attributes
-        ConfigurationSection attributesSection = config.getConfigurationSection(itemID + ".attributes");
-        if (attributesSection != null) {
-            for (String key : attributesSection.getKeys(false)) {
-                ConfigurationSection attributeConfig = attributesSection.getConfigurationSection(key);
-                if (attributeConfig != null) {
-                    double amount = attributeConfig.isSet("amount") ? attributeConfig.getDouble("amount") : 1.0;
-                    UUID uuid = attributeConfig.isSet("uuid") ? UUID.fromString(attributeConfig.getString("uuid")) : UUID.randomUUID();
-
-                    Attribute attribute = attributeConfig.isSet("attribute") ? Attribute.valueOf(attributeConfig.getString("attribute").toUpperCase()) : Attribute.GENERIC_ARMOR;
-                    AttributeModifier.Operation operation = attributeConfig.isSet("operation") ? AttributeModifier.Operation.valueOf(attributeConfig.getString("operation").toUpperCase()) : AttributeModifier.Operation.ADD_NUMBER;
-                    EquipmentSlot slot = attributeConfig.isSet("slot") ? EquipmentSlot.valueOf(attributeConfig.getString("slot").toUpperCase()) : EquipmentSlot.HAND;
-
-                    AttributeModifier modifier = new AttributeModifier(uuid, key, amount, operation, slot);
-                    meta.addAttributeModifier(attribute, modifier);
-                }
-            }
-        }
-        //Easy option to make armor have netherite stats
-        if (config.isSet(itemID + ".isNetherite")){
-            if ((config.isBoolean(itemID + ".isNetherite"))){
-                if (material == Material.LEATHER_BOOTS){
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "netherite", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET));
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(UUID.randomUUID(), "netherite", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET));
-                    meta.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "netherite", 0.1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET));
-                }
-                else if (material == Material.LEATHER_LEGGINGS){
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "netherite", 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS));
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(UUID.randomUUID(), "netherite", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS));
-                    meta.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "netherite", 0.1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS));
-                }
-                else if (material == Material.LEATHER_CHESTPLATE){
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "netherite", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST));
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(UUID.randomUUID(), "netherite", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST));
-                    meta.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "netherite", 0.1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST));
-                }
-                else if (material == Material.LEATHER_HELMET){
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "netherite", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD));
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(UUID.randomUUID(), "netherite", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD));
-                    meta.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(), "netherite", 0.1, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET));
-                }
             }
         }
         //Setting armor color

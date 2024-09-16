@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id "com.github.johnrengelman.shadow" version "7.1.1"
+    id "com.gradleup.shadow" version "8.3.1"
 }
 
 group = 'me.dunescifye'
@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
     //compileOnly "dev.jorel:commandapi-bukkit-core:9.4.2"
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'net.coreprotect:coreprotect:22.4'
@@ -54,11 +54,9 @@ shadowJar {
     relocate 'dev.jorel.commandapi', 'me.dunescifye.libs.lunaritems.commandapi'
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
