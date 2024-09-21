@@ -61,6 +61,7 @@ public class BlockBreakListener implements Listener {
             }
         }
     }
+
     @EventHandler
     public void onBlockBreak(BlockPhysicsEvent e) {
         Block b = e.getBlock();
@@ -106,7 +107,7 @@ public class BlockBreakListener implements Listener {
             }
         }
     }
-    @EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
+    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBlockBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
         Block b = e.getBlock();
@@ -379,6 +380,7 @@ public class BlockBreakListener implements Listener {
         //Auto replant except for Sugar Cane, doesn't require seed
         if (block.getType() != Material.SUGAR_CANE) {
             Material material = block.getType();
+            /*
             if (block.getBlockData() instanceof Directional directional) {
                 BlockFace face = directional.getFacing();
                 Bukkit.getScheduler().runTask(getPlugin(), () -> {
@@ -388,17 +390,11 @@ public class BlockBreakListener implements Listener {
                     block.setBlockData(newData);
                 });
             } else {
-                Bukkit.getScheduler().runTask(getPlugin(), () -> block.setType(material));
-            }
-        }
-        /*
-        //Update blocks broken var
-        double blocksBroken = container.get(keyBlocksBroken, PersistentDataType.DOUBLE);
-        container.set(keyBlocksBroken, PersistentDataType.DOUBLE, blocksBroken + 1);
-        meta.lore(Utils.updateLore(item, " " + (int) blocksBroken + " ", " " + ((int) blocksBroken + 1) + " "));
-        item.setItemMeta(meta);
 
-         */
+             */
+                Bukkit.getScheduler().runTask(getPlugin(), () -> block.setType(material));
+            //}
+        }
     }
 
     private void handleNexusHoe(Player player, int xpChance) {
