@@ -47,7 +47,22 @@ public class BlockBreakListener implements Listener {
     public void blockBreakHandler(LunarItems plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
+    @EventHandler
+    public void onBlockDrop(ItemSpawnEvent e) {
+        Block b = e.getLocation().getBlock();
+        //Custom Blocks
+        PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
+        String blockID = blockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+        if (blockID == null) return;
+        blockContainer.remove(LunarItems.keyEIID);
+        e.setCancelled(true);
+        switch (blockID) {
+            case "teleport_pad" -> b.getWorld().dropItemNaturally(b.getLocation(), BlocksConfig.teleport_pad);
+            case "elevator" -> b.getWorld().dropItemNaturally(b.getLocation(), BlocksConfig.elevator);
+        }
+    }
 
+/*
     @EventHandler
     public void onBlockDrop(ItemSpawnEvent e) {
         Block b = e.getLocation().getBlock();
@@ -107,6 +122,10 @@ public class BlockBreakListener implements Listener {
             }
         }
     }
+
+ */
+
+
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBlockBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
