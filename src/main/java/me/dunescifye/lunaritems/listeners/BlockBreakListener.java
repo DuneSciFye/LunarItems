@@ -40,6 +40,7 @@ import java.util.function.Predicate;
 import static me.dunescifye.lunaritems.LunarItems.*;
 import static me.dunescifye.lunaritems.files.AquaticItemsConfig.*;
 import static me.dunescifye.lunaritems.files.Config.prefix;
+import static me.dunescifye.lunaritems.files.Config.radiusMiningDisabledWorlds;
 import static me.dunescifye.lunaritems.files.NexusItemsConfig.*;
 
 public class BlockBreakListener implements Listener {
@@ -224,6 +225,7 @@ public class BlockBreakListener implements Listener {
         }
         //Not a hoe
         else {
+            if (radiusMiningDisabledWorlds.contains(p.getWorld().getName())) return;
             //Ancient Tools
             if (BlockUtils.inWhitelist(b, BlockUtils.ancienttPickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && itemID.contains("ancienttpick")) {
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttPickaxeWhitelist, BlockUtils.pickaxeBlacklist);
