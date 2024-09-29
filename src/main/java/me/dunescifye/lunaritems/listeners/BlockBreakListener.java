@@ -295,22 +295,18 @@ public class BlockBreakListener implements Listener {
                             e.setDropItems(false);
                             BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist, Material.getMaterial(drop));
                         } else if (BlockUtils.inWhitelist(b, BlockUtils.pickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) &&  item.getType().equals(Material.NETHERITE_PICKAXE)) {
-                            //Change shovel drops
-                            e.setDropItems(false);
+                            e.setDropItems(false); //Change pickaxe drops
                             BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist, Material.getMaterial(drop));
                         }
                     }
                     //No custom drop
                     else if (BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist) && item.getType().equals(Material.NETHERITE_AXE)) {
-                        e.setDropItems(false);
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
                     }
                     else if (BlockUtils.inWhitelist(b, BlockUtils.pickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist)&& item.getType().equals(Material.NETHERITE_PICKAXE)) {
-                        e.setDropItems(false);
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
                     }
                     else if (BlockUtils.inWhitelist(b, BlockUtils.shovelWhitelist) && item.getType().equals(Material.NETHERITE_SHOVEL)) {
-                        e.setDropItems(false);
                         BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
                     }
                 } else {
