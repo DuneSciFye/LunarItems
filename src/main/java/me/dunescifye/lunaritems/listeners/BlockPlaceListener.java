@@ -38,6 +38,8 @@ public class BlockPlaceListener implements Listener {
         ItemStack item = e.getItemInHand();
         Player p = e.getPlayer();
 
+        if (p.getWorld().getName().contains("pvp")) return;
+
         if (item.hasItemMeta()) {
             PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
             if (container.has(LunarItems.keyEIID)) {
