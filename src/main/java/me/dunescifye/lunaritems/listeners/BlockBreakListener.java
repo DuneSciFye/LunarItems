@@ -240,7 +240,9 @@ public class BlockBreakListener implements Listener {
             else if (itemID.contains("aetheraxe") && BlockUtils.inWhitelist(b, BlockUtils.axeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.axeBlacklist)) {
                 e.setDropItems(false);
                 String drop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
+                /*
                 if (p.hasMetadata("ignoreBlockBreak")) {
+                    System.out.println("lunar" + blockContainer.has(LunarItems.autoPickupKey));
                     List<Item> items = new ArrayList<>();
                     World world = b.getWorld();
                     Location loc = b.getLocation();
@@ -259,6 +261,8 @@ public class BlockBreakListener implements Listener {
 
                     return;
                 }
+
+                 */
                 if (Objects.equals(drop, "")) {
                     BlockUtils.breakInFacingAutoPickup(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.axeWhitelist, BlockUtils.axeBlacklist);
                 } else {
