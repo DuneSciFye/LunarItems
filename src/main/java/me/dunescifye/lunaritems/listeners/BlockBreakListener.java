@@ -219,14 +219,16 @@ public class BlockBreakListener implements Listener {
                         }
                     }
                 }
-            } else {
-                //Cancel breaking if plant not fully grown
-                e.setCancelled(true);
             }
         }
         //Not a hoe
         else {
             if (radiusMiningDisabledWorlds.contains(p.getWorld().getName())) return;
+
+            if (itemID.contains("nightmarepick")) {
+
+            }
+
             //Ancient Tools
             if (BlockUtils.inWhitelist(b, BlockUtils.ancienttPickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist) && itemID.contains("ancienttpick")) {
                 BlockUtils.breakInFacing(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.ancienttPickaxeWhitelist, BlockUtils.pickaxeBlacklist);
