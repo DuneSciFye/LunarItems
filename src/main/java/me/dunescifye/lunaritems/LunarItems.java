@@ -107,6 +107,7 @@ public final class LunarItems extends JavaPlugin {
         new EntityDamageListener().entityDamageHandler(this);
         new PlayerJumpListener().playerJumpHandler(this);
         new PlayerLeaveListener().playerLeaveListener(this);
+        new PlayerRunCommandListener().playerRunCommandHandler(this);
     }
 
     private void registerCommands() {

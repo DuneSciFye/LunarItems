@@ -9,7 +9,8 @@ import java.util.List;
 public class Config {
 
     public static String prefix, cooldownMessageHours, cooldownMessageMinutes, cooldownMessageSeconds, invalidTargetLocation,
-        teleportPadPlaceFirstMessage, teleportPadPlaceSecondMessage, changeVariableMessage, spawnerCommand, infinitePouchCommand, receiveItemMessage;
+        teleportPadPlaceFirstMessage, teleportPadPlaceSecondMessage, changeVariableMessage, spawnerCommand, infinitePouchCommand, receiveItemMessage,
+        cannotHatMessage;
     public static List<String> radiusMiningDisabledWorlds;
     public static void setup(LunarItems plugin) {
         FileConfiguration config = plugin.getConfig();
@@ -26,6 +27,7 @@ public class Config {
         infinitePouchCommand = ConfigUtils.setupConfig("Commands.InfinitePouchCommand", config, "superpouches:pouches give %player% %type% 1 1", List.of("Command used for infinite pouches. Use %player% for player name and %type% for pouch id"));
         receiveItemMessage = ConfigUtils.setupConfig("Messages.ReceiveItemMessage", config, "&7You received %item%.", List.of("Message when player receives item from drop. For example spawners, keys, spawn eggs, etc. Typically in format of '1x Parrot Spawner'"));
         radiusMiningDisabledWorlds = ConfigUtils.setupConfig("RadiusMiningDisabledWorlds", config, List.of("pvp"), List.of("Worlds that radius mining isn't allowed in."));
+        cannotHatMessage = ConfigUtils.setupConfig("Messages.CannotHat", config, "&c&lYou cannot run /hat with your current helmet on!");
 
 
         plugin.saveConfig();
