@@ -232,7 +232,7 @@ public class BlockUtils {
             }
         }
 
-        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
     }
     //Breaks blocks in direction player is facing. Updates block b to air.
     public static void breakInFacingDoubleOres(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
@@ -328,7 +328,7 @@ public class BlockUtils {
             }
         }
 
-        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
     }
     //Breaks blocks in direction player is facing. Updates block b to air.
     public static void breakInFacingAutoPickup(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
@@ -434,7 +434,7 @@ public class BlockUtils {
         PlayerInventory inv = p.getInventory();
         for (ItemStack item : mergeSimilarItemStacks(drops)){
             if (inv.firstEmpty() == -1) {
-                dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+                dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
                 return;
             }
             else {
@@ -532,7 +532,7 @@ public class BlockUtils {
             }
         }
 
-        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
     }
 
     //Breaks blocks in direction player is facing. Updates block b to air. Only whitelist. Replaces all drops with material.
@@ -624,7 +624,7 @@ public class BlockUtils {
             }
         }
 
-        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
     }
 
     //Breaks blocks in direction player is facing. Updates block b to air. Replaces drop A with drop B
@@ -736,7 +736,7 @@ public class BlockUtils {
             }
         }
 
-        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
     }
     //Breaks blocks in direction player is facing. Updates block b to air. Replaces drop A with drop B
     public static void breakInFacingAutoPickup(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist, String dropFromContains, Material dropTo) {
@@ -849,7 +849,7 @@ public class BlockUtils {
         PlayerInventory inv = p.getInventory();
         for (ItemStack item : mergeSimilarItemStacks(drops)){
             if (inv.firstEmpty() == -1) {
-                dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+                dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
                 return;
             }
             else {
@@ -940,7 +940,7 @@ public class BlockUtils {
             }
         }
 
-        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
     }
     //Breaks blocks in direction player is facing. Updates block b to air. Only whitelist. AutoPickup
     public static void breakInFacingAutoPickup(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist) {
@@ -1032,7 +1032,7 @@ public class BlockUtils {
         PlayerInventory inv = p.getInventory();
         for (ItemStack item : mergeSimilarItemStacks(drops)){
             if (inv.firstEmpty() == -1) {
-                dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+                dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
                 return;
             }
             else {
@@ -1120,7 +1120,7 @@ public class BlockUtils {
             }
         }
 
-        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
     }
     //Breaks blocks in direction player is facing. Updates block b to air.
     public static void breakInRadius(Block b, int radius, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
@@ -1178,7 +1178,7 @@ public class BlockUtils {
             }
         }
 
-        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
     }
 
     //Breaks blocks in direction player is facing. Updates block b to air. Only whitelist.
@@ -1231,43 +1231,42 @@ public class BlockUtils {
             }
         }
 
-        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
     }
 
+    /**
+     * Combines Similar ItemStacks into one ItemStack, Each Combined Stack Won't go Over Max Stack Size
+     * @author DuneSciFye
+     * @param itemStacks Collection of ItemStacks
+     * @return Collection of Combined ItemStacks
+     */
     public static Collection<ItemStack> mergeSimilarItemStacks(Collection<ItemStack> itemStacks) {
-        Map<Material, ItemStack> mergedStacksMap = new HashMap<>();
-        Collection<ItemStack> finalItems = new ArrayList<>();
+        Map<ItemStack, Integer> mergedStacksMap = new HashMap<>(); //ItemStack with Stack Size of 1-Used to Compare, Item's Stack Size
+        Collection<ItemStack> finalItems = new ArrayList<>(); //Items over Max Stack Size here
 
         for (ItemStack stack : itemStacks) {
-            Material material = stack.getType();
-            ItemStack existing = mergedStacksMap.get(material);
-            if (existing == null) {
-                mergedStacksMap.put(material, stack.clone());
-            } else {
-                int stackSize = existing.getAmount() + stack.getAmount(), maxSize = material.getMaxStackSize();
+            ItemStack oneStack = stack.asQuantity(1);
+            int stackSize = stack.getAmount();
+            Integer currentStackSize = mergedStacksMap.remove(oneStack);
+            if (currentStackSize != null) {
+                int maxSize = stack.getMaxStackSize();
+                stackSize += currentStackSize;
                 while (stackSize > maxSize) {
-                    finalItems.add(existing.asQuantity(maxSize));
+                    finalItems.add(stack.asQuantity(maxSize));
                     stackSize-=maxSize;
                 }
-                existing.setAmount(stackSize);
             }
+            if (stackSize > 0) mergedStacksMap.put(oneStack, stackSize);
         }
-        finalItems.addAll(mergedStacksMap.values());
+        for (ItemStack stack : mergedStacksMap.keySet()) { //Leftover items
+            finalItems.add(stack.asQuantity(mergedStacksMap.get(stack)));
+        }
         return finalItems;
     }
 
 
-    public static void dropAllItemStacks(Collection<ItemStack> itemStacks, World world, Location location) {
-        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) {
-            int amount = item.getAmount();
-            while (amount > 64) {
-                item.setAmount(64);
-                world.dropItemNaturally(location, item);
-                amount -= 64;
-            }
-            item.setAmount(amount);
-            world.dropItemNaturally(location, item);
-        }
+    public static void dropAllItemStacks(World world, Location location, Collection<ItemStack> itemStacks) {
+        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) world.dropItemNaturally(location, item);
     }
 
     public static boolean isNaturallyGenerated(Block block) {

@@ -213,7 +213,7 @@ public class BlockBreakListener implements Listener {
                     case "ancientthoemega"->
                         handleAncienttHoe(drops, p, b, location, item, meta, container, AncienttItemsConfig.AncienttHoeMegaParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeMegaFireworkChance, AncienttItemsConfig.AncienttHoeMegaFarmKeyChance, AncienttItemsConfig.AncienttHoeMegaParrotSpawnerChance, AncienttItemsConfig.AncienttHoeMegaInfiniteSeedPouchChance);
                     case "twistedhoe", "twistedhoe2", "twistedhoemega" -> {
-                        dropAllItemStacks(drops, location.getWorld(), location);
+                        dropAllItemStacks(location.getWorld(), location, drops);
 
                         //Auto replant except for Sugar Cane, doesn't require seed
                         if (b.getType() != Material.SUGAR_CANE) {
@@ -236,7 +236,7 @@ public class BlockBreakListener implements Listener {
                 PlayerInventory inv = p.getInventory();
                 for (ItemStack drop : mergeSimilarItemStacks(drops)) {
                     if (inv.firstEmpty() == -1) {
-                        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+                        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
                         break;
                     }
                     else {
