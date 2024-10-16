@@ -6,6 +6,9 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.files.Config;
+import me.ryanhamshire.GriefPrevention.Claim;
+import me.ryanhamshire.GriefPrevention.ClaimPermission;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -150,5 +153,14 @@ public class Utils {
             if (regions.contains(rg.getId().toLowerCase())) return true;
         }
         return false;
+    }
+
+
+    public static boolean isInClaimOrWilderness(final Player player, final Location location) {
+        if (LunarItems.griefPreventionEnabled) {
+            final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
+            return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
+        }
+        return true;
     }
 }

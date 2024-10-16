@@ -25,6 +25,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static me.dunescifye.lunaritems.utils.Utils.isInClaimOrWilderness;
 import static org.bukkit.Bukkit.getServer;
 
 public class BlockUtils {
@@ -119,11 +120,6 @@ public class BlockUtils {
         final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
         if (claim == null) return false;
         return claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
-    }
-
-    public static boolean isInsideClaimOrWilderness(final Player player, final Location location) {
-        final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
-        return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
     }
     public static boolean isWilderness(Location location) {
         return GriefPrevention.instance.dataStore.getClaimAt(location, true, null) == null;
@@ -289,7 +285,7 @@ public class BlockUtils {
                                 //Testing blacklist
                                 if (notInBlacklist(relative, blacklist)) {
                                     //Testing claim
-                                    if (isInsideClaimOrWilderness(p, relative.getLocation())) {
+                                    if (isInClaimOrWilderness(p, relative.getLocation())) {
                                         if (inWhitelist(relative, ores) && !heldItem.containsEnchantment(Enchantment.SILK_TOUCH)) {
                                             drops.addAll(relative.getDrops(heldItem));
                                         }
@@ -1240,6 +1236,7 @@ public class BlockUtils {
 
     public static Collection<ItemStack> mergeSimilarItemStacks(Collection<ItemStack> itemStacks) {
         Map<Material, ItemStack> mergedStacksMap = new HashMap<>();
+        Collection<ItemStack> finalItems = new ArrayList<>();
 
         for (ItemStack stack : itemStacks) {
             Material material = stack.getType();
@@ -1247,10 +1244,16 @@ public class BlockUtils {
             if (existing == null) {
                 mergedStacksMap.put(material, stack.clone());
             } else {
-                existing.setAmount(existing.getAmount() + stack.getAmount());
+                int stackSize = existing.getAmount() + stack.getAmount(), maxSize = material.getMaxStackSize();
+                while (stackSize > maxSize) {
+                    finalItems.add(existing.asQuantity(maxSize));
+                    stackSize-=maxSize;
+                }
+                existing.setAmount(stackSize);
             }
         }
-        return mergedStacksMap.values();
+        finalItems.addAll(mergedStacksMap.values());
+        return finalItems;
     }
 
 

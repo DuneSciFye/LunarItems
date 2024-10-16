@@ -26,6 +26,7 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -42,6 +43,8 @@ import static me.dunescifye.lunaritems.files.AquaticItemsConfig.*;
 import static me.dunescifye.lunaritems.files.Config.prefix;
 import static me.dunescifye.lunaritems.files.Config.radiusMiningDisabledWorlds;
 import static me.dunescifye.lunaritems.files.NexusItemsConfig.*;
+import static me.dunescifye.lunaritems.utils.BlockUtils.*;
+import static me.dunescifye.lunaritems.utils.Utils.isInClaimOrWilderness;
 
 public class BlockBreakListener implements Listener {
 
@@ -210,7 +213,7 @@ public class BlockBreakListener implements Listener {
                     case "ancientthoemega"->
                         handleAncienttHoe(drops, p, b, location, item, meta, container, AncienttItemsConfig.AncienttHoeMegaParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeMegaFireworkChance, AncienttItemsConfig.AncienttHoeMegaFarmKeyChance, AncienttItemsConfig.AncienttHoeMegaParrotSpawnerChance, AncienttItemsConfig.AncienttHoeMegaInfiniteSeedPouchChance);
                     case "twistedhoe", "twistedhoe2", "twistedhoemega" -> {
-                        BlockUtils.dropAllItemStacks(drops, location.getWorld(), location);
+                        dropAllItemStacks(drops, location.getWorld(), location);
 
                         //Auto replant except for Sugar Cane, doesn't require seed
                         if (b.getType() != Material.SUGAR_CANE) {
@@ -225,8 +228,22 @@ public class BlockBreakListener implements Listener {
         else {
             if (radiusMiningDisabledWorlds.contains(p.getWorld().getName())) return;
 
-            if (itemID.contains("nightmarepick")) {
+            if (itemID.contains("nightmarepick") && BlockUtils.inWhitelist(b, BlockUtils.ores)) {
+                Collection<ItemStack> drops = new ArrayList<>();
 
+                veinMineOres25ChanceDouble(b, drops, b.getType(), p, item);
+
+                PlayerInventory inv = p.getInventory();
+                for (ItemStack drop : mergeSimilarItemStacks(drops)) {
+                    if (inv.firstEmpty() == -1) {
+                        dropAllItemStacks(drops, b.getWorld(), b.getLocation());
+                        break;
+                    }
+                    else {
+                        inv.addItem(drop);
+                        drops.remove(drop);
+                    }
+                }
             }
 
             //Ancient Tools
@@ -427,6 +444,27 @@ public class BlockBreakListener implements Listener {
                 String material = b.getType().toString();
                 Utils.dropItems(b.getLocation(), new ItemStack(Material.getMaterial(material.substring(10, material.length() - 3) + "BLOCK")));
                 return;
+            }
+        }
+    }
+
+
+    private void veinMineOres25ChanceDouble(Block center, Collection<ItemStack> drops, Material material, Player player, ItemStack item) {
+        for (int x = -1; x <= 1; x++) { //These 3 for loops check a 3x3x3 cube around the block in question
+            for (int y = -1; y <= 1; y++) {
+                for (int z = -1; z <= 1; z++) {
+                    Block relative = center.getRelative(x, y, z);
+                    if (relative.getType().equals(material)) {
+                        //Testing claim
+                        Location relativeLocation = relative.getLocation();
+                        if (isInClaimOrWilderness(player, relativeLocation)) {
+                            drops.addAll(relative.getDrops(item));
+                            if (ThreadLocalRandom.current().nextInt(4) == 0) drops.addAll(relative.getDrops(item));
+                            relative.setType(Material.AIR);
+                            this.veinMineOres25ChanceDouble(relative, drops, material, player, item);
+                        }
+                    }
+                }
             }
         }
     }
