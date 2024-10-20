@@ -44,6 +44,7 @@ import static me.dunescifye.lunaritems.files.Config.prefix;
 import static me.dunescifye.lunaritems.files.Config.radiusMiningDisabledWorlds;
 import static me.dunescifye.lunaritems.files.NexusItemsConfig.*;
 import static me.dunescifye.lunaritems.utils.BlockUtils.*;
+import static me.dunescifye.lunaritems.utils.Utils.getBlocksInRadius;
 import static me.dunescifye.lunaritems.utils.Utils.isInClaimOrWilderness;
 
 public class BlockBreakListener implements Listener {
@@ -431,39 +432,16 @@ public class BlockBreakListener implements Listener {
         }
     }
 
-    private void dropOreBlock(Block b) {
-        for (Predicate<Block> predicate : BlockUtils.regularOres) {
-            if (predicate.test(b)) {
-                String material = b.getType().toString();
-                Utils.dropItems(b.getLocation(), new ItemStack(Material.getMaterial(material.substring(0, material.length() - 3) + "BLOCK")));
-                return;
-            }
-        }
-        for (Predicate<Block> predicate : BlockUtils.deepslateOres) {
-            if (predicate.test(b)) {
-                String material = b.getType().toString();
-                Utils.dropItems(b.getLocation(), new ItemStack(Material.getMaterial(material.substring(10, material.length() - 3) + "BLOCK")));
-                return;
-            }
-        }
-    }
-
-
     private void veinMineOres25ChanceDouble(Block center, Collection<ItemStack> drops, Material material, Player player, ItemStack item) {
-        for (int x = -1; x <= 1; x++) { //These 3 for loops check a 3x3x3 cube around the block in question
-            for (int y = -1; y <= 1; y++) {
-                for (int z = -1; z <= 1; z++) {
-                    Block relative = center.getRelative(x, y, z);
-                    if (relative.getType().equals(material)) {
-                        //Testing claim
-                        Location relativeLocation = relative.getLocation();
-                        if (isInClaimOrWilderness(player, relativeLocation)) {
-                            drops.addAll(relative.getDrops(item));
-                            if (ThreadLocalRandom.current().nextInt(4) == 0) drops.addAll(relative.getDrops(item));
-                            relative.setType(Material.AIR);
-                            this.veinMineOres25ChanceDouble(relative, drops, material, player, item);
-                        }
-                    }
+        for (Block b : getBlocksInRadius(center, 1)) {
+            if (b.getType().equals(material)) {
+                //Testing claim
+                Location relativeLocation = b.getLocation();
+                if (isInClaimOrWilderness(player, relativeLocation)) {
+                    drops.addAll(b.getDrops(item));
+                    if (Utils.isNaturallyGenerated(b) && ThreadLocalRandom.current().nextInt(4) == 0) drops.addAll(b.getDrops(item));
+                    b.setType(Material.AIR);
+                    this.veinMineOres25ChanceDouble(b, drops, material, player, item);
                 }
             }
         }

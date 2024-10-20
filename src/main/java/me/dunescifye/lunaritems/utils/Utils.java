@@ -3,28 +3,61 @@ package me.dunescifye.lunaritems.utils;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.lunaritems.LunarItems;
-import me.dunescifye.lunaritems.files.Config;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.plugin.Plugin;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.logging.Logger;
 
-import static me.dunescifye.lunaritems.utils.BlockUtils.mergeSimilarItemStacks;
+import static org.bukkit.Bukkit.getServer;
 
 public class Utils {
+
+    private static final CoreProtectAPI coreProtectAPI;
+
+    static {
+        Plugin plugin = getServer().getPluginManager().getPlugin("CoreProtect");
+        Logger logger = LunarItems.getPlugin().getLogger();
+
+        // Check that CoreProtect is loaded
+        if (!(plugin instanceof CoreProtect)) {
+            logger.warning("core protect plugin not found");
+            coreProtectAPI = null;
+        } else {
+            // Check that the API is enabled
+            CoreProtectAPI CoreProtect = ((CoreProtect) plugin).getAPI();
+            if (!CoreProtect.isEnabled()) {
+                logger.warning("core protect api is not enabled");
+                coreProtectAPI = null;
+            } else {
+                // Check that a compatible version of the API is loaded
+                if (CoreProtect.APIVersion() < 10) {
+                    logger.warning("core protect api version is not supported");
+                    coreProtectAPI = null;
+                } else {
+                    coreProtectAPI = CoreProtect;
+                }
+            }
+        }
+    }
+
+    private static CoreProtectAPI getCoreProtect() {
+        return coreProtectAPI;
+    }
 
     public static void runConsoleCommands(String... commands){
         Server server = Bukkit.getServer();
@@ -50,6 +83,21 @@ public class Utils {
         }
     }
 
+    public static boolean isNaturallyGenerated(Block block) {
+        List<String[]> lookup = coreProtectAPI.queueLookup(block);
+        if (lookup == null || lookup.isEmpty()) {
+            lookup = coreProtectAPI.blockLookup(block, 2147483647);
+        } else {
+            return false;
+        }
+        if (lookup != null && !lookup.isEmpty()) {
+            CoreProtectAPI.ParseResult parseResult = coreProtectAPI.parseResult(lookup.getFirst());
+            return parseResult.getPlayer().startsWith("#") || parseResult.isRolledBack();
+        }
+        return true;
+    }
+
+
     //Drop item with owner
     public static void dropItems(Location location, UUID uuid, ItemStack... items) {
         for (ItemStack item : items) {
@@ -68,71 +116,6 @@ public class Utils {
         }
     }
 
-
-
-    //Update lore and PDC for two variables
-    public static void updateKey(Player p, ItemStack item, ItemMeta meta, PersistentDataContainer container, NamespacedKey key1, NamespacedKey key2, String variable, Object... matchers){
-        //Add first two to the list again, allows for cycling back
-        List<Object> newMatchers = new ArrayList<>(Arrays.asList(matchers));
-        newMatchers.add(matchers[0]);
-        newMatchers.add(matchers[1]);
-        //Obtain current keys
-        Object oldKey1 = container.get(key1, LunarItems.dataType.get(key1));
-        //Set new keys to first values in case key's get messed up
-        Object newKey1 =  matchers[0];
-        Object newKey2 =  matchers[1];
-        //Match key to our list
-        for (int i = 0; i < newMatchers.size(); i+=2) {
-            if (Objects.equals(oldKey1, newMatchers.get(i))) {
-                newKey1 = newMatchers.get(i + 2);
-                newKey2 = newMatchers.get(i + 3);
-                break;
-            }
-        }
-        //Send player message
-        sendPlayerChangeVariableMessage(p, Config.changeVariableMessage, variable, String.valueOf(newKey1));
-        //Update PDC, lore, and Meta
-        container.set(key1, LunarItems.dataType.get(key1), newKey1);
-        container.set(key2, LunarItems.dataType.get(key2), newKey2);
-        meta.lore(updateLore(item, " " + oldKey1 + " ", " " + newKey1 + " "));
-        item.setItemMeta(meta);
-    }
-    //Update lore and PDC for three variables
-    public static void updateKey(Player p, ItemStack item, ItemMeta meta, PersistentDataContainer container, NamespacedKey key1, NamespacedKey key2, NamespacedKey key3, String variable, Object... matchers){
-        //Add first three to the list again, allows for cycling back
-        List<Object> newMatchers = new ArrayList<>(Arrays.asList(matchers));
-        newMatchers.add(matchers[0]);
-        newMatchers.add(matchers[1]);
-        newMatchers.add(matchers[2]);
-        //Obtain current keys
-        Object oldKey1 = container.get(key1, LunarItems.dataType.get(key1));
-        //Set new keys to first values in case key's get messed up
-        Object newKey1 = matchers[0];
-        Object newKey2 = matchers[1];
-        Object newKey3 = matchers[2];
-        //Match key to our list
-        for (int i = 0; i < newMatchers.size(); i+=3) {
-            if (Objects.equals(oldKey1, newMatchers.get(i))) {
-                newKey1 = newMatchers.get(i + 3);
-                newKey2 = newMatchers.get(i + 4);
-                newKey3 = newMatchers.get(i + 5);
-                break;
-            }
-        }
-        //Send player message
-        sendPlayerChangeVariableMessage(p, Config.changeVariableMessage, variable, String.valueOf(newKey1));
-        //Update PDC, lore, and Meta
-        container.set(key1, LunarItems.dataType.get(key1), newKey1);
-        container.set(key2, LunarItems.dataType.get(key2), newKey2);
-        container.set(key3, LunarItems.dataType.get(key3), newKey3);
-        meta.lore(updateLore(item, " " + oldKey1 + " ", " " + newKey1 + " "));
-        item.setItemMeta(meta);
-    }
-
-
-    public static void sendPlayerChangeVariableMessage(Player player, String message, String variable, String content){
-        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, Config.prefix + message.replace("%player%", player.getName()).replace("%variable%", variable).replace("%content%", content))));
-    }
 
     public static List<Component> updateLore(ItemStack item, String matcher, String replacement){
         List<Component> loreList = item.lore();
@@ -163,4 +146,73 @@ public class Utils {
         }
         return true;
     }
+
+    public static boolean testBlock(Block b, List<Predicate<Block>>[] predicates) {
+        for (Predicate<Block> whitelist : predicates[0])
+            if (whitelist.test(b)) {
+                for (Predicate<Block> blacklist : predicates[1])
+                    if (blacklist.test(b)) return false;
+                return true;
+            }
+        return false;
+    }
+
+    public static Set<Block> getBlocksInRadius(Block origin, final int radius) {
+        Set<Block> blocks = new HashSet<>();
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    blocks.add(origin.getRelative(x, y, z));
+                }
+            }
+        }
+
+        return blocks;
+    }
+
+    public static Set<Block> getBlocksInFacing(Block origin, final int radius, int depth, final Player player) {
+        Set<Block> blocks = new HashSet<>();
+        depth = depth > 0 ? depth - 1 : depth;
+
+        double pitch = player.getLocation().getPitch();
+        int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
+        if (pitch < -45) {
+            yStart = 0;
+            yEnd = depth;
+        } else if (pitch > 45) {
+            yStart = -depth;
+            yEnd = 0;
+        } else {
+            switch (player.getFacing()) {
+                case NORTH -> {
+                    zStart = -depth;
+                    zEnd = 0;
+                }
+                case SOUTH -> {
+                    zStart = 0;
+                    zEnd = depth;
+                }
+                case WEST -> {
+                    xStart = -depth;
+                    xEnd = 0;
+                }
+                case EAST -> {
+                    xStart = 0;
+                    xEnd = depth;
+                }
+            }
+        }
+
+        for (int x = xStart; x <= xEnd; x++) {
+            for (int y = yStart; y <= yEnd; y++) {
+                for (int z = zStart; z <= zEnd; z++) {
+                    blocks.add(origin.getRelative(x, y, z));
+                }
+            }
+        }
+
+        return blocks;
+    }
+
 }
