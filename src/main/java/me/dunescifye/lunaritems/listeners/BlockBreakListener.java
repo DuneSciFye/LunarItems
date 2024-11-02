@@ -221,6 +221,8 @@ public class BlockBreakListener implements Listener {
                         }
                     }
                 }
+            } else {
+                e.setCancelled(true);
             }
         }
         //Not a hoe

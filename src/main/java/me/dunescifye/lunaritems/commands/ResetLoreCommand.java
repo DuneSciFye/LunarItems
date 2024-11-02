@@ -20,9 +20,9 @@ public class ResetLoreCommand {
                 PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
                 String itemID = container.get(LunarItems.keyEIID, PersistentDataType.STRING);
                 if (itemID == null) return;
-
+                Utils.runConsoleCommands("ei refresh " + player.getName() + " " + itemID + "LORE");
+                /*
                 Set<NamespacedKey> keys = container.getKeys();
-
                 for (NamespacedKey key : keys) {
                     if (key.equals(LunarItems.keyEIID) || !key.value().startsWith("score-")) continue;
                     if (container.has(key, PersistentDataType.STRING)) {
@@ -39,6 +39,8 @@ public class ResetLoreCommand {
                         Utils.runConsoleCommands("ei console-modification set variable " + player.getName() + " " + player.getInventory().getHeldItemSlot() + " " + key.value().substring(6) + " " + currentValue);
                     }
                 }
+
+                 */
             })
             .withPermission("lunaritems.command.resetlore")
             .register();
