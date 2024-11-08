@@ -4,7 +4,7 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.lunaritems.commands.CustomItemsCommand;
-import me.dunescifye.lunaritems.commands.ResetLoreCommand;
+import me.dunescifye.lunaritems.commands.ResetItemCommand;
 import me.dunescifye.lunaritems.commands.UpdateLoreCommand;
 import me.dunescifye.lunaritems.commands.WallOfFireCommand;
 import me.dunescifye.lunaritems.files.*;
@@ -113,7 +113,7 @@ public final class LunarItems extends JavaPlugin {
     private void registerCommands() {
         CustomItemsCommand.register();
         WallOfFireCommand.register();
-        ResetLoreCommand.register();
+        ResetItemCommand.register();
         UpdateLoreCommand.register();
     }
 

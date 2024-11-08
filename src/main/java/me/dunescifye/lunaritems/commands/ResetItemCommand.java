@@ -1,26 +1,23 @@
 package me.dunescifye.lunaritems.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.utils.Utils;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Set;
-
-public class ResetLoreCommand {
+public class ResetItemCommand {
 
     public static void register() {
-        new CommandAPICommand("resetlore")
+        new CommandAPICommand("resetitem")
+            .withArguments(new MultiLiteralArgument("Function", "lore", "attributes"))
             .executesPlayer((player, args) -> {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 if (!item.hasItemMeta()) return;
-                PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
-                String itemID = container.get(LunarItems.keyEIID, PersistentDataType.STRING);
+                String itemID = item.getItemMeta().getPersistentDataContainer().get(LunarItems.keyEIID, PersistentDataType.STRING);
                 if (itemID == null) return;
-                Utils.runConsoleCommands("ei refresh " + player.getName() + " " + itemID + "LORE");
+                Utils.runConsoleCommands("ei refresh " + player.getName() + " " + itemID + " " + args.getByClass("Function", String.class).toUpperCase());
                 /*
                 Set<NamespacedKey> keys = container.getKeys();
                 for (NamespacedKey key : keys) {
