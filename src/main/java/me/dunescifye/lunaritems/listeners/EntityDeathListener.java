@@ -2,12 +2,15 @@ package me.dunescifye.lunaritems.listeners;
 
 import me.dunescifye.lunaritems.LunarItems;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Donkey;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -61,14 +64,15 @@ public class EntityDeathListener implements Listener {
 
         //Ancient armor double mob drops
         if (helmetID.contains("ancientthelm") && chestplateID.contains("ancienttchest") && leggingsID.contains("ancienttlegs") && bootsID.contains("ancienttboots")) {
-            if (!(entity instanceof Player)) {
+            if (!(entity instanceof Minecart)) {
+                if (entity instanceof InventoryHolder inventoryHolder && !inventoryHolder.getInventory().isEmpty()) return;
                 EntityEquipment entityEquipment = entity.getEquipment();
                 if (entityEquipment == null) return;
                 List<ItemStack> equipment = List.of(entityEquipment.getItemInMainHand(), entityEquipment.getItemInOffHand(), entityEquipment.getChestplate(), entityEquipment.getBoots(), entityEquipment.getHelmet(), entityEquipment.getLeggings());
                 List<ItemStack> drops = e.getDrops();
                 drop: for (ItemStack drop : drops) {
                     for (ItemStack item : equipment) {
-                        if (item.isSimilar(drop)) continue drop;
+                        if (item.isSimilar(drop) || item.hasItemMeta()) continue drop;
                     }
                     entity.getWorld().dropItemNaturally(entity.getLocation(), drop);
                 }
