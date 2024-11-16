@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public final class LunarItems extends JavaPlugin {
-
     private static LunarItems plugin;
 
     public static final NamespacedKey keyEIID = new NamespacedKey("executableitems", "ei-id");
@@ -57,7 +56,7 @@ public final class LunarItems extends JavaPlugin {
         defaultValue.put(keyLoreDrop, "Default");
         defaultValue.put(keyLoreRadius, "1x1");
     }
-    public static boolean griefPreventionEnabled, decentHologramsEnabled;
+    public static boolean griefPreventionEnabled, decentHologramsEnabled, factionsUUIDEnabled;
 
     public static LunarItems getPlugin() {
         return plugin;
@@ -91,6 +90,10 @@ public final class LunarItems extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("DecentHolograms")) {
             logger.info("Detected DecentHolograms, enabling support for it.");
             decentHologramsEnabled = true;
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("Factions")) {
+            logger.info("Detected FactionsUUID, enabling support for it.");
+            factionsUUIDEnabled = true;
         }
 
         logger.info("Lunar Custom Items Enabled.");

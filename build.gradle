@@ -33,6 +33,9 @@ repositories {
         url = "https://maven.enginehub.org/repo/"
     }
     maven { url = "https://s01.oss.sonatype.org/content/repositories/snapshots" }
+    maven { //FactionsUUID
+        url = "https://dependency.download/releases"
+    }
 }
 
 dependencies {
@@ -43,6 +46,7 @@ dependencies {
     compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.8'
     compileOnly 'com.github.GriefPrevention:GriefPrevention:16.18.2'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
+    compileOnly 'dev.kitteh:factionsuuid:0.7.0'
     implementation 'com.jeff_media:MorePersistentDataTypes:2.4.0'
     implementation 'com.jeff-media:custom-block-data:2.2.2'
     implementation "dev.jorel:commandapi-bukkit-shade:9.6.0-SNAPSHOT"
