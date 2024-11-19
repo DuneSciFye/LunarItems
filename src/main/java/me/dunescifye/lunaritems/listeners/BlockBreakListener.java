@@ -8,6 +8,7 @@ import me.dunescifye.lunaritems.files.AncienttItemsConfig;
 import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.files.Config;
 import me.dunescifye.lunaritems.utils.BlockUtils;
+import me.dunescifye.lunaritems.utils.FUtils;
 import me.dunescifye.lunaritems.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
@@ -36,8 +37,8 @@ import static me.dunescifye.lunaritems.files.Config.prefix;
 import static me.dunescifye.lunaritems.files.Config.radiusMiningDisabledWorlds;
 import static me.dunescifye.lunaritems.files.NexusItemsConfig.*;
 import static me.dunescifye.lunaritems.utils.BlockUtils.*;
+import static me.dunescifye.lunaritems.utils.FUtils.isInClaimOrWilderness;
 import static me.dunescifye.lunaritems.utils.Utils.getBlocksInRadius;
-import static me.dunescifye.lunaritems.utils.Utils.isInClaimOrWilderness;
 
 public class BlockBreakListener implements Listener {
 
@@ -286,7 +287,7 @@ public class BlockBreakListener implements Listener {
                 e.setDropItems(false);
                 BlockUtils.breakInFacingAutoPickup(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.shovelWhitelist);
             } else if (itemID.contains("soulpick") && BlockUtils.inWhitelist(b, BlockUtils.pickaxeWhitelist) && BlockUtils.notInBlacklist(b, BlockUtils.pickaxeBlacklist)) {
-                BlockUtils.breakInFacingDoubleOres(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
+                FUtils.breakInFacingDoubleOres(b, (int) (double) container.getOrDefault(LunarItems.keyRadius, PersistentDataType.DOUBLE, 0.0), (int) (double) container.getOrDefault(LunarItems.keyDepth, PersistentDataType.DOUBLE, 0.0), p, BlockUtils.pickaxeWhitelist, BlockUtils.pickaxeBlacklist);
             }
 
             else if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {

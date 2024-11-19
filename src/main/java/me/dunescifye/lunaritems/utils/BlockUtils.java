@@ -25,6 +25,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static me.dunescifye.lunaritems.utils.FUtils.isInClaimOrWilderness;
 import static me.dunescifye.lunaritems.utils.Utils.*;
 import static org.bukkit.Bukkit.getServer;
 
@@ -233,37 +234,6 @@ public class BlockUtils {
         }
 
         dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
-    }
-    //Breaks blocks in direction player is facing. Updates block b to air.
-    public static void breakInFacingDoubleOres(Block center, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
-        Collection<ItemStack> drops = new ArrayList<>();
-        ItemStack heldItem = p.getInventory().getItemInMainHand();
-        for (Block b : getBlocksInFacing(center, radius, depth, p)) {
-            //Testing custom block
-            PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
-            if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
-                continue;
-            }
-            //Testing whitelist
-            for (Predicate<Block> whitelisted : whitelist) {
-                if (whitelisted.test(b)) {
-                    //Testing blacklist
-                    if (notInBlacklist(b, blacklist)) {
-                        //Testing claim
-                        if (isInClaimOrWilderness(p, b.getLocation())) {
-                            if (inWhitelist(b, ores) && !heldItem.containsEnchantment(Enchantment.SILK_TOUCH)) {
-                                drops.addAll(b.getDrops(heldItem));
-                            }
-                            drops.addAll(b.getDrops(heldItem));
-                            b.setType(Material.AIR);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        dropAllItemStacks(center.getWorld(), center.getLocation(), drops);
     }
     //Breaks blocks in direction player is facing. Updates block b to air.
     public static void breakInFacingAutoPickup(Block b, int radius, int depth, Player p, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
