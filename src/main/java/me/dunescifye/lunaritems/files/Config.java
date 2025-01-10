@@ -10,7 +10,7 @@ public class Config {
 
     public static String prefix, cooldownMessageHours, cooldownMessageMinutes, cooldownMessageSeconds, invalidTargetLocation,
         teleportPadPlaceFirstMessage, teleportPadPlaceSecondMessage, changeVariableMessage, spawnerCommand, infinitePouchCommand, receiveItemMessage,
-        cannotHatMessage;
+        cannotHatMessage, speedRemovedMessage;
     public static List<String> radiusMiningDisabledWorlds;
     public static void setup(LunarItems plugin) {
         FileConfiguration config = plugin.getConfig();
@@ -28,6 +28,7 @@ public class Config {
         receiveItemMessage = ConfigUtils.setupConfig("Messages.ReceiveItemMessage", config, "&7You received %item%.", List.of("Message when player receives item from drop. For example spawners, keys, spawn eggs, etc. Typically in format of '1x Parrot Spawner'"));
         radiusMiningDisabledWorlds = ConfigUtils.setupConfig("RadiusMiningDisabledWorlds", config, List.of("pvp"), List.of("Worlds that radius mining isn't allowed in."));
         cannotHatMessage = ConfigUtils.setupConfig("Messages.CannotHat", config, "&c&lYou cannot run /hat with your current helmet on!");
+        speedRemovedMessage = ConfigUtils.setupConfig("Messages.SpeedRemoved", config, "&cYour speed was removed!");
 
 
         plugin.saveConfig();
