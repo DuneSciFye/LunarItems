@@ -17,6 +17,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 
+import static me.dunescifye.lunaritems.files.Config.prefix;
+
 public class ItemFrameToInvTracker implements Listener {
 
     public static boolean enabled;
@@ -31,11 +33,9 @@ public class ItemFrameToInvTracker implements Listener {
         if (!(e.getEntity() instanceof ItemFrame itemFrame) || !(e.getDamager() instanceof Player p)) return;
         ItemStack item = itemFrame.getItem();
         if (!item.hasItemMeta()) return;
-        PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-        if (!pdc.has(LunarItems.keyEIID)) return;
         e.setCancelled(true);
         if (p.getInventory().addItem(item).isEmpty()) itemFrame.setItem(new ItemStack(Material.AIR));
-        else p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+        else p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + message));
     }
 
 }

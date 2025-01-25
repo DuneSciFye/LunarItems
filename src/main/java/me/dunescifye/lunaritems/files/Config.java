@@ -43,6 +43,7 @@ public class Config {
         ItemFrameToInvTracker.message = ConfigUtils.setupConfig("ItemFrameToInv.Message", config, "&cInventory is full!");
         TrashCommand.enabled = ConfigUtils.setupConfig("TrashCommand.Enabled", config, true);
         TrashCommand.inventoryName = LegacyComponentSerializer.legacyAmpersand().deserialize(ConfigUtils.setupConfig("TrashCommand.InventoryName", config, "Trash"));
+        TrashCommand.message = LegacyComponentSerializer.legacyAmpersand().deserialize(ConfigUtils.setupConfig("TrashCommand.Message", config, "&cYou cannot trash non vanilla items!"));
 
         plugin.saveConfig();
     }

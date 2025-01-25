@@ -19,3 +19,4 @@ ItemFrameToInv:
 TrashCommand:
   Enabled: true
   InventoryName: "Trash"
+  Message: "&cYou cannot trash non vanilla items!"

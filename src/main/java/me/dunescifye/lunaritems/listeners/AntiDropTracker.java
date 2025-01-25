@@ -15,6 +15,8 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static me.dunescifye.lunaritems.files.Config.prefix;
+
 public class AntiDropTracker implements Listener {
     public static boolean enabled;
     private final HashMap<UUID, DropData> drops = new HashMap<>();
@@ -45,7 +47,7 @@ public class AntiDropTracker implements Listener {
             }
         } else count = 1;
         drops.put(uuid, new DropData(item, count + 1, Instant.now()));
-        p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message.replace("%amount%", String.valueOf(requiredCount - count))));
+        p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + message.replace("%amount%", String.valueOf(requiredCount - count))));
         e.setCancelled(true);
     }
 
