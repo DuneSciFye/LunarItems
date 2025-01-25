@@ -1,8 +1,11 @@
 package me.dunescifye.lunaritems.files;
 
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.commands.TrashCommand;
 import me.dunescifye.lunaritems.listeners.AntiDropTracker;
+import me.dunescifye.lunaritems.listeners.ItemFrameToInvTracker;
 import me.dunescifye.lunaritems.utils.ConfigUtils;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.time.Duration;
@@ -36,6 +39,10 @@ public class Config {
         AntiDropTracker.requiredCount = ConfigUtils.setupConfig("AntiDrop.RequiredDropCount", config, 2);
         AntiDropTracker.duration = Duration.ofSeconds(ConfigUtils.setupConfig("AntiDrop.ExpireDuration", config, 2));
         AntiDropTracker.message = ConfigUtils.setupConfig("AntiDrop.Message", config, "&fDrop %amount% more time(s) to drop!");
+        ItemFrameToInvTracker.enabled = ConfigUtils.setupConfig("ItemFrameToInv.Enabled", config, true);
+        ItemFrameToInvTracker.message = ConfigUtils.setupConfig("ItemFrameToInv.Message", config, "&cInventory is full!");
+        TrashCommand.enabled = ConfigUtils.setupConfig("TrashCommand.Enabled", config, true);
+        TrashCommand.inventoryName = LegacyComponentSerializer.legacyAmpersand().deserialize(ConfigUtils.setupConfig("TrashCommand.InventoryName", config, "Trash"));
 
         plugin.saveConfig();
     }

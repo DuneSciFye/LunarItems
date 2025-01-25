@@ -3,10 +3,7 @@ package me.dunescifye.lunaritems;
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
-import me.dunescifye.lunaritems.commands.CustomItemsCommand;
-import me.dunescifye.lunaritems.commands.ResetItemCommand;
-import me.dunescifye.lunaritems.commands.UpdateLoreCommand;
-import me.dunescifye.lunaritems.commands.WallOfFireCommand;
+import me.dunescifye.lunaritems.commands.*;
 import me.dunescifye.lunaritems.files.*;
 import me.dunescifye.lunaritems.listeners.*;
 import org.bukkit.Bukkit;
@@ -112,6 +109,8 @@ public final class LunarItems extends JavaPlugin {
         new PlayerLeaveListener().playerLeaveListener(this);
         new PlayerRunCommandListener().playerRunCommandHandler(this);
         if (AntiDropTracker.enabled) new AntiDropTracker().registerEvents(this);
+        if (ItemFrameToInvTracker.enabled) new ItemFrameToInvTracker().registerEvents(this);
+        if (TrashCommand.enabled) new TrashCommand().registerEvents(this);
     }
 
     private void registerCommands() {
@@ -119,6 +118,7 @@ public final class LunarItems extends JavaPlugin {
         WallOfFireCommand.register();
         ResetItemCommand.register();
         UpdateLoreCommand.register();
+        if (TrashCommand.enabled) TrashCommand.register();
     }
 
     @Override
@@ -127,6 +127,7 @@ public final class LunarItems extends JavaPlugin {
         CommandAPI.unregister("walloffire");
         CommandAPI.unregister("resetlore");
         CommandAPI.unregister("updatelore");
+        CommandAPI.unregister("trash");
 
         CommandAPI.onDisable();
     }

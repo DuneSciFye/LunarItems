@@ -8,4 +8,14 @@ AquaticHoe:
     FrogSpawnEgg: 3000
 Global:
   Prefix: '&b&lSURVIVAL &8&l▶ '
-
+AntiDrop:
+  Enabled: true
+  RequiredDropCount: 2
+  ExpireDuration: 2
+  Message: "&fDrop %amount% more time(s) to drop!"
+ItemFrameToInv:
+  Enabled: true
+  Message: "&cInventory is full!"
+TrashCommand:
+  Enabled: true
+  InventoryName: "Trash"
