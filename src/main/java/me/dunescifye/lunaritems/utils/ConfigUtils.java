@@ -169,6 +169,14 @@ public class ConfigUtils {
 
         return Integer.parseInt(valueStr);
     }
+    //Boolean
+    public static Boolean setupConfig(String path, FileConfiguration config, Boolean defaultValue) {
+        if (!config.isSet(path)) {
+            config.set(path, defaultValue);
+            return defaultValue;
+        }
+        return config.getBoolean(path);
+    }
     //String
     public static String setupConfig(String path, FileConfiguration config, String defaultValue) {
         if (!config.isSet(path)) {

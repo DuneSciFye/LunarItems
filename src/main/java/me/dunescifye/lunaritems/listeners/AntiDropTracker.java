@@ -1,51 +1,55 @@
 package me.dunescifye.lunaritems.listeners;
 
 import me.dunescifye.lunaritems.LunarItems;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 
-public class AntiDropTracker implements Listener {
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.UUID;
 
-    ItemStack item;
-    int count;
-    int requiredCount;
+public class AntiDropTracker implements Listener {
+    public static boolean enabled;
+    private final HashMap<UUID, DropData> drops = new HashMap<>();
+    public static int requiredCount;
+    public static Duration duration = Duration.ofSeconds(2);
+    public static String message;
 
     public void registerEvents(LunarItems plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent e) {
         ItemStack item = e.getItemDrop().getItemStack();
-        System.out.println(item);
         if (!item.hasItemMeta()) return;
         PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
         if (!pdc.has(LunarItems.keyEIID)) return;
 
-        if (item.equals(this.item)) {
-            System.out.println("a");
-            count++;
-        }
-        else {
-            System.out.println("b");
-            count = 1;
-            this.item = item;
-            e.setCancelled(true);
-            return;
-        }
+        Player p = e.getPlayer();
+        UUID uuid = p.getUniqueId();
 
-        if (count >= requiredCount) {
-            System.out.println("c");
-            count = 0;
-        }
-        else {
-            e.setCancelled(true);
-            System.out.println("d");
-        }
+        DropData drop = drops.getOrDefault(uuid, new DropData(item, 1, Instant.now()));
+        int count = drop.count;
+        if (drop.item.equals(item) && Instant.now().isBefore(drop.time.plus(duration))) {
+            if (drop.count >= requiredCount) {
+                drops.remove(uuid);
+                return;
+            }
+        } else count = 1;
+        drops.put(uuid, new DropData(item, count + 1, Instant.now()));
+        p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message.replace("%amount%", String.valueOf(requiredCount - count))));
+        e.setCancelled(true);
+    }
+
+    private record DropData(ItemStack item, int count, Instant time) {
     }
 
 }

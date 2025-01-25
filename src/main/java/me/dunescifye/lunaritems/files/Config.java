@@ -1,9 +1,11 @@
 package me.dunescifye.lunaritems.files;
 
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.listeners.AntiDropTracker;
 import me.dunescifye.lunaritems.utils.ConfigUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.time.Duration;
 import java.util.List;
 
 public class Config {
@@ -13,6 +15,7 @@ public class Config {
         cannotHatMessage, speedRemovedMessage;
     public static List<String> radiusMiningDisabledWorlds;
     public static void setup(LunarItems plugin) {
+        plugin.reloadConfig();
         FileConfiguration config = plugin.getConfig();
 
         prefix = ConfigUtils.setupConfig("Global.Prefix", config, "&b&lSURVIVAL &8&l▶ ");
@@ -29,7 +32,10 @@ public class Config {
         radiusMiningDisabledWorlds = ConfigUtils.setupConfig("RadiusMiningDisabledWorlds", config, List.of("pvp"), List.of("Worlds that radius mining isn't allowed in."));
         cannotHatMessage = ConfigUtils.setupConfig("Messages.CannotHat", config, "&c&lYou cannot run /hat with your current helmet on!");
         speedRemovedMessage = ConfigUtils.setupConfig("Messages.SpeedRemoved", config, "&cYour speed was removed!");
-
+        AntiDropTracker.enabled = ConfigUtils.setupConfig("AntiDrop.Enabled", config, true);
+        AntiDropTracker.requiredCount = ConfigUtils.setupConfig("AntiDrop.RequiredDropCount", config, 2);
+        AntiDropTracker.duration = Duration.ofSeconds(ConfigUtils.setupConfig("AntiDrop.ExpireDuration", config, 2));
+        AntiDropTracker.message = ConfigUtils.setupConfig("AntiDrop.Message", config, "&fDrop %amount% more time(s) to drop!");
 
         plugin.saveConfig();
     }

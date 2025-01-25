@@ -10,6 +10,7 @@ import me.dunescifye.lunaritems.files.AquaticItemsConfig;
 import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.files.Config;
 import me.dunescifye.lunaritems.files.NexusItemsConfig;
+import me.dunescifye.lunaritems.listeners.AntiDropTracker;
 import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
