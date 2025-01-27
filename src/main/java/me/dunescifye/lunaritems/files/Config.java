@@ -40,10 +40,10 @@ public class Config {
         AntiDropTracker.duration = Duration.ofSeconds(ConfigUtils.setupConfig("AntiDrop.ExpireDuration", config, 2));
         AntiDropTracker.message = ConfigUtils.setupConfig("AntiDrop.Message", config, "&fDrop %amount% more time(s) to drop!");
         ItemFrameToInvTracker.enabled = ConfigUtils.setupConfig("ItemFrameToInv.Enabled", config, true);
-        ItemFrameToInvTracker.message = ConfigUtils.setupConfig("ItemFrameToInv.Message", config, "&cInventory is full!");
+        ItemFrameToInvTracker.message = LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + ConfigUtils.setupConfig("ItemFrameToInv.Message", config, "&cInventory is full!"));
         TrashCommand.enabled = ConfigUtils.setupConfig("TrashCommand.Enabled", config, true);
         TrashCommand.inventoryName = LegacyComponentSerializer.legacyAmpersand().deserialize(ConfigUtils.setupConfig("TrashCommand.InventoryName", config, "Trash"));
-        TrashCommand.message = LegacyComponentSerializer.legacyAmpersand().deserialize(ConfigUtils.setupConfig("TrashCommand.Message", config, "&cYou cannot trash non vanilla items!"));
+        TrashCommand.message = LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + ConfigUtils.setupConfig("TrashCommand.Message", config, "&cYou cannot trash non vanilla items!"));
 
         plugin.saveConfig();
     }

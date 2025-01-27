@@ -60,7 +60,7 @@ public class Utils {
         }
     }
 
-    private static CoreProtectAPI getCoreProtect() {
+    public static CoreProtectAPI getCoreProtect() {
         return coreProtectAPI;
     }
 

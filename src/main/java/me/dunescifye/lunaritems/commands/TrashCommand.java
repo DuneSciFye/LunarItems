@@ -57,7 +57,7 @@ public class TrashCommand implements Listener {
             if (!e.getClick().isShiftClick() || clickedItem == null || !clickedItem.hasItemMeta()) return;
         }
         e.setCancelled(true);
-        p.sendMessage(prefix + message);
+        p.sendMessage(message);
     }
 
     @EventHandler
