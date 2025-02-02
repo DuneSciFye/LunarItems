@@ -3,6 +3,7 @@ package me.dunescifye.lunaritems.listeners;
 import me.dunescifye.lunaritems.LunarItems;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,9 +32,10 @@ public class AntiDropTracker implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent e) {
         ItemStack item = e.getItemDrop().getItemStack();
-        if (!item.hasItemMeta()) return;
-        PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-        if (!pdc.has(LunarItems.keyEIID)) return;
+        if (item.hasItemMeta()) {
+            PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
+            if (!pdc.has(LunarItems.keyEIID) && !pdc.has(LunarItems.keyInfiniteBlock)) return;
+        } else if (item.getType() != Material.BLAZE_ROD) return;
 
         Player p = e.getPlayer();
         UUID uuid = p.getUniqueId();
