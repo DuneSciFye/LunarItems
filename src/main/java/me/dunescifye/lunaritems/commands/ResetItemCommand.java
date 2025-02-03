@@ -17,6 +17,7 @@ import java.util.List;
 public class ResetItemCommand {
 
     private static final Component unbreakableLine = Component.text("").append(Component.text("Unbreakable", NamedTextColor.GRAY).decoration(TextDecoration.OBFUSCATED, false).decoration(TextDecoration.BOLD, false).decoration(TextDecoration.STRIKETHROUGH, false).decoration(TextDecoration.UNDERLINED, false).decoration(TextDecoration.ITALIC, false));
+    private static final Component megaLine = Component.text("").append(Component.text("Mega Variant", NamedTextColor.GRAY).decoration(TextDecoration.OBFUSCATED, false).decoration(TextDecoration.BOLD, false).decoration(TextDecoration.STRIKETHROUGH, false).decoration(TextDecoration.UNDERLINED, false).decoration(TextDecoration.ITALIC, false));
 
     public static void register() {
 
@@ -53,7 +54,7 @@ public class ResetItemCommand {
         if (itemID == null) return;
         List<Component> oldLore = item.lore();
         if (oldLore == null) return;
-        int startLine = item.getType() == Material.FISHING_ROD ? oldLore.indexOf(unbreakableLine) : 0; // Keep Augments if Fishing Rod
+        int startLine = item.getType() == Material.FISHING_ROD ? oldLore.contains(megaLine) ? oldLore.indexOf(megaLine) : oldLore.indexOf(unbreakableLine) : 0; // Keep Augments if Fishing Rod
         Utils.runConsoleCommands("ei refresh " + p.getName() + " " + itemID + " " + function);
         ItemStack newItem = Utils.getInvItem(p, slot);
         if (newItem == null) return;
