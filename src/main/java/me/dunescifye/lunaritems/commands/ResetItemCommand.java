@@ -60,10 +60,10 @@ public class ResetItemCommand {
         if (newItem == null) return;
         List<Component> newLore = newItem.lore();
         if (newLore == null) return;
-        if (endLine == null) for (int i = newLore.size(); i < oldLore.size(); i++) // Add extra lore to New Lore
-            newLore.add(oldLore.get(i + startLine));
-        else for (int i = endLine; i < oldLore.size(); i++) // Add extra lore to New Lore with changed End line
-            newLore.add(oldLore.get(i + startLine));
+        if (endLine == null) for (int i = newLore.size() + startLine; i < oldLore.size(); i++) // Add extra lore to New Lore
+            newLore.add(oldLore.get(i));
+        else for (int i = endLine + startLine; i < oldLore.size(); i++) // Add extra lore to New Lore with changed End line
+            newLore.add(oldLore.get(i));
         for (int i = 0; i < startLine; i ++) // Add Augments to New Lore
             newLore.add(i, oldLore.get(i));
         newItem.lore(newLore);
