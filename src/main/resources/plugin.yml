@@ -2,9 +2,9 @@ name: LunarItems
 version: '${version}'
 main: me.dunescifye.lunaritems.LunarItems
 description: Plugin helper for EI
-api-version: '1.21'
 softdepend:
   - DecentHolograms
   - GriefPrevention
   - WorldGuard
   - Factions
+api-version: '1.21'

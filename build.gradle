@@ -49,7 +49,7 @@ dependencies {
     compileOnly 'dev.kitteh:factionsuuid:0.7.0'
     implementation 'com.jeff_media:MorePersistentDataTypes:2.4.0'
     implementation 'com.jeff-media:custom-block-data:2.2.2'
-    implementation "dev.jorel:commandapi-bukkit-shade:9.6.0"
+    implementation "dev.jorel:commandapi-bukkit-shade:9.7.0"
 }
 
 shadowJar {
