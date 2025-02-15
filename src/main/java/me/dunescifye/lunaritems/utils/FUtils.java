@@ -1,11 +1,12 @@
 package me.dunescifye.lunaritems.utils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
-//import com.massivecraft.factions.Board;
-//import com.massivecraft.factions.FLocation;
-//import com.massivecraft.factions.FPlayers;
-//import com.massivecraft.factions.Faction;
-//import com.massivecraft.factions.perms.PermissibleActions;
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.FLocation;
+import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.zcore.fperms.Access;
+import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import me.dunescifye.lunaritems.LunarItems;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
@@ -15,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -65,12 +65,10 @@ public class FUtils {
         if (LunarItems.griefPreventionEnabled) {
             final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
             return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
-        }/* else if (LunarItems.factionsUUIDEnabled) {
-            FLocation fLocation = new FLocation(location);
-            Faction faction = Board.getInstance().getFactionAt(fLocation);
-            return faction.isWilderness() || faction.hasAccess(FPlayers.getInstance().getByPlayer(player), PermissibleActions.DESTROY, fLocation);
+        } else if (LunarItems.factionsUUIDEnabled) {
+            Faction faction = Board.getInstance().getFactionAt(new FLocation(location));
+            return faction.isWilderness() || faction.getAccess(FPlayers.getInstance().getByPlayer(player), PermissableAction.DESTROY) == Access.ALLOW;
         }
-        */
         return true;
     }
 }
