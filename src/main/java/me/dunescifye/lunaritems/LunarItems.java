@@ -30,6 +30,7 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyLoreDrop = new NamespacedKey("score", "score-loredrop");
     public static final NamespacedKey keyLoreRadius = new NamespacedKey("score", "score-loreradius");
     public static final NamespacedKey keyBlocksBroken = new NamespacedKey("score", "score-blocksharvested");
+    public static final NamespacedKey keyTerracotta = new NamespacedKey("score", "score-terracotta");
 
     public static final NamespacedKey keyAutoPickup = new NamespacedKey("score", "score-autopickup");
     public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");

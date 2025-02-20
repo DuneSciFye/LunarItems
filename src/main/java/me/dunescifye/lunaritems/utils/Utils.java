@@ -1,8 +1,5 @@
 package me.dunescifye.lunaritems.utils;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.dunescifye.lunaritems.LunarItems;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
@@ -66,22 +63,6 @@ public class Utils {
         }
     }
 
-    //Drop item at player
-    public static void dropItems(Location location, ItemStack... items) {
-        for (ItemStack item : items) {
-            if (item.getAmount() > 64) {
-                while (item.getAmount() > 0) {
-                    Item drop = location.getWorld().dropItemNaturally(location, item);
-                    item.setAmount(item.getAmount() - 64);
-                    drop.setPickupDelay(0);
-                }
-            } else {
-                Item drop = location.getWorld().dropItemNaturally(location, item);
-                drop.setPickupDelay(0);
-            }
-        }
-    }
-
     public static boolean isNaturallyGenerated(Block block) {
         List<String[]> lookup = coreProtectAPI.queueLookup(block);
         if (lookup == null || lookup.isEmpty()) {
@@ -130,23 +111,18 @@ public class Utils {
         return loreList;
     }
 
-    public static boolean isInRegion(Player p, List<String> regions) {
-        for (ProtectedRegion rg : WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(p.getLocation()))) {
-            if (regions.contains(rg.getId().toLowerCase())) return true;
-        }
-        return false;
-    }
+    public static boolean testBlock(Block b, List<List<Predicate<Block>>> predicates) {
+        if (predicates == null) return true; //Used for fully empty lists
+        List<Predicate<Block>> whitelistPredicates = predicates.getFirst();
+        List<Predicate<Block>> blacklistPredicates = predicates.getLast();
 
+        // If whitelist is empty, only check blacklist
+        if (whitelistPredicates.isEmpty())
+            return blacklistPredicates.stream().noneMatch(predicate -> predicate.test(b));
 
-
-    public static boolean testBlock(Block b, List<Predicate<Block>>[] predicates) {
-        for (Predicate<Block> whitelist : predicates[0])
-            if (whitelist.test(b)) {
-                for (Predicate<Block> blacklist : predicates[1])
-                    if (blacklist.test(b)) return false;
-                return true;
-            }
-        return false;
+        // Check whitelist and ensure no blacklist match if any whitelist condition is met
+        return whitelistPredicates.stream().anyMatch(predicate -> predicate.test(b)) &&
+            blacklistPredicates.stream().noneMatch(predicate -> predicate.test(b));
     }
 
     public static Set<Block> getBlocksInRadius(Block origin, final int radius) {
@@ -231,5 +207,52 @@ public class Utils {
 
         return null;
     }
+
+    public static final Map<Material, Material> smeltedOres = Map.ofEntries(
+        Map.entry(Material.COAL, Material.COAL),
+        Map.entry(Material.COAL_ORE, Material.COAL),
+        Map.entry(Material.DEEPSLATE_COAL_ORE, Material.COAL),
+        Map.entry(Material.RAW_COPPER, Material.COPPER_INGOT),
+        Map.entry(Material.COPPER_ORE, Material.COPPER_INGOT),
+        Map.entry(Material.DEEPSLATE_COPPER_ORE, Material.COPPER_INGOT),
+        Map.entry(Material.DIAMOND, Material.DIAMOND),
+        Map.entry(Material.DIAMOND_ORE, Material.DIAMOND),
+        Map.entry(Material.DEEPSLATE_DIAMOND_ORE, Material.DIAMOND),
+        Map.entry(Material.EMERALD, Material.EMERALD),
+        Map.entry(Material.EMERALD_ORE, Material.EMERALD),
+        Map.entry(Material.DEEPSLATE_EMERALD_ORE, Material.EMERALD),
+        Map.entry(Material.RAW_GOLD, Material.GOLD_INGOT),
+        Map.entry(Material.GOLD_ORE, Material.GOLD_INGOT),
+        Map.entry(Material.DEEPSLATE_GOLD_ORE, Material.GOLD_INGOT),
+        Map.entry(Material.RAW_IRON, Material.IRON_INGOT),
+        Map.entry(Material.IRON_ORE, Material.IRON_INGOT),
+        Map.entry(Material.DEEPSLATE_IRON_ORE, Material.IRON_INGOT),
+        Map.entry(Material.LAPIS_LAZULI, Material.LAPIS_LAZULI),
+        Map.entry(Material.LAPIS_ORE, Material.LAPIS_LAZULI),
+        Map.entry(Material.DEEPSLATE_LAPIS_ORE, Material.LAPIS_LAZULI),
+        Map.entry(Material.REDSTONE, Material.REDSTONE),
+        Map.entry(Material.REDSTONE_ORE, Material.REDSTONE),
+        Map.entry(Material.DEEPSLATE_REDSTONE_ORE, Material.REDSTONE),
+        Map.entry(Material.ANCIENT_DEBRIS, Material.NETHERITE_SCRAP)
+    );
+
+    public static final Map<Material, Material> glazeTerracotta = Map.ofEntries(
+        Map.entry(Material.WHITE_TERRACOTTA, Material.WHITE_GLAZED_TERRACOTTA),
+        Map.entry(Material.LIGHT_GRAY_TERRACOTTA, Material.LIGHT_GRAY_GLAZED_TERRACOTTA),
+        Map.entry(Material.GRAY_TERRACOTTA, Material.GRAY_GLAZED_TERRACOTTA),
+        Map.entry(Material.BLACK_TERRACOTTA, Material.BLACK_GLAZED_TERRACOTTA),
+        Map.entry(Material.BROWN_TERRACOTTA, Material.BROWN_GLAZED_TERRACOTTA),
+        Map.entry(Material.RED_TERRACOTTA, Material.RED_GLAZED_TERRACOTTA),
+        Map.entry(Material.ORANGE_TERRACOTTA, Material.ORANGE_GLAZED_TERRACOTTA),
+        Map.entry(Material.YELLOW_TERRACOTTA, Material.YELLOW_GLAZED_TERRACOTTA),
+        Map.entry(Material.LIME_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA),
+        Map.entry(Material.GREEN_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA),
+        Map.entry(Material.CYAN_TERRACOTTA, Material.CYAN_GLAZED_TERRACOTTA),
+        Map.entry(Material.LIGHT_BLUE_TERRACOTTA, Material.LIGHT_BLUE_GLAZED_TERRACOTTA),
+        Map.entry(Material.BLUE_TERRACOTTA, Material.BLUE_GLAZED_TERRACOTTA),
+        Map.entry(Material.PURPLE_TERRACOTTA, Material.PURPLE_GLAZED_TERRACOTTA),
+        Map.entry(Material.MAGENTA_TERRACOTTA, Material.MAGENTA_GLAZED_TERRACOTTA),
+        Map.entry(Material.PINK_TERRACOTTA, Material.PINK_GLAZED_TERRACOTTA)
+    );
 
 }

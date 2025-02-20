@@ -86,7 +86,7 @@ public class PlayerInteractListener implements Listener {
                         //If doesn't have cooldown
                     else {
                         double uses = container.get(LunarItems.keyUses, PersistentDataType.DOUBLE);
-                        BlockUtils.boneMealRadius(p.getLocation(), 5);
+                        BlockUtils.boneMealRadius(p.getLocation().getBlock(), 5);
                         // If out of uses, set cooldown
                         if (uses == 1) {
                             CooldownManager.setCooldown(CooldownManager.nexusHoeCooldowns, p.getUniqueId(), Duration.ofMinutes(10));

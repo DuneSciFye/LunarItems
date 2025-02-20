@@ -24,14 +24,17 @@ public class ResetItemCommand {
         PlayerArgument playerArg = new PlayerArgument("Player");
         StringArgument slotArg = new StringArgument("Slot");
         IntegerArgument loreLinesArg = new IntegerArgument("Lore Lines");
+        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "lore", "attributes", "name");
 
         new CommandAPICommand("resetitem")
-            .withArguments(new MultiLiteralArgument("Function", "lore", "attributes"))
+            .withArguments(functionArg)
             .withOptionalArguments(playerArg.combineWith(slotArg.replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots()))).withPermission("lunaritems.commands.resetitemadmin"))
             .withOptionalArguments(loreLinesArg)
             .executesPlayer((p, args) -> {
                 ItemStack item = p.getInventory().getItemInMainHand();
-                updateLore(p, item, args.getByClass("Function", String.class).toUpperCase(), "main", null);
+                String function = args.getByArgument(functionArg).toUpperCase();
+                if (function.equals("LORE")) updateLore(p, item, "main", null);
+                else Utils.runConsoleCommands("ei refresh " + p.getName() + " " + item.getItemMeta().getPersistentDataContainer().get(LunarItems.keyEIID, PersistentDataType.STRING) + " " + function);
             })
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
@@ -39,7 +42,7 @@ public class ResetItemCommand {
                 String slot = args.getByArgument(slotArg);
                 ItemStack item = Utils.getInvItem(p, slot);
                 if (item == null) return;
-                updateLore(p, item, args.getByClass("Function", String.class).toUpperCase(), slot, args.getByArgumentOrDefault(loreLinesArg, null));
+                updateLore(p, item, slot, args.getByArgumentOrDefault(loreLinesArg, null));
             })
             .withPermission("lunaritems.command.resetlore")
             .register();
@@ -48,14 +51,14 @@ public class ResetItemCommand {
 
 
 
-    private static void updateLore(Player p, ItemStack item, String function, String slot, Integer endLine) {
+    private static void updateLore(Player p, ItemStack item, String slot, Integer endLine) {
         if (!item.hasItemMeta()) return;
         String itemID = item.getItemMeta().getPersistentDataContainer().get(LunarItems.keyEIID, PersistentDataType.STRING);
         if (itemID == null) return;
         List<Component> oldLore = item.lore();
         if (oldLore == null) return;
         int startLine = item.getType() == Material.FISHING_ROD ? oldLore.contains(megaLine) ? oldLore.indexOf(megaLine) : oldLore.indexOf(unbreakableLine) : 0; // Keep Augments if Fishing Rod
-        Utils.runConsoleCommands("ei refresh " + p.getName() + " " + itemID + " " + function);
+        Utils.runConsoleCommands("ei refresh " + p.getName() + " " + itemID + " LORE");
         ItemStack newItem = Utils.getInvItem(p, slot);
         if (newItem == null) return;
         List<Component> newLore = newItem.lore();
