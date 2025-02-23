@@ -1,21 +1,14 @@
 package me.dunescifye.lunaritems.commands;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.lunaritems.LunarItems;
-import me.dunescifye.lunaritems.files.AquaticItemsConfig;
 import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.files.Config;
 import me.dunescifye.lunaritems.files.NexusItemsConfig;
-import me.dunescifye.lunaritems.listeners.AntiDropTracker;
 import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public class CustomItemsCommand {
 
@@ -24,7 +17,6 @@ public class CustomItemsCommand {
             .then(new LiteralArgument("reload")
                 .executes((sender, args) -> {
                     Config.setup(LunarItems.getPlugin());
-                    AquaticItemsConfig.setup();
                     NexusItemsConfig.setup();
                     BlocksConfig.setup();
                     sender.sendMessage("Reloaded config!");

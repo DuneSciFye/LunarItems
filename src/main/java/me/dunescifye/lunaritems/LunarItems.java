@@ -73,7 +73,6 @@ public final class LunarItems extends JavaPlugin {
         plugin = this;
         CommandAPI.onEnable();
         Config.setup(this);
-        AquaticItemsConfig.setup();
         NexusItemsConfig.setup();
         BlocksConfig.setup();
         AncienttItemsConfig.setup();
