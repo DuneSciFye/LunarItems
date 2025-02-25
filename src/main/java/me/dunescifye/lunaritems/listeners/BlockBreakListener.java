@@ -239,7 +239,6 @@ public class BlockBreakListener implements Listener {
 
 
             if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
-                e.setDropItems(false); // Remove drops because BreakInRadius and BreakInFacing get drops of block broken
                 int radius = (int) (double) container.getOrDefault(keyRadius, PersistentDataType.DOUBLE, 0.0);
                 // BreakInFacing
                 if (container.has(LunarItems.keyDepth, PersistentDataType.DOUBLE)) {
@@ -247,6 +246,7 @@ public class BlockBreakListener implements Listener {
                     // Custom drop
                     String customDrop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
                     if (customDrop != null) {
+                        e.setDropItems(false);
                         if (itemID.contains("aetheraxe") && testBlock(b, axePredicates)) {
                             // Will do 3x3x3 if axe is being thrown, otherwise use item's radius and depth
                             Collection<ItemStack> drops = p.hasMetadata("ignoreBlockBreak") ? breakInFacing(b, 0, 1, p, axePredicates) : breakInFacing(b, radius, depth, p, axePredicates);
@@ -279,7 +279,7 @@ public class BlockBreakListener implements Listener {
                             drops.addAll(breakInFacing(b, radius, depth, p, axePredicates));
                             dropAllItemStacks(world, loc, drops);
                         } else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
-                            Material mat = Material.getMaterial(customDrop);
+                            Material mat = Material.getMaterial(customDrop.toUpperCase());
                             Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, shovelPredicates);
                             if (mat != null) drops = drops.stream()
                                 .map(drop -> new ItemStack(mat, drop.getAmount()))
@@ -297,6 +297,7 @@ public class BlockBreakListener implements Listener {
                     // No custom drop
                     // Shovels
                     else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
+                        e.setDropItems(false);
                         if (itemID.contains("aethershovel")) {
                             dropAllItemStacks(world, loc, p.getInventory().addItem(breakInFacing(b, radius, depth, p, shovelPredicates).toArray(new ItemStack[0])).values());
                         }
@@ -307,6 +308,7 @@ public class BlockBreakListener implements Listener {
                     }
                     // Pickaxes
                     else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
+                        e.setDropItems(false);
                         if (itemID.contains("soulpick"))
                             FUtils.breakInFacingDoubleOres(b, radius, depth, p, pickaxePredicates, e.getExpToDrop());
                         else if (itemID.contains("ancienttpick"))
@@ -346,6 +348,7 @@ public class BlockBreakListener implements Listener {
                     }
                     // Axes
                     else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
+                        e.setDropItems(false);
                         if (itemID.contains("ancienttaxe"))
                             dropAllItemStacks(world, loc, BlockUtils.breakInFacing(b, radius, depth, p, ancientAxePredicates));
                         else
@@ -355,56 +358,21 @@ public class BlockBreakListener implements Listener {
                 // BreakInRadius
                 else {
                     if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
+                        e.setDropItems(false);
                         dropAllItemStacks(world, loc, breakInRadius(b, radius, p, shovelPredicates));
                     }
                     else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
+                        e.setDropItems(false);
                         dropAllItemStacks(world, loc, breakInRadius(b, radius, p, pickaxePredicates));
                     }
                     else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
+                        e.setDropItems(false);
                         dropAllItemStacks(world, loc, breakInRadius(b, radius, p, axePredicates));
                     }
                 }
             }
         }
 
-    }
-
-    private void handleAquaticHoe(Collection<ItemStack> drops, Player p, Block block, Location location, int farmKeyChance, int stackOfCropsChance, int axolotlSpawnEggChance, int frogSpawnEggChance, int axolotlSpawnerChance, int frogSpawnerChance) {
-        if (ThreadLocalRandom.current().nextInt(farmKeyChance) == 0) {
-            Utils.runConsoleCommands("crazycrates give v farm 1 " + p.getName(), "minecraft:sendmessage @a " + prefix + "&a" + p.getName() + " &7has won &a1x Farm Key &7from their aquatic hoe!");
-            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "1x Farm Key")));
-        }
-        if (ThreadLocalRandom.current().nextInt(stackOfCropsChance) == 0) {
-            drops.add(new ItemStack(block.getType(), 64));
-            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "a Stack of Crops")));
-        }
-        if (ThreadLocalRandom.current().nextInt(axolotlSpawnEggChance) == 0) {
-            drops.add(new ItemStack(Material.AXOLOTL_SPAWN_EGG));
-            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "an Axolotl Spawn Egg")));
-        }
-        if (ThreadLocalRandom.current().nextInt(frogSpawnEggChance) == 0) {
-            drops.add(new ItemStack(Material.FROG_SPAWN_EGG));
-            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "a Frog Spawn Egg")));
-        }
-        if (ThreadLocalRandom.current().nextInt(axolotlSpawnerChance) == 0) {
-            Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "AXOLOTL").replace("%amount%", "1"));
-            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "an Axolotl Spawner")));
-        }
-        if (ThreadLocalRandom.current().nextInt(frogSpawnerChance) == 0) {
-            Utils.runConsoleCommands(Config.spawnerCommand.replace("%player%", p.getName()).replace("%type%", "FROG").replace("%amount%", "1"));
-            p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "a Frog Spawner")));
-        }
-
-        //Drop drops at location
-        for (ItemStack drop : drops) {
-            block.getWorld().dropItemNaturally(location, drop);
-        }
-
-        //Auto replant except for Sugar Cane, doesn't require seed
-        if (block.getType() != Material.SUGAR_CANE) {
-            Material material = block.getType();
-            Bukkit.getScheduler().runTask(getPlugin(), () -> block.setType(material));
-        }
     }
 
     private void handleAncienttHoe(Collection<ItemStack> drops, Player p, Block block, Location location, ItemStack item, ItemMeta meta, PersistentDataContainer container, int parrotSpawnEggChance, int fireworkChance, int farmKeyChance, int parrotSpawnerChance, int infiniteSeedPouchChance) {
