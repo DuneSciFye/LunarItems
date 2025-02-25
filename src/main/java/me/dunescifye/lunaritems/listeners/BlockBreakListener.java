@@ -185,9 +185,24 @@ public class BlockBreakListener implements Listener {
                 if (itemID.contains("catsagehoe") || itemID.contains("twistedhoe"))
                     dropAllItemStacks(location.getWorld(), location, drops);
                 // Aether Hoe
-                if ((itemID.contains("aetherhoem") && ThreadLocalRandom.current().nextInt(100) <= 15) || (itemID.contains("aetherhoe") && ThreadLocalRandom.current().nextInt(10) == 0)) {
-                    dropAllItemStacks(location.getWorld(), location, drops);
-                    dropAllItemStacks(location.getWorld(), location, drops);
+                if (itemID.contains("aetherhoem")) {
+                    if (ThreadLocalRandom.current().nextInt(100) <= 15) {
+                        dropAllItemStacks(location.getWorld(), location, drops);
+                        dropAllItemStacks(location.getWorld(), location, drops);
+                    }
+                    if (b.getType() != Material.SUGAR_CANE) {
+                        Material material = b.getType();
+                        Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                            b.setType(material);
+                            b.applyBoneMeal(BlockFace.UP);
+                        });
+                    }
+                }
+                else if (itemID.contains("aetherhoe")) {
+                    if (ThreadLocalRandom.current().nextInt(10) == 0) {
+                        dropAllItemStacks(location.getWorld(), location, drops);
+                        dropAllItemStacks(location.getWorld(), location, drops);
+                    }
                     if (b.getType() != Material.SUGAR_CANE) {
                         Material material = b.getType();
                         Bukkit.getScheduler().runTask(getPlugin(), () -> {
