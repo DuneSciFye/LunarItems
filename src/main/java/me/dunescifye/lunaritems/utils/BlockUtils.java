@@ -156,7 +156,11 @@ public class BlockUtils {
         Collection<ItemStack> drops = new ArrayList<>();
         for (Block b : Utils.getBlocksInRadius(center, radius)) {
             PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
-            if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING) || b.equals(center)) continue;
+            if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
+            if (b.equals(center)) {
+                drops.addAll(b.getDrops(heldItem));
+                continue;
+            }
             if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
                 drops.addAll(b.getDrops(heldItem));
                 b.setType(Material.AIR);

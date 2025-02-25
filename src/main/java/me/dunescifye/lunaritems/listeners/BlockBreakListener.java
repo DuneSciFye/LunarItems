@@ -208,7 +208,7 @@ public class BlockBreakListener implements Listener {
                             }
                         });
                     }
-                } else if (itemID.contains("angelichoe")) {
+                } else if (itemID.contains("angelichoe") || itemID.contains("krampushoe")) {
                     if (b.getType() != Material.SUGAR_CANE) {
                         Material material = b.getType();
                         Bukkit.getScheduler().runTask(getPlugin(), () -> {
@@ -219,11 +219,13 @@ public class BlockBreakListener implements Listener {
                     }
                 }
             }
-            e.setCancelled(true);
+            else e.setCancelled(true);
         }
         //Not a hoe
         else {
             if (radiusMiningDisabledWorlds.contains(p.getWorld().getName())) return;
+            World world = b.getWorld();
+            Location loc = b.getLocation();
 
             if (itemID.contains("nightmarepick") && testBlock(b, ores)) {
                 Collection<ItemStack> drops = new ArrayList<>();
@@ -231,49 +233,39 @@ public class BlockBreakListener implements Listener {
                 veinMineOres25ChanceDouble(b, drops, b.getType(), p, item);
 
                 PlayerInventory inv = p.getInventory();
-                for (ItemStack drop : mergeSimilarItemStacks(drops)) {
-                    if (inv.firstEmpty() == -1) {
-                        dropAllItemStacks(b.getWorld(), b.getLocation(), drops);
-                        break;
-                    }
-                    else {
-                        inv.addItem(drop);
-                        drops.remove(drop);
-                    }
-                }
+                drops.removeIf(drop -> inv.addItem(drop).isEmpty());
+                dropAllItemStacks(world, loc, drops);
             }
 
-            World world = b.getWorld();
-            Location loc = b.getLocation();
 
             if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
+                e.setDropItems(false); // Remove drops because BreakInRadius and BreakInFacing get drops of block broken
                 int radius = (int) (double) container.getOrDefault(keyRadius, PersistentDataType.DOUBLE, 0.0);
-                //BreakInFacing
+                // BreakInFacing
                 if (container.has(LunarItems.keyDepth, PersistentDataType.DOUBLE)) {
                     int depth = (int) (double) container.getOrDefault(keyDepth, PersistentDataType.DOUBLE, 0.0);
-                    //Custom drop
+                    // Custom drop
                     String customDrop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
-                    if (customDrop != null && !customDrop.isEmpty()) {
-                        e.setDropItems(false);
+                    if (customDrop != null) {
                         if (itemID.contains("aetheraxe") && testBlock(b, axePredicates)) {
                             // Will do 3x3x3 if axe is being thrown, otherwise use item's radius and depth
                             Collection<ItemStack> drops = p.hasMetadata("ignoreBlockBreak") ? breakInFacing(b, 0, 1, p, axePredicates) : breakInFacing(b, radius, depth, p, axePredicates);
                             Material sapling = Material.getMaterial(customDrop);
-                            if (sapling == null)
-                                return;
-                            drops = drops.stream()
-                                .map(drop -> drop.getType().toString().contains("_SAPLING") ? new ItemStack(sapling, drop.getAmount()) : drop)
-                                .collect(Collectors.toList());
+                            if (sapling != null) {
+                                drops = drops.stream()
+                                    .map(drop -> drop.getType().toString().contains("_SAPLING") ? new ItemStack(sapling, drop.getAmount()) : drop)
+                                    .collect(Collectors.toList());
+                            }
+                            Inventory inv = p.getInventory();
+                            drops.removeIf(drop -> inv.addItem(drop).isEmpty());
                             dropAllItemStacks(world, loc, drops);
                         } else if (itemID.contains("catsageaxe") && testBlock(b, axePredicates)) {
-                            Material material = Material.getMaterial(customDrop);
-                            if (material == null) {
-                                e.setDropItems(true);
-                                return;
-                            }
-                            dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, axePredicates).stream()
-                                .map(drop -> Tag.LOGS.isTagged(drop.getType()) ? new ItemStack(material, drop.getAmount()) : drop)
-                                .collect(Collectors.toList()));
+                            Material mat = Material.getMaterial(customDrop);
+                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                            if (mat != null) drops = drops.stream()
+                                .map(drop -> Tag.LOGS.isTagged(drop.getType()) ? new ItemStack(mat, drop.getAmount()) : drop)
+                                .toList();
+                            dropAllItemStacks(world, loc, drops);
                         } else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
                             //Change log drops
                             String material = b.getType().toString();
@@ -288,32 +280,33 @@ public class BlockBreakListener implements Listener {
                             dropAllItemStacks(world, loc, drops);
                         } else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
                             Material mat = Material.getMaterial(customDrop);
-                            if (mat == null) return;
-                            dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, shovelPredicates).stream()
+                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, shovelPredicates);
+                            if (mat != null) drops = drops.stream()
                                 .map(drop -> new ItemStack(mat, drop.getAmount()))
-                                .collect(Collectors.toList()));
+                                .toList();
+                            dropAllItemStacks(world, loc, drops);
                         } else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
                             Material mat = Material.getMaterial(customDrop);
-                            if (mat == null) return;
-                            dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, pickaxePredicates).stream()
+                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                            if (mat != null) drops = drops.stream()
                                 .map(drop -> new ItemStack(mat, drop.getAmount()))
-                                .collect(Collectors.toList()));
+                                .toList();
+                            dropAllItemStacks(world, loc, drops);
                         }
                     }
                     // No custom drop
                     // Shovels
                     else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
-                        e.setDropItems(false);
-                        if (itemID.contains("aethershovel"))
+                        if (itemID.contains("aethershovel")) {
                             dropAllItemStacks(world, loc, p.getInventory().addItem(breakInFacing(b, radius, depth, p, shovelPredicates).toArray(new ItemStack[0])).values());
+                        }
                         else if (itemID.contains("ancienttshovel"))
-                            dropAllItemStacks(world, loc, BlockUtils.breakInFacing(b, radius, depth, p, ancientShovelPredicates));
+                            dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, ancientShovelPredicates));
                         else
                             dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, shovelPredicates));
                     }
                     // Pickaxes
                     else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
-                        e.setDropItems(false);
                         if (itemID.contains("soulpick"))
                             FUtils.breakInFacingDoubleOres(b, radius, depth, p, pickaxePredicates, e.getExpToDrop());
                         else if (itemID.contains("ancienttpick"))
@@ -353,7 +346,6 @@ public class BlockBreakListener implements Listener {
                     }
                     // Axes
                     else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
-                        e.setDropItems(false);
                         if (itemID.contains("ancienttaxe"))
                             dropAllItemStacks(world, loc, BlockUtils.breakInFacing(b, radius, depth, p, ancientAxePredicates));
                         else
@@ -363,15 +355,12 @@ public class BlockBreakListener implements Listener {
                 // BreakInRadius
                 else {
                     if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
-                        e.setDropItems(false);
                         dropAllItemStacks(world, loc, breakInRadius(b, radius, p, shovelPredicates));
                     }
                     else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
-                        e.setDropItems(false);
                         dropAllItemStacks(world, loc, breakInRadius(b, radius, p, pickaxePredicates));
                     }
                     else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
-                        e.setDropItems(false);
                         dropAllItemStacks(world, loc, breakInRadius(b, radius, p, axePredicates));
                     }
                 }
