@@ -10,6 +10,7 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -54,6 +55,7 @@ public class BlockUtils {
         List.of( // Blacklist
             block -> block.getType().equals(Material.SPAWNER),
             block -> block.getType().equals(Material.GILDED_BLACKSTONE),
+            block -> block instanceof Container,
             block -> block.getType().equals(Material.DROPPER),
             block -> block.getType().equals(Material.DISPENSER),
             block -> block.getType().equals(Material.HOPPER),
@@ -78,6 +80,7 @@ public class BlockUtils {
             block -> Tag.LEAVES.isTagged(block.getType())
         ),
         List.of( // Blacklist
+            block -> block instanceof Container,
             block -> block.getType().equals(Material.BARREL),
             block -> block.getType().equals(Material.CHEST),
             block -> block.getType().equals(Material.TRAPPED_CHEST),

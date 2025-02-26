@@ -261,8 +261,8 @@ public class BlockBreakListener implements Listener {
                     // Custom drop
                     String customDrop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
                     if (customDrop != null) {
-                        e.setDropItems(false);
                         if (itemID.contains("aetheraxe") && testBlock(b, axePredicates)) {
+                            e.setDropItems(false);
                             // Will do 3x3x3 if axe is being thrown, otherwise use item's radius and depth
                             Collection<ItemStack> drops = p.hasMetadata("ignoreBlockBreak") ? breakInFacing(b, 0, 1, p, axePredicates) : breakInFacing(b, radius, depth, p, axePredicates);
                             Material sapling = Material.getMaterial(customDrop);
@@ -275,6 +275,7 @@ public class BlockBreakListener implements Listener {
                             drops.removeIf(drop -> inv.addItem(drop).isEmpty());
                             dropAllItemStacks(world, loc, drops);
                         } else if (itemID.contains("catsageaxe") && testBlock(b, axePredicates)) {
+                            e.setDropItems(false);
                             Material mat = Material.getMaterial(customDrop);
                             Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
                             if (mat != null) drops = drops.stream()
@@ -282,6 +283,7 @@ public class BlockBreakListener implements Listener {
                                 .toList();
                             dropAllItemStacks(world, loc, drops);
                         } else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
+                            e.setDropItems(false);
                             //Change log drops
                             String material = b.getType().toString();
                             Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates).stream()
@@ -294,6 +296,7 @@ public class BlockBreakListener implements Listener {
                             drops.addAll(breakInFacing(b, radius, depth, p, axePredicates));
                             dropAllItemStacks(world, loc, drops);
                         } else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
+                            e.setDropItems(false);
                             Material mat = Material.getMaterial(customDrop.toUpperCase());
                             Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, shovelPredicates);
                             if (mat != null) drops = drops.stream()
@@ -301,6 +304,7 @@ public class BlockBreakListener implements Listener {
                                 .toList();
                             dropAllItemStacks(world, loc, drops);
                         } else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
+                            e.setDropItems(false);
                             Material mat = Material.getMaterial(customDrop);
                             Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
                             if (mat != null) drops = drops.stream()
