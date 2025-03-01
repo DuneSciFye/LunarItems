@@ -306,11 +306,10 @@ public class BlockBreakListener implements Listener {
                     // Pickaxes
                     else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
                         e.setDropItems(false);
-                        if (itemID.contains("nightmarepick") && testBlock(b, ores)) {
+                        if (itemID.contains("nightmarepick")) {
                             Collection<ItemStack> drops = new ArrayList<>();
-
-                            veinMineOres25ChanceDouble(b, drops, b.getType(), p, item);
-
+                            if (b.getType().toString().contains("_ORE"))
+                                veinMineOres25ChanceDouble(b, drops, b.getType(), p, item);
                             PlayerInventory inv = p.getInventory();
                             drops.removeIf(drop -> inv.addItem(drop).isEmpty());
                             drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
