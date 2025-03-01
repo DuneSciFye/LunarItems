@@ -15,6 +15,8 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -148,9 +150,10 @@ public class BlockBreakListener implements Listener {
 
         // Hoes
         if (b.getBlockData() instanceof Ageable ageable) {
-            if (ageable.getAge() == ageable.getMaximumAge() || b.getType() == Material.SUGAR_CANE) {
+            if (ageable.getAge() == ageable.getMaximumAge()) {
                 Collection<ItemStack> drops = b.getDrops(item);
                 Location location = b.getLocation();
+                Material material = b.getType();
                 switch (Objects.requireNonNull(itemID)) {
                     case "nexushoe" ->
                         handleNexusHoe(p, NexusHoePyroFarmingXPChance);
@@ -171,15 +174,11 @@ public class BlockBreakListener implements Listener {
                     itemID.contains("twistedhoe") ||
                     itemID.contains("nightmarehoe") ||
                     itemID.contains("aquatichoe")) {
-                    if (b.getType() != Material.SUGAR_CANE) {
-                        Material material = b.getType();
-                        Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
-                    }
+                    Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
                 }
                 // 65% chance to auto replant for regular soul hoe and soul hoeo
                 else if (itemID.contains("soulhoe")) {
-                    if (b.getType() != Material.SUGAR_CANE && ThreadLocalRandom.current().nextInt(100) <= 65) {
-                        Material material = b.getType();
+                    if (ThreadLocalRandom.current().nextInt(100) <= 65) {
                         Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
                     }
                 }
@@ -192,48 +191,33 @@ public class BlockBreakListener implements Listener {
                         dropAllItemStacks(location.getWorld(), location, drops);
                         dropAllItemStacks(location.getWorld(), location, drops);
                     }
-                    if (b.getType() != Material.SUGAR_CANE) {
-                        Material material = b.getType();
-                        Bukkit.getScheduler().runTask(getPlugin(), () -> {
-                            b.setType(material);
-                            b.applyBoneMeal(BlockFace.UP);
-                        });
-                    }
+                    Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                        b.setType(material);
+                        b.applyBoneMeal(BlockFace.UP);
+                    });
                 }
                 else if (itemID.contains("aetherhoe")) {
                     if (ThreadLocalRandom.current().nextInt(10) == 0) {
                         dropAllItemStacks(location.getWorld(), location, drops);
                         dropAllItemStacks(location.getWorld(), location, drops);
                     }
-                    if (b.getType() != Material.SUGAR_CANE) {
-                        Material material = b.getType();
-                        Bukkit.getScheduler().runTask(getPlugin(), () -> {
-                            b.setType(material);
-                            b.applyBoneMeal(BlockFace.UP);
-                        });
-                    }
+                    Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                        b.setType(material);
+                        b.applyBoneMeal(BlockFace.UP);
+                    });
                 }
                 //Angelic Hoe
                 else if (itemID.contains("angelichoem")) {
-                    if (b.getType() != Material.SUGAR_CANE) {
-                        Material material = b.getType();
-                        Bukkit.getScheduler().runTask(getPlugin(), () -> {
-                            b.setType(material);
-                            if (b.getBlockData() instanceof Ageable ageable1) {
-                                if (material == Material.BEETROOTS || material == Material.NETHER_WART) ageable1.setAge(2);
-                                else ageable1.setAge(3);
-                            }
-                        });
-                    }
+                    Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                        b.setType(material);
+                        if (material == Material.BEETROOTS || material == Material.NETHER_WART) ageable.setAge(2);
+                        else ageable.setAge(3);
+                    });
                 } else if (itemID.contains("angelichoe") || itemID.contains("krampushoe")) {
-                    if (b.getType() != Material.SUGAR_CANE) {
-                        Material material = b.getType();
-                        Bukkit.getScheduler().runTask(getPlugin(), () -> {
-                            b.setType(material);
-                            if (b.getBlockData() instanceof Ageable ageable1)
-                                ageable1.setAge(2);
-                        });
-                    }
+                    Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                        b.setType(material);
+                        ageable.setAge(2);
+                    });
                 }
             }
             else e.setCancelled(true);
@@ -244,15 +228,6 @@ public class BlockBreakListener implements Listener {
             World world = b.getWorld();
             Location loc = b.getLocation();
 
-            if (itemID.contains("nightmarepick") && testBlock(b, ores)) {
-                Collection<ItemStack> drops = new ArrayList<>();
-
-                veinMineOres25ChanceDouble(b, drops, b.getType(), p, item);
-
-                PlayerInventory inv = p.getInventory();
-                drops.removeIf(drop -> inv.addItem(drop).isEmpty());
-                dropAllItemStacks(world, loc, drops);
-            }
 
 
             if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
@@ -267,6 +242,7 @@ public class BlockBreakListener implements Listener {
                             e.setDropItems(false);
                             // Will do 3x3x3 if axe is being thrown, otherwise use item's radius and depth
                             Collection<ItemStack> drops = p.hasMetadata("ignoreBlockBreak") ? breakInFacing(b, 0, 1, p, axePredicates) : breakInFacing(b, radius, depth, p, axePredicates);
+                            if (b.getBlockData() instanceof Door door && door.getHalf() == Bisected.Half.TOP) drops.add(new ItemStack(door.getMaterial()));
                             Material sapling = Material.getMaterial(customDrop);
                             if (sapling != null) {
                                 drops = drops.stream()
@@ -279,7 +255,7 @@ public class BlockBreakListener implements Listener {
                         } else if (itemID.contains("catsageaxe") && testBlock(b, axePredicates)) {
                             e.setDropItems(false);
                             Material mat = Material.getMaterial(customDrop);
-                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
                             if (mat != null) drops = drops.stream()
                                 .map(drop -> Tag.LOGS.isTagged(drop.getType()) ? new ItemStack(mat, drop.getAmount()) : drop)
                                 .toList();
@@ -330,7 +306,17 @@ public class BlockBreakListener implements Listener {
                     // Pickaxes
                     else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
                         e.setDropItems(false);
-                        if (itemID.contains("soulpick"))
+                        if (itemID.contains("nightmarepick") && testBlock(b, ores)) {
+                            Collection<ItemStack> drops = new ArrayList<>();
+
+                            veinMineOres25ChanceDouble(b, drops, b.getType(), p, item);
+
+                            PlayerInventory inv = p.getInventory();
+                            drops.removeIf(drop -> inv.addItem(drop).isEmpty());
+                            drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
+                            dropAllItemStacks(world, loc, drops);
+                        }
+                        else if (itemID.contains("soulpick"))
                             FUtils.breakInFacingDoubleOres(b, radius, depth, p, pickaxePredicates, e.getExpToDrop());
                         else if (itemID.contains("ancienttpick"))
                             dropAllItemStacks(world, loc, BlockUtils.breakInFacing(b, radius, depth, p, ancientPickPredicates));
