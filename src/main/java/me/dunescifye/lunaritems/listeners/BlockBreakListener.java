@@ -168,7 +168,9 @@ public class BlockBreakListener implements Listener {
                     itemID.contains("demonslimehoe") ||
                     itemID.contains("soulhoem") ||
                     itemID.contains("catsagehoe") ||
-                    itemID.contains("twistedhoe")) {
+                    itemID.contains("twistedhoe") ||
+                    itemID.contains("nightmarehoe") ||
+                    itemID.contains("aquatichoe")) {
                     if (b.getType() != Material.SUGAR_CANE) {
                         Material material = b.getType();
                         Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
