@@ -324,13 +324,14 @@ public class BlockBreakListener implements Listener {
                             List<ItemStack> ores = new ArrayList<>();
                             List<ItemStack> glazedDrops = new ArrayList<>();
                             boolean terracotta = container.getOrDefault(keyTerracotta, PersistentDataType.STRING, "Disabled").equals("Enabled");
+                            boolean smeltingEnabled = container.getOrDefault(keySmelting, PersistentDataType.STRING, "Disabled").equals("Enabled");
 
                             // Partition drops into smelted ores, glazed terracotta, and remaining drops
                             drops.removeIf(drop -> {
                                 Material dropType = drop.getType();
 
                                 // Collect smelted ores to add to inventory
-                                if (smeltedOres.containsKey(dropType)) {
+                                if (smeltingEnabled && smeltedOres.containsKey(dropType)) {
                                     ores.add(new ItemStack(smeltedOres.get(dropType), drop.getAmount()));
                                     return true; // Remove from drops
                                 }
