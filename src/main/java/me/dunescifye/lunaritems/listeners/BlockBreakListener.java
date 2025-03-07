@@ -149,7 +149,7 @@ public class BlockBreakListener implements Listener {
         if (itemID == null) return;
 
         // Hoes
-        if (b.getBlockData() instanceof Ageable ageable) {
+        if (b.getBlockData() instanceof Ageable ageable && b.getType() != Material.SUGAR_CANE) {
             if (ageable.getAge() == ageable.getMaximumAge()) {
                 Collection<ItemStack> drops = b.getDrops(item);
                 Location location = b.getLocation();
@@ -193,7 +193,8 @@ public class BlockBreakListener implements Listener {
                     }
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
-                        b.applyBoneMeal(BlockFace.UP);
+                        ageable.setAge(2);
+                        b.setBlockData(ageable);
                     });
                 }
                 else if (itemID.contains("aetherhoe")) {
@@ -203,7 +204,8 @@ public class BlockBreakListener implements Listener {
                     }
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
-                        b.applyBoneMeal(BlockFace.UP);
+                        ageable.setAge(2);
+                        b.setBlockData(ageable);
                     });
                 }
                 //Angelic Hoe
@@ -212,11 +214,13 @@ public class BlockBreakListener implements Listener {
                         b.setType(material);
                         if (material == Material.BEETROOTS || material == Material.NETHER_WART) ageable.setAge(2);
                         else ageable.setAge(3);
+                        b.setBlockData(ageable);
                     });
                 } else if (itemID.contains("angelichoe") || itemID.contains("krampushoe")) {
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
                         ageable.setAge(2);
+                        b.setBlockData(ageable);
                     });
                 }
             }
@@ -256,22 +260,21 @@ public class BlockBreakListener implements Listener {
                             e.setDropItems(false);
                             Material mat = Material.getMaterial(customDrop);
                             Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
-                            if (mat != null) drops = drops.stream()
-                                .map(drop -> Tag.LOGS.isTagged(drop.getType()) ? new ItemStack(mat, drop.getAmount()) : drop)
-                                .toList();
+                            if (mat != null)
+                                drops = drops.stream()
+                                    .map(drop -> Tag.LOGS.isTagged(drop.getType()) ? new ItemStack(mat, drop.getAmount()) : drop)
+                                    .toList();
                             dropAllItemStacks(world, loc, drops);
-                        } else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
+                        } else if (itemID.contains("aquaticaxe") && testBlock(b, axePredicates)) {
                             e.setDropItems(false);
                             //Change log drops
-                            String material = b.getType().toString();
+                            String material = b.getType().toString().toUpperCase();
                             Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates).stream()
                                 .map(drop -> {
-                                    Material newMaterial = customDrop.equalsIgnoreCase("STRIPPED") ? Material.getMaterial("STRIPPED_" + material) : Material.getMaterial(material.substring(0, material.length() - 3) + drop);
+                                    Material newMaterial = customDrop.equalsIgnoreCase("STRIPPED") ? Material.getMaterial("STRIPPED_" + material) : Material.getMaterial(material.substring(0, material.length() - 3) + customDrop.toUpperCase());
                                     return (drop.getType().toString().contains("LOG") && newMaterial != null) ? new ItemStack(newMaterial, drop.getAmount()) : drop;
                                 })
                                 .collect(Collectors.toList());
-                            //Break non logs
-                            drops.addAll(breakInFacing(b, radius, depth, p, axePredicates));
                             dropAllItemStacks(world, loc, drops);
                         } else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
                             e.setDropItems(false);
@@ -283,7 +286,7 @@ public class BlockBreakListener implements Listener {
                             dropAllItemStacks(world, loc, drops);
                         } else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
                             e.setDropItems(false);
-                            Material mat = Material.getMaterial(customDrop);
+                            Material mat = Material.getMaterial(customDrop.toUpperCase());
                             Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
                             if (mat != null) drops = drops.stream()
                                 .map(drop -> new ItemStack(mat, drop.getAmount()))
@@ -331,8 +334,9 @@ public class BlockBreakListener implements Listener {
                                 Material dropType = drop.getType();
 
                                 // Collect smelted ores to add to inventory
-                                if (smeltingEnabled && smeltedOres.containsKey(dropType)) {
-                                    ores.add(new ItemStack(smeltedOres.get(dropType), drop.getAmount()));
+                                if (smeltedOres.containsKey(dropType)) {
+                                    if (smeltingEnabled) ores.add(new ItemStack(smeltedOres.get(dropType), drop.getAmount()));
+                                    else ores.add(drop);
                                     return true; // Remove from drops
                                 }
 
