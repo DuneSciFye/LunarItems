@@ -13,7 +13,6 @@ import me.dunescifye.lunaritems.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.type.Door;
@@ -245,7 +244,7 @@ public class BlockBreakListener implements Listener {
                         if (itemID.contains("aetheraxe") && testBlock(b, axePredicates)) {
                             e.setDropItems(false);
                             // Will do 3x3x3 if axe is being thrown, otherwise use item's radius and depth
-                            Collection<ItemStack> drops = p.hasMetadata("ignoreBlockBreak") ? breakInFacing(b, 0, 1, p, axePredicates) : breakInFacing(b, radius, depth, p, axePredicates);
+                            Collection<ItemStack> drops = p.hasMetadata("ignoreBlockBreak") ? breakInFacing(b, 0, 1, p, axePredicates) : breakInFacingAxe(b, radius, depth, p, axePredicates);
                             if (b.getBlockData() instanceof Door door && door.getHalf() == Bisected.Half.TOP) drops.add(new ItemStack(door.getMaterial()));
                             Material sapling = Material.getMaterial(customDrop);
                             if (sapling != null) {
@@ -259,7 +258,7 @@ public class BlockBreakListener implements Listener {
                         } else if (itemID.contains("catsageaxe") && testBlock(b, axePredicates)) {
                             e.setDropItems(false);
                             Material mat = Material.getMaterial(customDrop);
-                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
+                            Collection<ItemStack> drops = breakInFacingAxe(b, radius, depth, p, axePredicates);
                             if (mat != null)
                                 drops = drops.stream()
                                     .map(drop -> Tag.LOGS.isTagged(drop.getType()) ? new ItemStack(mat, drop.getAmount()) : drop)
@@ -269,7 +268,7 @@ public class BlockBreakListener implements Listener {
                             e.setDropItems(false);
                             //Change log drops
                             String material = b.getType().toString().toUpperCase();
-                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates).stream()
+                            Collection<ItemStack> drops = breakInFacingAxe(b, radius, depth, p, axePredicates).stream()
                                 .map(drop -> {
                                     Material newMaterial = customDrop.equalsIgnoreCase("STRIPPED") ? Material.getMaterial("STRIPPED_" + material) : Material.getMaterial(material.substring(0, material.length() - 3) + customDrop.toUpperCase());
                                     return (drop.getType().toString().contains("LOG") && newMaterial != null) ? new ItemStack(newMaterial, drop.getAmount()) : drop;
@@ -363,9 +362,10 @@ public class BlockBreakListener implements Listener {
                         if (itemID.contains("ancienttaxe"))
                             dropAllItemStacks(world, loc, BlockUtils.breakInFacing(b, radius, depth, p, ancientAxePredicates));
                         else
-                            dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, axePredicates));
+                            dropAllItemStacks(world, loc, breakInFacingAxe(b, radius, depth, p, axePredicates));
                     }
                 }
+
                 // BreakInRadius
                 else {
                     if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
@@ -378,7 +378,7 @@ public class BlockBreakListener implements Listener {
                     }
                     else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
                         e.setDropItems(false);
-                        dropAllItemStacks(world, loc, breakInRadius(b, radius, p, axePredicates));
+                        dropAllItemStacks(world, loc, breakInRadiusAxe(b, radius, p, axePredicates));
                     }
                 }
             }

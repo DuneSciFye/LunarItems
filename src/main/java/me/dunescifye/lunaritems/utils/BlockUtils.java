@@ -11,6 +11,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -141,9 +143,29 @@ public class BlockUtils {
             if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
             if (b.equals(origin)) {
                 drops.addAll(b.getDrops(heldItem));
-                continue;
             }
-            if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+            else if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+                drops.addAll(b.getDrops(heldItem));
+                b.setType(Material.AIR);
+            }
+        }
+        return drops;
+    }
+
+    public static Collection<ItemStack> breakInFacingAxe(Block origin, int radius, int depth, Player p, List<List<Predicate<Block>>> predicates) {
+        ItemStack heldItem = p.getInventory().getItemInMainHand();
+
+        Collection<ItemStack> drops = new ArrayList<>();
+        for (Block b : Utils.getBlocksInFacing(origin, radius, depth, p)) {
+            PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
+            if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
+            if (b.getBlockData() instanceof Door door)
+                if (door.getHalf() == Bisected.Half.TOP) b.getRelative(BlockFace.DOWN).setType(Material.AIR);
+                else b.getRelative(BlockFace.UP).setType(Material.AIR);
+            if (b.equals(origin)) {
+                drops.addAll(b.getDrops(heldItem));
+            }
+            else if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
                 drops.addAll(b.getDrops(heldItem));
                 b.setType(Material.AIR);
             }
@@ -162,9 +184,28 @@ public class BlockUtils {
             if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
             if (b.equals(center)) {
                 drops.addAll(b.getDrops(heldItem));
-                continue;
             }
-            if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+            else if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+                drops.addAll(b.getDrops(heldItem));
+                b.setType(Material.AIR);
+            }
+        }
+        return drops;
+    }
+    public static Collection<ItemStack> breakInRadiusAxe(Block center, int radius, Player p, List<List<Predicate<Block>>> predicates) {
+        ItemStack heldItem = p.getInventory().getItemInMainHand();
+
+        Collection<ItemStack> drops = new ArrayList<>();
+        for (Block b : Utils.getBlocksInRadius(center, radius)) {
+            PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
+            if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
+            if (b.getBlockData() instanceof Door door)
+                if (door.getHalf() == Bisected.Half.TOP) b.getRelative(BlockFace.DOWN).setType(Material.AIR);
+                else b.getRelative(BlockFace.UP).setType(Material.AIR);
+            if (b.equals(center)) {
+                drops.addAll(b.getDrops(heldItem));
+            }
+            else if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
                 drops.addAll(b.getDrops(heldItem));
                 b.setType(Material.AIR);
             }
