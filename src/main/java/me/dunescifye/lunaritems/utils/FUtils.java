@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static com.massivecraft.factions.listeners.FactionsBlockListener.playerCanBuildDestroyBlock;
 import static me.dunescifye.lunaritems.utils.BlockUtils.*;
 import static me.dunescifye.lunaritems.utils.Utils.getBlocksInFacing;
 import static me.dunescifye.lunaritems.utils.Utils.testBlock;
@@ -55,8 +56,7 @@ public class FUtils {
             final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
             return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
         } else if (LunarItems.factionsUUIDEnabled) {
-            Faction faction = Board.getInstance().getFactionAt(new FLocation(location));
-            return faction.isWilderness() || faction.getAccess(FPlayers.getInstance().getByPlayer(player), PermissableAction.DESTROY) == Access.ALLOW;
+            return playerCanBuildDestroyBlock(player, location, "destroy", true);
         }
         return true;
     }
