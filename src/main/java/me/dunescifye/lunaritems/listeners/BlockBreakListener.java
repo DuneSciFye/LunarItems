@@ -192,7 +192,7 @@ public class BlockBreakListener implements Listener {
                     }
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
-                        ageable.setAge(2);
+                        ageable.setAge(1);
                         b.setBlockData(ageable);
                     });
                 }
@@ -203,7 +203,7 @@ public class BlockBreakListener implements Listener {
                     }
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
-                        ageable.setAge(2);
+                        ageable.setAge(1);
                         b.setBlockData(ageable);
                     });
                 }
@@ -212,13 +212,13 @@ public class BlockBreakListener implements Listener {
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
                         if (material == Material.BEETROOTS || material == Material.NETHER_WART) ageable.setAge(2);
-                        else ageable.setAge(3);
+                        else ageable.setAge(2);
                         b.setBlockData(ageable);
                     });
                 } else if (itemID.contains("angelichoe") || itemID.contains("krampushoe")) {
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
-                        ageable.setAge(2);
+                        ageable.setAge(1);
                         b.setBlockData(ageable);
                     });
                 }
