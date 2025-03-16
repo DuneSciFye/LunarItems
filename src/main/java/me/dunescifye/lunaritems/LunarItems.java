@@ -111,7 +111,7 @@ public final class LunarItems extends JavaPlugin {
         new PlayerLeaveListener().playerLeaveListener(this);
         new PlayerRunCommandListener().playerRunCommandHandler(this);
         if (AntiDropTracker.enabled) new AntiDropTracker().registerEvents(this);
-        if (ItemFrameToInvTracker.enabled) new ItemFrameToInvTracker().registerEvents(this);
+        //if (ItemFrameToInvTracker.enabled) new ItemFrameToInvTracker().registerEvents(this);
         if (TrashCommand.enabled) new TrashCommand().registerEvents(this);
     }
 

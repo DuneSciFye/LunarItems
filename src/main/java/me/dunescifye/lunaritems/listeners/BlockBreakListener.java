@@ -286,7 +286,7 @@ public class BlockBreakListener implements Listener {
                         } else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
                             e.setDropItems(false);
                             Material mat = Material.getMaterial(customDrop.toUpperCase());
-                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
+                            Collection<ItemStack> drops = breakInFacingAxe(b, radius, depth, p, axePredicates);
                             if (mat != null) drops = drops.stream()
                                 .map(drop -> new ItemStack(mat, drop.getAmount()))
                                 .toList();

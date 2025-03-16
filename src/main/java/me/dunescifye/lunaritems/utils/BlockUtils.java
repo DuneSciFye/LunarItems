@@ -160,7 +160,10 @@ public class BlockUtils {
             PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
             if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
             if (b.getBlockData() instanceof Door door)
-                if (door.getHalf() == Bisected.Half.TOP) b.getRelative(BlockFace.DOWN).setType(Material.AIR);
+                if (door.getHalf() == Bisected.Half.TOP) {
+                    b.getRelative(BlockFace.DOWN).setType(Material.AIR);
+                    drops.add(new ItemStack(b.getType()));
+                }
                 else b.getRelative(BlockFace.UP).setType(Material.AIR);
             if (b.equals(origin)) {
                 drops.addAll(b.getDrops(heldItem));
