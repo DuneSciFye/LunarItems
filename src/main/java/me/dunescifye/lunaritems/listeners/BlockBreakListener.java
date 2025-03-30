@@ -148,7 +148,7 @@ public class BlockBreakListener implements Listener {
         if (itemID == null) return;
 
         // Hoes
-        if (b.getBlockData() instanceof Ageable ageable && b.getType() != Material.SUGAR_CANE) {
+        if (b.getBlockData() instanceof Ageable ageable && b.getType() != Material.SUGAR_CANE && item.getType() == Material.NETHERITE_HOE) {
             if (ageable.getAge() == ageable.getMaximumAge()) {
                 Collection<ItemStack> drops = b.getDrops(item);
                 Location location = b.getLocation();
@@ -207,15 +207,16 @@ public class BlockBreakListener implements Listener {
                         b.setBlockData(ageable);
                     });
                 }
-                //Angelic Hoe
+                // Auto replant two stages higher
                 else if (itemID.contains("angelichoem")) {
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
-                        if (material == Material.BEETROOTS || material == Material.NETHER_WART) ageable.setAge(2);
-                        else ageable.setAge(2);
+                        ageable.setAge(2);
                         b.setBlockData(ageable);
                     });
-                } else if (itemID.contains("angelichoe") || itemID.contains("krampushoe")) {
+                }
+                // Auto replant 1 stage higher
+                else if (itemID.contains("angelichoe") || itemID.contains("krampushoe") || itemID.contains("sakurahoe")) {
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
                         ageable.setAge(1);

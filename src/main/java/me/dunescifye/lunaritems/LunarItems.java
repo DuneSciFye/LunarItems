@@ -113,6 +113,7 @@ public final class LunarItems extends JavaPlugin {
         if (AntiDropTracker.enabled) new AntiDropTracker().registerEvents(this);
         //if (ItemFrameToInvTracker.enabled) new ItemFrameToInvTracker().registerEvents(this);
         if (TrashCommand.enabled) new TrashCommand().registerEvents(this);
+        Bukkit.getPluginManager().registerEvents(new SakuraListener(), this);
     }
 
     private void registerCommands() {
