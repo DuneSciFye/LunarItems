@@ -122,6 +122,7 @@ public final class LunarItems extends JavaPlugin {
         ResetItemCommand.register();
         UpdateLoreCommand.register();
         if (TrashCommand.enabled) TrashCommand.register();
+        FixWorldCommand.register();
     }
 
     @Override
