@@ -29,14 +29,14 @@ public class FixWorldCommand {
         new CommandAPICommand("fixworld")
             .withArguments(new IntegerArgument("radius", 0))
             .executesPlayer((p, args) -> {
-                Block origin = p.getWorld().getBlockAt(((int) p.getX()), 67, ((int) p.getZ()));
+                Block origin = p.getWorld().getBlockAt(((int) p.getX()), (int) p.getY(), ((int) p.getZ()));
                 int radius = args.getUnchecked("radius");
 
                 for (int x = -radius; x < radius; x++) {
                     for (int z = -radius; z < radius; z++) {
-                        for (int y = (int) p.getY(); y < 3; y++) {
+                        for (int y = 0; y < 4; y++) {
 
-                            Block b = origin.getRelative(x, y, z);
+                            Block b = origin.getRelative(x, -y, z);
                             if (b.getType().equals(Material.AIR) || b.getType().equals(Material.SHORT_GRASS)) {
                                 if (testBlock(b.getRelative(BlockFace.DOWN), blocks)) {
 
