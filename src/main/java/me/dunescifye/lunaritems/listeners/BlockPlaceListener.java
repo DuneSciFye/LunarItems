@@ -68,7 +68,7 @@ public class BlockPlaceListener implements Listener {
                                     .replace("%z%", String.valueOf(loc.getBlockZ()))
                                 )));
                             teleportPadLocations.remove(p);
-                            Block secondTPPad = b.getWorld().getBlockAt(loc);
+                            Block secondTPPad = loc.getWorld().getBlockAt(loc);
                             PersistentDataContainer secondTPPadContainer = new CustomBlockData(secondTPPad, LunarItems.getPlugin());
                             secondTPPadContainer.set(LunarItems.keyLocation, DataType.LOCATION, b.getLocation().toCenterLocation());
                         }
