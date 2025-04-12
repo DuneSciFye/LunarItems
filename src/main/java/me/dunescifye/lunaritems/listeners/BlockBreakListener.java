@@ -90,6 +90,9 @@ public class BlockBreakListener implements Listener {
     // Monitor priority so it ignores when EI cancels
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBlockBreak(BlockBreakEvent e) {
+        // Return if EI item has desactiveDrop
+        if (!e.isDropItems()) return;
+
         Player p = e.getPlayer();
         Block b = e.getBlock();
         // Custom Blocks
@@ -140,18 +143,19 @@ public class BlockBreakListener implements Listener {
         }
 
         ItemStack item = p.getInventory().getItemInMainHand();
-
         if (!item.hasItemMeta()) return;
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
         String itemID = container.get(LunarItems.keyEIID, PersistentDataType.STRING);
         if (itemID == null) return;
 
+        World world = b.getWorld();
+        Location loc = b.getLocation();
+
         // Hoes
         if (b.getBlockData() instanceof Ageable ageable && b.getType() != Material.SUGAR_CANE && item.getType() == Material.NETHERITE_HOE) {
             if (ageable.getAge() == ageable.getMaximumAge()) {
                 Collection<ItemStack> drops = b.getDrops(item);
-                Location location = b.getLocation();
                 Material material = b.getType();
                 switch (Objects.requireNonNull(itemID)) {
                     case "nexushoe" ->
@@ -161,9 +165,9 @@ public class BlockBreakListener implements Listener {
                     case "nexushoeo" ->
                         handleNexusHoe(p, NexusHoeOPyroFarmingXPChance);
                     case "ancientthoe", "ancientthoeo" ->
-                        handleAncienttHoe(drops, p, b, location, item, meta, container, AncienttItemsConfig.AncienttHoeParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeFireworkChance, AncienttItemsConfig.AncienttHoeFarmKeyChance, AncienttItemsConfig.AncienttHoeParrotSpawnerChance, AncienttItemsConfig.AncienttHoeInfiniteSeedPouchChance);
+                        handleAncienttHoe(drops, p, b, loc, item, meta, container, AncienttItemsConfig.AncienttHoeParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeFireworkChance, AncienttItemsConfig.AncienttHoeFarmKeyChance, AncienttItemsConfig.AncienttHoeParrotSpawnerChance, AncienttItemsConfig.AncienttHoeInfiniteSeedPouchChance);
                     case "ancientthoemega"->
-                        handleAncienttHoe(drops, p, b, location, item, meta, container, AncienttItemsConfig.AncienttHoeMegaParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeMegaFireworkChance, AncienttItemsConfig.AncienttHoeMegaFarmKeyChance, AncienttItemsConfig.AncienttHoeMegaParrotSpawnerChance, AncienttItemsConfig.AncienttHoeMegaInfiniteSeedPouchChance);
+                        handleAncienttHoe(drops, p, b, loc, item, meta, container, AncienttItemsConfig.AncienttHoeMegaParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeMegaFireworkChance, AncienttItemsConfig.AncienttHoeMegaFarmKeyChance, AncienttItemsConfig.AncienttHoeMegaParrotSpawnerChance, AncienttItemsConfig.AncienttHoeMegaInfiniteSeedPouchChance);
                 }
                 // Auto Replant
                 if (itemID.contains("celestialhoe") ||
@@ -183,12 +187,12 @@ public class BlockBreakListener implements Listener {
                 }
                 // Double Drops
                 if (itemID.contains("catsagehoe") || itemID.contains("twistedhoe"))
-                    dropAllItemStacks(location.getWorld(), location, drops);
+                    dropAllItemStacks(world, loc, drops);
                 // Aether Hoe
                 if (itemID.contains("aetherhoem")) {
                     if (ThreadLocalRandom.current().nextInt(100) <= 15) {
-                        dropAllItemStacks(location.getWorld(), location, drops);
-                        dropAllItemStacks(location.getWorld(), location, drops);
+                        dropAllItemStacks(world, loc, drops);
+                        dropAllItemStacks(world, loc, drops);
                     }
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
@@ -198,8 +202,8 @@ public class BlockBreakListener implements Listener {
                 }
                 else if (itemID.contains("aetherhoe")) {
                     if (ThreadLocalRandom.current().nextInt(10) == 0) {
-                        dropAllItemStacks(location.getWorld(), location, drops);
-                        dropAllItemStacks(location.getWorld(), location, drops);
+                        dropAllItemStacks(world, loc, drops);
+                        dropAllItemStacks(world, loc, drops);
                     }
                     Bukkit.getScheduler().runTask(getPlugin(), () -> {
                         b.setType(material);
@@ -225,170 +229,166 @@ public class BlockBreakListener implements Listener {
                 }
             }
             else e.setCancelled(true);
+            return;
         }
+
         //Not a hoe
-        else {
-            if (radiusMiningDisabledWorlds.contains(p.getWorld().getName())) return;
-            World world = b.getWorld();
-            Location loc = b.getLocation();
+        if (radiusMiningDisabledWorlds.contains(p.getWorld().getName())) return;
 
-
-
-            if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
-                int radius = (int) (double) container.getOrDefault(keyRadius, PersistentDataType.DOUBLE, 0.0);
-                // BreakInFacing
-                if (container.has(LunarItems.keyDepth, PersistentDataType.DOUBLE)) {
-                    int depth = (int) (double) container.getOrDefault(keyDepth, PersistentDataType.DOUBLE, 0.0);
-                    // Custom drop
-                    String customDrop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
-                    if (customDrop != null) {
-                        if (itemID.contains("aetheraxe") && testBlock(b, axePredicates)) {
-                            e.setDropItems(false);
-                            // Will do 3x3x3 if axe is being thrown, otherwise use item's radius and depth
-                            Collection<ItemStack> drops = p.hasMetadata("ignoreBlockBreak") ? breakInFacing(b, 0, 1, p, axePredicates) : breakInFacingAxe(b, radius, depth, p, axePredicates);
-                            if (b.getBlockData() instanceof Door door && door.getHalf() == Bisected.Half.TOP) drops.add(new ItemStack(door.getMaterial()));
-                            Material sapling = Material.getMaterial(customDrop);
-                            if (sapling != null) {
-                                drops = drops.stream()
-                                    .map(drop -> drop.getType().toString().contains("_SAPLING") ? new ItemStack(sapling, drop.getAmount()) : drop)
-                                    .collect(Collectors.toList());
-                            }
-                            Inventory inv = p.getInventory();
-                            drops.removeIf(drop -> inv.addItem(drop).isEmpty());
-                            dropAllItemStacks(world, loc, drops);
-                        } else if (itemID.contains("catsageaxe") && testBlock(b, axePredicates)) {
-                            e.setDropItems(false);
-                            Material mat = Material.getMaterial(customDrop);
-                            Collection<ItemStack> drops = breakInFacingAxe(b, radius, depth, p, axePredicates);
-                            if (mat != null)
-                                drops = drops.stream()
-                                    .map(drop -> Tag.LOGS.isTagged(drop.getType()) ? new ItemStack(mat, drop.getAmount()) : drop)
-                                    .toList();
-                            dropAllItemStacks(world, loc, drops);
-                        } else if (itemID.contains("aquaticaxe") && testBlock(b, axePredicates)) {
-                            e.setDropItems(false);
-                            //Change log drops
-                            String material = b.getType().toString().toUpperCase();
-                            Collection<ItemStack> drops = breakInFacingAxe(b, radius, depth, p, axePredicates).stream()
-                                .map(drop -> {
-                                    Material newMaterial = customDrop.equalsIgnoreCase("STRIPPED") ? Material.getMaterial("STRIPPED_" + material) : Material.getMaterial(material.substring(0, material.length() - 3) + customDrop.toUpperCase());
-                                    return (drop.getType().toString().contains("LOG") && newMaterial != null) ? new ItemStack(newMaterial, drop.getAmount()) : drop;
-                                })
+        if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
+            int radius = (int) (double) container.getOrDefault(keyRadius, PersistentDataType.DOUBLE, 0.0);
+            // BreakInFacing
+            if (container.has(LunarItems.keyDepth, PersistentDataType.DOUBLE)) {
+                int depth = (int) (double) container.getOrDefault(keyDepth, PersistentDataType.DOUBLE, 0.0);
+                // Custom drop
+                String customDrop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
+                if (customDrop != null) {
+                    if (itemID.contains("aetheraxe") && testBlock(b, axePredicates)) {
+                        e.setDropItems(false);
+                        // Will do 3x3x3 if axe is being thrown, otherwise use item's radius and depth
+                        Collection<ItemStack> drops = p.hasMetadata("ignoreBlockBreak") ? breakInFacing(b, 0, 1, p, axePredicates) : breakInFacing(b, radius, depth, p, axePredicates);
+                        if (b.getBlockData() instanceof Door door && door.getHalf() == Bisected.Half.TOP) drops.add(new ItemStack(door.getMaterial()));
+                        Material sapling = Material.getMaterial(customDrop);
+                        if (sapling != null) {
+                            drops = drops.stream()
+                                .map(drop -> drop.getType().toString().contains("_SAPLING") ? new ItemStack(sapling, drop.getAmount()) : drop)
                                 .collect(Collectors.toList());
-                            dropAllItemStacks(world, loc, drops);
-                        } else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
-                            e.setDropItems(false);
-                            Material mat = Material.getMaterial(customDrop.toUpperCase());
-                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, shovelPredicates);
-                            if (mat != null) drops = drops.stream()
-                                .map(drop -> new ItemStack(mat, drop.getAmount()))
-                                .toList();
-                            dropAllItemStacks(world, loc, drops);
-                        } else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
-                            e.setDropItems(false);
-                            Material mat = Material.getMaterial(customDrop.toUpperCase());
-                            Collection<ItemStack> drops = breakInFacingAxe(b, radius, depth, p, axePredicates);
-                            if (mat != null) drops = drops.stream()
-                                .map(drop -> new ItemStack(mat, drop.getAmount()))
-                                .toList();
-                            dropAllItemStacks(world, loc, drops);
-                        } else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
-                            e.setDropItems(false);
-                            Material mat = Material.getMaterial(customDrop.toUpperCase());
-                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
-                            if (mat != null) drops = drops.stream()
-                                .map(drop -> new ItemStack(mat, drop.getAmount()))
-                                .toList();
-                            dropAllItemStacks(world, loc, drops);
                         }
-                    }
-                    // No custom drop
-                    // Shovels
-                    else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
+                        Inventory inv = p.getInventory();
+                        drops.removeIf(drop -> inv.addItem(drop).isEmpty());
+                        dropAllItemStacks(world, loc, drops);
+                    } else if (itemID.contains("catsageaxe") && testBlock(b, axePredicates)) {
                         e.setDropItems(false);
-                        if (itemID.contains("aethershovel")) {
-                            dropAllItemStacks(world, loc, p.getInventory().addItem(breakInFacing(b, radius, depth, p, shovelPredicates).toArray(new ItemStack[0])).values());
-                        }
-                        else if (itemID.contains("ancienttshovel"))
-                            dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, ancientShovelPredicates));
-                        else
-                            dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, shovelPredicates));
-                    }
-                    // Pickaxes
-                    else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
+                        Material mat = Material.getMaterial(customDrop);
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
+                        if (mat != null)
+                            drops = drops.stream()
+                                .map(drop -> Tag.LOGS.isTagged(drop.getType()) ? new ItemStack(mat, drop.getAmount()) : drop)
+                                .toList();
+                        dropAllItemStacks(world, loc, drops);
+                    } else if (itemID.contains("aquaticaxe") && testBlock(b, axePredicates)) {
                         e.setDropItems(false);
-                        if (itemID.contains("nightmarepick")) {
-                            Collection<ItemStack> drops = new ArrayList<>();
-                            if (b.getType().toString().contains("_ORE"))
-                                veinMineOres25ChanceDouble(b, drops, b.getType(), p, item);
-                            PlayerInventory inv = p.getInventory();
-                            drops.removeIf(drop -> inv.addItem(drop).isEmpty());
-                            drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
-                            dropAllItemStacks(world, loc, drops);
-                        }
-                        else if (itemID.contains("soulpick"))
-                            FUtils.breakInFacingDoubleOres(b, radius, depth, p, pickaxePredicates, e.getExpToDrop());
-                        else if (itemID.contains("ancienttpick"))
-                            dropAllItemStacks(world, loc, BlockUtils.breakInFacing(b, radius, depth, p, ancientPickPredicates));
-                        else if (itemID.contains("catsagepick")) {
-                            Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
-                            List<ItemStack> ores = new ArrayList<>();
-                            List<ItemStack> glazedDrops = new ArrayList<>();
-                            boolean terracotta = container.getOrDefault(keyTerracotta, PersistentDataType.STRING, "Disabled").equals("Enabled");
-                            boolean smeltingEnabled = container.getOrDefault(keySmelting, PersistentDataType.STRING, "Disabled").equals("Enabled");
-
-                            // Partition drops into smelted ores, glazed terracotta, and remaining drops
-                            drops.removeIf(drop -> {
-                                Material dropType = drop.getType();
-
-                                // Collect smelted ores to add to inventory
-                                if (smeltedOres.containsKey(dropType)) {
-                                    if (smeltingEnabled) ores.add(new ItemStack(smeltedOres.get(dropType), drop.getAmount()));
-                                    else ores.add(drop);
-                                    return true; // Remove from drops
-                                }
-
-                                // Collect glazed terracotta to be dropped normally
-                                if (terracotta && glazeTerracotta.containsKey(dropType)) {
-                                    glazedDrops.add(new ItemStack(glazeTerracotta.get(dropType), drop.getAmount()));
-                                    return true; // Remove original terracotta from drops
-                                }
-
-                                return false; // Keep other items in drops
-                            });
-
-                            // Add smelted ores to the player's inventory, drop the remaining items
-                            drops.addAll(p.getInventory().addItem(ores.toArray(new ItemStack[0])).values());
-                            // Add the glazed terracotta to the remaining drops
-                            drops.addAll(glazedDrops);
-                            dropAllItemStacks(world, loc, drops);
-                        } else
-                            dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, pickaxePredicates));
-                    }
-                    // Axes
-                    else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
+                        //Change log drops
+                        String material = b.getType().toString().toUpperCase();
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates).stream()
+                            .map(drop -> {
+                                Material newMaterial = customDrop.equalsIgnoreCase("STRIPPED") ? Material.getMaterial("STRIPPED_" + material) : Material.getMaterial(material.substring(0, material.length() - 3) + customDrop.toUpperCase());
+                                return (drop.getType().toString().contains("LOG") && newMaterial != null) ? new ItemStack(newMaterial, drop.getAmount()) : drop;
+                            })
+                            .collect(Collectors.toList());
+                        dropAllItemStacks(world, loc, drops);
+                    } else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
                         e.setDropItems(false);
-                        if (itemID.contains("ancienttaxe"))
-                            dropAllItemStacks(world, loc, BlockUtils.breakInFacing(b, radius, depth, p, ancientAxePredicates));
-                        else
-                            dropAllItemStacks(world, loc, breakInFacingAxe(b, radius, depth, p, axePredicates));
+                        Material mat = Material.getMaterial(customDrop.toUpperCase());
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, shovelPredicates);
+                        if (mat != null) drops = drops.stream()
+                            .map(drop -> new ItemStack(mat, drop.getAmount()))
+                            .toList();
+                        dropAllItemStacks(world, loc, drops);
+                    } else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
+                        e.setDropItems(false);
+                        Material mat = Material.getMaterial(customDrop.toUpperCase());
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
+                        if (mat != null) drops = drops.stream()
+                            .map(drop -> new ItemStack(mat, drop.getAmount()))
+                            .toList();
+                        dropAllItemStacks(world, loc, drops);
+                    } else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
+                        e.setDropItems(false);
+                        Material mat = Material.getMaterial(customDrop.toUpperCase());
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                        if (mat != null) drops = drops.stream()
+                            .map(drop -> new ItemStack(mat, drop.getAmount()))
+                            .toList();
+                        dropAllItemStacks(world, loc, drops);
                     }
                 }
+                // No custom drop
+                // Shovels
+                else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
+                    e.setDropItems(false);
+                    if (itemID.contains("aethershovel")) {
+                        dropAllItemStacks(world, loc, p.getInventory().addItem(breakInFacing(b, radius, depth, p, shovelPredicates).toArray(new ItemStack[0])).values());
+                    }
+                    else if (itemID.contains("ancienttshovel"))
+                        dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, ancientShovelPredicates));
+                    else
+                        dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, shovelPredicates));
+                }
+                // Pickaxes
+                else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
+                    e.setDropItems(false);
+                    if (itemID.contains("nightmarepick")) {
+                        Collection<ItemStack> drops = new ArrayList<>();
+                        if (b.getType().toString().contains("_ORE"))
+                            veinMineOres25ChanceDouble(b, drops, b.getType(), p, item);
+                        PlayerInventory inv = p.getInventory();
+                        drops.removeIf(drop -> inv.addItem(drop).isEmpty());
+                        drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
+                        dropAllItemStacks(world, loc, drops);
+                    }
+                    else if (itemID.contains("soulpick"))
+                        FUtils.breakInFacingDoubleOres(b, radius, depth, p, pickaxePredicates, e.getExpToDrop());
+                    else if (itemID.contains("ancienttpick"))
+                        dropAllItemStacks(world, loc, BlockUtils.breakInFacing(b, radius, depth, p, ancientPickPredicates));
+                    else if (itemID.contains("catsagepick")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                        List<ItemStack> ores = new ArrayList<>();
+                        List<ItemStack> glazedDrops = new ArrayList<>();
+                        boolean terracotta = container.getOrDefault(keyTerracotta, PersistentDataType.STRING, "Disabled").equals("Enabled");
+                        boolean smeltingEnabled = container.getOrDefault(keySmelting, PersistentDataType.STRING, "Disabled").equals("Enabled");
 
-                // BreakInRadius
-                else {
-                    if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
-                        e.setDropItems(false);
-                        dropAllItemStacks(world, loc, breakInRadius(b, radius, p, shovelPredicates));
-                    }
-                    else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
-                        e.setDropItems(false);
-                        dropAllItemStacks(world, loc, breakInRadius(b, radius, p, pickaxePredicates));
-                    }
-                    else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
-                        e.setDropItems(false);
-                        dropAllItemStacks(world, loc, breakInRadiusAxe(b, radius, p, axePredicates));
-                    }
+                        // Partition drops into smelted ores, glazed terracotta, and remaining drops
+                        drops.removeIf(drop -> {
+                            Material dropType = drop.getType();
+
+                            // Collect smelted ores to add to inventory
+                            if (smeltedOres.containsKey(dropType)) {
+                                if (smeltingEnabled) ores.add(new ItemStack(smeltedOres.get(dropType), drop.getAmount()));
+                                else ores.add(drop);
+                                return true; // Remove from drops
+                            }
+
+                            // Collect glazed terracotta to be dropped normally
+                            if (terracotta && glazeTerracotta.containsKey(dropType)) {
+                                glazedDrops.add(new ItemStack(glazeTerracotta.get(dropType), drop.getAmount()));
+                                return true; // Remove original terracotta from drops
+                            }
+
+                            return false; // Keep other items in drops
+                        });
+
+                        // Add smelted ores to the player's inventory, drop the remaining items
+                        drops.addAll(p.getInventory().addItem(ores.toArray(new ItemStack[0])).values());
+                        // Add the glazed terracotta to the remaining drops
+                        drops.addAll(glazedDrops);
+                        dropAllItemStacks(world, loc, drops);
+                    } else
+                        dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, pickaxePredicates));
+                }
+                // Axes
+                else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
+                    e.setDropItems(false);
+                    if (itemID.contains("ancienttaxe"))
+                        dropAllItemStacks(world, loc, BlockUtils.breakInFacing(b, radius, depth, p, ancientAxePredicates));
+                    else
+                        dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, axePredicates));
+                }
+            }
+
+            // BreakInRadius
+            else {
+                if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
+                    e.setDropItems(false);
+                    dropAllItemStacks(world, loc, breakInRadius(b, radius, p, shovelPredicates));
+                }
+                else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
+                    e.setDropItems(false);
+                    dropAllItemStacks(world, loc, breakInRadius(b, radius, p, pickaxePredicates));
+                }
+                else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
+                    e.setDropItems(false);
+                    dropAllItemStacks(world, loc, breakInRadius(b, radius, p, axePredicates));
                 }
             }
         }

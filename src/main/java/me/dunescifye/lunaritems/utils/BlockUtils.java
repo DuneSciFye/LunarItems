@@ -12,7 +12,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Door;
+import org.bukkit.block.data.type.Slab;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -45,7 +47,8 @@ public class BlockUtils {
             block -> block.getType().equals(Material.EMERALD_ORE),
             block -> block.getType().equals(Material.DEEPSLATE_EMERALD_ORE),
             block -> block.getType().equals(Material.NETHER_GOLD_ORE),
-            block -> block.getType().equals(Material.NETHER_QUARTZ_ORE)
+            block -> block.getType().equals(Material.NETHER_QUARTZ_ORE),
+            block -> block.getType().equals(Material.ANCIENT_DEBRIS)
         ),
         List.of()
     );
@@ -134,47 +137,47 @@ public class BlockUtils {
     );
 
     //Breaks blocks in direction player is facing. Updates block b to air. Returns drops.
-    public static Collection<ItemStack> breakInFacing(Block origin, int radius, int depth, Player p, List<List<Predicate<Block>>> predicates) {
+    public static Collection<ItemStack> breakInFacing(Block center, int radius, int depth, Player p, List<List<Predicate<Block>>> predicates) {
         ItemStack heldItem = p.getInventory().getItemInMainHand();
-
         Collection<ItemStack> drops = new ArrayList<>();
-        for (Block b : Utils.getBlocksInFacing(origin, radius, depth, p)) {
-            PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
-            if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
-            if (b.equals(origin)) {
-                drops.addAll(b.getDrops(heldItem));
-            }
-            else if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
-                drops.addAll(b.getDrops(heldItem));
-                b.setType(Material.AIR);
-            }
-        }
-        return drops;
-    }
 
-    public static Collection<ItemStack> breakInFacingAxe(Block origin, int radius, int depth, Player p, List<List<Predicate<Block>>> predicates) {
-        ItemStack heldItem = p.getInventory().getItemInMainHand();
+        for (Block b : Utils.getBlocksInFacing(center, radius, depth, p)) {
 
-        Collection<ItemStack> drops = new ArrayList<>();
-        for (Block b : Utils.getBlocksInFacing(origin, radius, depth, p)) {
-            PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
-            if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
-            if (b.getBlockData() instanceof Door door)
-                if (door.getHalf() == Bisected.Half.TOP) {
-                    b.getRelative(BlockFace.DOWN).setType(Material.AIR);
-                    drops.add(new ItemStack(b.getType()));
+            // Skip if block fails custom predicate check or isn't in a valid area
+            if (!Utils.testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+                continue;
+            }
+
+            // Skip if it's a custom block
+            PersistentDataContainer container = new CustomBlockData(b, LunarItems.getPlugin());
+            if (container.has(LunarItems.keyEIID, PersistentDataType.STRING)) {
+                continue;
+            }
+
+            // Handle center block separately for plugin compatibility
+            if (b.equals(center)) {
+                BlockData data = b.getBlockData();
+
+                if (data instanceof Door door) {
+                    Block halfBlock = door.getHalf() == Bisected.Half.TOP
+                        ? b.getRelative(BlockFace.DOWN)
+                        : b.getRelative(BlockFace.UP);
+                    halfBlock.setType(Material.AIR);
                 }
-                else b.getRelative(BlockFace.UP).setType(Material.AIR);
-            if (b.equals(origin)) {
+                else if (p.isSneaking() && data instanceof Slab slab && slab.getType() == Slab.Type.DOUBLE) {
+                    continue; // Skip breaking double slab while sneaking to support Purpur slab breaking
+                }
+
                 drops.addAll(b.getDrops(heldItem));
-            }
-            else if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+            } else {
                 drops.addAll(b.getDrops(heldItem));
                 b.setType(Material.AIR);
             }
         }
+
         return drops;
     }
+
 
 
     //Breaks blocks in radius. Updates block b to air.
@@ -189,26 +192,9 @@ public class BlockUtils {
                 drops.addAll(b.getDrops(heldItem));
             }
             else if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
-                drops.addAll(b.getDrops(heldItem));
-                b.setType(Material.AIR);
-            }
-        }
-        return drops;
-    }
-    public static Collection<ItemStack> breakInRadiusAxe(Block center, int radius, Player p, List<List<Predicate<Block>>> predicates) {
-        ItemStack heldItem = p.getInventory().getItemInMainHand();
-
-        Collection<ItemStack> drops = new ArrayList<>();
-        for (Block b : Utils.getBlocksInRadius(center, radius)) {
-            PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
-            if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
-            if (b.getBlockData() instanceof Door door)
-                if (door.getHalf() == Bisected.Half.TOP) b.getRelative(BlockFace.DOWN).setType(Material.AIR);
-                else b.getRelative(BlockFace.UP).setType(Material.AIR);
-            if (b.equals(center)) {
-                drops.addAll(b.getDrops(heldItem));
-            }
-            else if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+                if (b.getBlockData() instanceof Door door)
+                    if (door.getHalf() == Bisected.Half.TOP) b.getRelative(BlockFace.DOWN).setType(Material.AIR);
+                    else b.getRelative(BlockFace.UP).setType(Material.AIR);
                 drops.addAll(b.getDrops(heldItem));
                 b.setType(Material.AIR);
             }

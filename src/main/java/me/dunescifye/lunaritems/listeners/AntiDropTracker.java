@@ -34,7 +34,7 @@ public class AntiDropTracker implements Listener {
         ItemStack item = e.getItemDrop().getItemStack();
         if (!item.hasItemMeta()) return;
         PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-        if (!pdc.has(LunarItems.keyEIID) && !pdc.has(LunarItems.keyInfiniteBlock) && item.getType() != Material.BLAZE_ROD) return;
+        if (!pdc.has(LunarItems.keyEIID) && !pdc.has(LunarItems.keyInfiniteBlock) && item.getType() != Material.BLAZE_ROD && item.getType() != Material.TRIPWIRE_HOOK) return;
 
         Player p = e.getPlayer();
         UUID uuid = p.getUniqueId();

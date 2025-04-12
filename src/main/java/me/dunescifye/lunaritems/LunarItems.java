@@ -57,6 +57,7 @@ public final class LunarItems extends JavaPlugin {
         defaultValue.put(keyLoreRadius, "1x1");
     }
     public static boolean griefPreventionEnabled, decentHologramsEnabled, factionsUUIDEnabled;
+    public static boolean worldGuardEnabled;
 
     public static LunarItems getPlugin() {
         return plugin;
@@ -94,6 +95,10 @@ public final class LunarItems extends JavaPlugin {
             logger.info("Detected FactionsUUID, enabling support for it.");
             factionsUUIDEnabled = true;
         }
+        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
+            logger.info("Detected WorldGuard, enabling support for it.");
+            worldGuardEnabled = true;
+        }
 
         logger.info("Lunar Custom Items Enabled.");
     }
@@ -114,6 +119,8 @@ public final class LunarItems extends JavaPlugin {
         //if (ItemFrameToInvTracker.enabled) new ItemFrameToInvTracker().registerEvents(this);
         if (TrashCommand.enabled) new TrashCommand().registerEvents(this);
         Bukkit.getPluginManager().registerEvents(new SakuraListener(), this);
+
+        if (MaceBreak.enabled) Bukkit.getPluginManager().registerEvents(new MaceBreak(), this);
     }
 
     private void registerCommands() {

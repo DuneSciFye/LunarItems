@@ -5,6 +5,8 @@ import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
@@ -12,6 +14,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
@@ -98,17 +101,20 @@ public class Utils {
 
 
     public static List<Component> updateLore(ItemStack item, String matcher, String replacement){
-        List<Component> loreList = item.lore();
+        ItemMeta meta = item.getItemMeta();
+        List<Component> loreList = meta.lore();
+        List<Component> newLore = new ArrayList<>();
 
-        TextReplacementConfig config = TextReplacementConfig.builder()
-            .matchLiteral(matcher)
-            .replacement(replacement)
-            .build();
+        if (loreList != null) {
+            matcher = matcher.replace("§", "&");
+            replacement = replacement.replace("§", "&");
 
-        if (loreList != null)
-            loreList.replaceAll(component -> component.replaceText(config));
+            for (Component component : loreList) {
+                newLore.add(LegacyComponentSerializer.legacyAmpersand().deserialize(LegacyComponentSerializer.legacyAmpersand().serialize(component).replace(matcher, replacement)).decoration(TextDecoration.ITALIC, false));
+            }
+        }
 
-        return loreList;
+        return newLore;
     }
 
     public static boolean testBlock(Block b, List<List<Predicate<Block>>> predicates) {

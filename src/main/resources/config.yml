@@ -20,3 +20,7 @@ TrashCommand:
   Enabled: true
   InventoryName: "Trash"
   Message: "&cYou cannot trash non vanilla items!"
+
+MaceBreak:
+  Enabled: true
+  Message: "&7Your mace broke on death! Repair it to reuse it!"
