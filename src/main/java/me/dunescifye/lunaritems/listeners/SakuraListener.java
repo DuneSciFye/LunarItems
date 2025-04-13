@@ -74,7 +74,11 @@ public class SakuraListener implements Listener {
         Projectile projectile = e.getEntity();
         if (!(projectile.getShooter() instanceof Player p)) return;
 
-        PersistentDataContainer pdc = p.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer();
+        ItemStack item = p.getInventory().getItemInMainHand();
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
         String eiID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
 
         if (eiID == null) return;
