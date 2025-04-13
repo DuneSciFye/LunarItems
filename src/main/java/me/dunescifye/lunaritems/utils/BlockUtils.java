@@ -16,6 +16,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -234,7 +235,9 @@ public class BlockUtils {
 
 
     public static void dropAllItemStacks(World world, Location location, Collection<ItemStack> itemStacks) {
-        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) world.dropItemNaturally(location, item);
+        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) {
+            world.dropItemNaturally(location, item);
+        }
     }
 
     private static CoreProtectAPI getCoreProtect() {
