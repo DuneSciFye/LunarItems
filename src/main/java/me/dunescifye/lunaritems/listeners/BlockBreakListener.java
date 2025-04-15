@@ -16,6 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.type.Door;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -233,6 +234,8 @@ public class BlockBreakListener implements Listener {
         }
 
         //Not a hoe
+
+        // Radius pickaxes
         if (radiusMiningDisabledWorlds.contains(p.getWorld().getName())) return;
 
         if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
@@ -363,8 +366,12 @@ public class BlockBreakListener implements Listener {
                         // Add the glazed terracotta to the remaining drops
                         drops.addAll(glazedDrops);
                         dropAllItemStacks(world, loc, drops);
-                    } else
-                        dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, pickaxePredicates));
+                    } else {
+                        List<Item> items = dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, pickaxePredicates));
+                        BlockDropItemEvent event = new BlockDropItemEvent(b, b.getState(), p, items);
+                        Bukkit.getServer().getPluginManager().callEvent(event);
+                        if (event.isCancelled()) for (Item itemDrop : items) itemDrop.remove();
+                    }
                 }
                 // Axes
                 else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {

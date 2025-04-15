@@ -10,11 +10,13 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Slab;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -234,10 +236,14 @@ public class BlockUtils {
     }
 
 
-    public static void dropAllItemStacks(World world, Location location, Collection<ItemStack> itemStacks) {
+    public static List<Item> dropAllItemStacks(World world, Location location, Collection<ItemStack> itemStacks) {
+        List<Item> items = new ArrayList<>();
+
         for (ItemStack item : mergeSimilarItemStacks(itemStacks)) {
-            world.dropItemNaturally(location, item);
+            items.add(world.dropItemNaturally(location, item));
         }
+
+        return items;
     }
 
     private static CoreProtectAPI getCoreProtect() {
