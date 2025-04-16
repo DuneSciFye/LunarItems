@@ -106,19 +106,16 @@ public class SakuraListener implements Listener {
     //Sakura Shulker
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void playerBlockBreak(BlockDropItemEvent e) {
-        System.out.println("2");
         Player p = e.getPlayer();
         ItemStack item = p.getInventory().getItemInOffHand();
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        System.out.println("3");
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
         if (itemID == null || !itemID.contains("sakurashulker")) return;
 
-        System.out.println("4");
         List<Item> drops = e.getItems();
         if (drops.size() != 1) return; // Only breaking ores
 
@@ -129,27 +126,33 @@ public class SakuraListener implements Listener {
         int amount = drop.getAmount();
         int maxAmount = itemID.equals("sakurashulker") ? 512 : 2048; // regular version holds 512, mega holds 2048
 
-        System.out.println("5");
         if (type.contains("DIAMOND") && pdc.getOrDefault(new NamespacedKey("score", "score-diamond"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 diamond " + amount);
-            System.out.println("6");
             e.setCancelled(true);
         } else if (type.contains("IRON") && pdc.getOrDefault(new NamespacedKey("score", "score-iron"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 iron " + amount);
+            e.setCancelled(true);
         } else if (type.contains("GOLD") && pdc.getOrDefault(new NamespacedKey("score", "score-gold"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 gold " + amount);
+            e.setCancelled(true);
         } else if (type.contains("REDSTONE") && pdc.getOrDefault(new NamespacedKey("score", "score-redstone"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 redstone " + amount);
+            e.setCancelled(true);
         } else if (type.contains("COPPER") && pdc.getOrDefault(new NamespacedKey("score", "score-copper"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 copper " + amount);
+            e.setCancelled(true);
         } else if (type.contains("EMERALD") && pdc.getOrDefault(new NamespacedKey("score", "score-emerald"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 emerald " + amount);
+            e.setCancelled(true);
         } else if (type.contains("COAL") && pdc.getOrDefault(new NamespacedKey("score", "score-coal"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 coal " + amount);
+            e.setCancelled(true);
         } else if (type.contains("LAPIS") && pdc.getOrDefault(new NamespacedKey("score", "score-lapis"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 lapis " + amount);
+            e.setCancelled(true);
         } else if (type.contains("DEBRIS") && pdc.getOrDefault(new NamespacedKey("score", "score-debris"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 debris " + amount);
+            e.setCancelled(true);
         }
     }
 
