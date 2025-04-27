@@ -10,7 +10,6 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
@@ -18,7 +17,6 @@ import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -54,6 +52,18 @@ public class BlockUtils {
             block -> block.getType().equals(Material.ANCIENT_DEBRIS)
         ),
         List.of()
+    );
+
+    public static List<Material> oreDrops = List.of(
+        Material.RAW_GOLD,
+        Material.RAW_IRON,
+        Material.COAL,
+        Material.RAW_COPPER,
+        Material.REDSTONE,
+        Material.LAPIS_LAZULI,
+        Material.DIAMOND,
+        Material.EMERALD,
+        Material.NETHERITE_SCRAP
     );
 
     public static List<List<Predicate<Block>>> pickaxePredicates = List.of(
