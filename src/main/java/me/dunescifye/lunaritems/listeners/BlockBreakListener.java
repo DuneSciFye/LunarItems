@@ -178,7 +178,7 @@ public class BlockBreakListener implements Listener {
                     itemID.contains("twistedhoe") ||
                     itemID.contains("nightmarehoe") ||
                     itemID.contains("aquatichoe")) {
-                    Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
+                    replant(b);
                 }
                 // 65% chance to auto replant for regular soul hoe and soul hoeo
                 else if (itemID.contains("soulhoe")) {

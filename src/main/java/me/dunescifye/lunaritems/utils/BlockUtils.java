@@ -4,15 +4,13 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import me.dunescifye.lunaritems.LunarItems;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.entity.Item;
@@ -25,6 +23,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static me.dunescifye.lunaritems.LunarItems.getPlugin;
 import static org.bukkit.Bukkit.getServer;
 
 public class BlockUtils {
@@ -284,6 +283,19 @@ public class BlockUtils {
     public static void boneMealRadius(Block center, int radius) {
         for (Block b : Utils.getBlocksInRadius(center, radius))
             b.applyBoneMeal(BlockFace.UP);
+    }
+
+    public static void replant(Block b) {
+        Material mat = b.getType();
+        if (b.getBlockData() instanceof Directional directional) {
+            Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                b.setType(mat);
+                BlockData blockData = b.getBlockData();
+                ((Directional) blockData).setFacing(directional.getFacing());
+                b.setBlockData(blockData);
+            });
+        } else Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(mat));
+
     }
 
 }
