@@ -2,7 +2,6 @@ package me.dunescifye.lunaritems.listeners;
 
 import me.dunescifye.lunaritems.LunarItems;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.damage.DamageSource;
@@ -11,10 +10,8 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
@@ -23,8 +20,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -42,10 +37,10 @@ public class SakuraListener implements Listener {
 
         Set<String> tags = windCharge.getScoreboardTags();
 
-        if (tags.contains("sakuraKunai")) {
+        if (tags.contains("sakurakunai") || tags.contains("sakurakunaim")) {
             e.setCancelled(true);
             windCharge.remove();
-            if (ThreadLocalRandom.current().nextInt(2) == 0)
+            if (ThreadLocalRandom.current().nextInt(tags.contains("sakurakunaim") ? 1 : 2) == 0)
                 runConsoleCommands("ei give " + p.getName() + " sakurakunai 1");
             DamageSource damageSource = DamageSource.builder(DamageType.PLAYER_ATTACK).withDirectEntity(p).build();
             if (e.getHitEntity() instanceof LivingEntity livingEntity) livingEntity.damage(6, damageSource);
@@ -68,7 +63,7 @@ public class SakuraListener implements Listener {
         if (e.isCancelled()) return;
         if (!(e.getEntity() instanceof WindCharge windCharge)) return;
         Set<String> tags = windCharge.getScoreboardTags();
-        if (tags.contains("sakuraKunai") || tags.contains("sakuraSidestep"))
+        if (tags.contains("sakurakunai") || tags.contains("sakurakunaim") || tags.contains("sakuraSidestep"))
             e.setCancelled(true);
     }
 
@@ -86,8 +81,8 @@ public class SakuraListener implements Listener {
         String eiID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
 
         if (eiID == null) return;
-        if (eiID.equals("sakurakunai")) {
-            projectile.addScoreboardTag("sakuraKunai");
+        if (eiID.contains("sakurakunai")) {
+            projectile.addScoreboardTag(eiID);
             new BukkitRunnable() {
                 @Override
                 public void run() {
