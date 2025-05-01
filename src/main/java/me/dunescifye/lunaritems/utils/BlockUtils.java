@@ -8,6 +8,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
@@ -295,7 +296,24 @@ public class BlockUtils {
                 b.setBlockData(blockData);
             });
         } else Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(mat));
+    }
 
+    public static void replant(Block b, int newAge) {
+        Material mat = b.getType();
+        if (b.getBlockData() instanceof Directional directional) {
+            Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                b.setType(mat);
+                BlockData blockData = b.getBlockData();
+                ((Directional) blockData).setFacing(directional.getFacing());
+                ((Ageable) blockData).setAge(newAge);
+                b.setBlockData(blockData);
+            });
+        } else Bukkit.getScheduler().runTask(getPlugin(), () -> {
+            b.setType(mat);
+            BlockData blockData = b.getBlockData();
+            ((Ageable) blockData).setAge(newAge);
+            b.setBlockData(blockData);
+        });
     }
 
 }

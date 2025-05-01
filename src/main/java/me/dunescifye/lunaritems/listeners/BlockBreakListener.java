@@ -157,7 +157,6 @@ public class BlockBreakListener implements Listener {
         if (b.getBlockData() instanceof Ageable ageable && b.getType() != Material.SUGAR_CANE && item.getType() == Material.NETHERITE_HOE) {
             if (ageable.getAge() == ageable.getMaximumAge()) {
                 Collection<ItemStack> drops = b.getDrops(item);
-                Material material = b.getType();
                 switch (Objects.requireNonNull(itemID)) {
                     case "nexushoe" ->
                         handleNexusHoe(p, NexusHoePyroFarmingXPChance);
@@ -183,7 +182,7 @@ public class BlockBreakListener implements Listener {
                 // 65% chance to auto replant for regular soul hoe and soul hoeo
                 else if (itemID.contains("soulhoe")) {
                     if (ThreadLocalRandom.current().nextInt(100) <= 65) {
-                        Bukkit.getScheduler().runTask(getPlugin(), () -> b.setType(material));
+                        replant(b);
                     }
                 }
                 // Double Drops
@@ -195,38 +194,30 @@ public class BlockBreakListener implements Listener {
                         dropAllItemStacks(world, loc, drops);
                         dropAllItemStacks(world, loc, drops);
                     }
-                    Bukkit.getScheduler().runTask(getPlugin(), () -> {
-                        b.setType(material);
-                        ageable.setAge(1);
-                        b.setBlockData(ageable);
-                    });
+                    replant(b, 1);
+                }
+                else if (itemID.contains("nightspirehoe")) {
+                    replant(b, 2);
+                    if (("Enabled").equals(container.get(keyAutoSell, PersistentDataType.STRING))) {
+                        e.setDropItems(false);
+                        Double price = container.get(new NamespacedKey("score", "score-" + b.getType().toString().toLowerCase()), PersistentDataType.DOUBLE);
+                        if (price != null) runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 money " + price);
+                    }
                 }
                 else if (itemID.contains("aetherhoe")) {
                     if (ThreadLocalRandom.current().nextInt(10) == 0) {
                         dropAllItemStacks(world, loc, drops);
                         dropAllItemStacks(world, loc, drops);
                     }
-                    Bukkit.getScheduler().runTask(getPlugin(), () -> {
-                        b.setType(material);
-                        ageable.setAge(1);
-                        b.setBlockData(ageable);
-                    });
+                    replant(b, 1);
                 }
                 // Auto replant two stages higher
-                else if (itemID.contains("angelichoem")) {
-                    Bukkit.getScheduler().runTask(getPlugin(), () -> {
-                        b.setType(material);
-                        ageable.setAge(2);
-                        b.setBlockData(ageable);
-                    });
+                else if (itemID.contains("angelichoem") ) {
+                    replant(b, 2);
                 }
                 // Auto replant 1 stage higher
                 else if (itemID.contains("angelichoe") || itemID.contains("krampushoe") || itemID.contains("sakurahoe")) {
-                    Bukkit.getScheduler().runTask(getPlugin(), () -> {
-                        b.setType(material);
-                        ageable.setAge(1);
-                        b.setBlockData(ageable);
-                    });
+                    replant(b, 1);
                 }
             }
             else e.setCancelled(true);
