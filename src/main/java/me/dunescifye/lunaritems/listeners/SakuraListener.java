@@ -106,11 +106,9 @@ public class SakuraListener implements Listener {
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
-
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
         if (itemID == null || !itemID.contains("sakurashulker")) return;
-
         List<Item> drops = e.getItems();
         if (drops.size() != 1) return; // Only breaking ores
 
@@ -121,31 +119,31 @@ public class SakuraListener implements Listener {
         int amount = drop.getAmount();
         int maxAmount = itemID.equals("sakurashulker") ? 512 : 2048; // regular version holds 512, mega holds 2048
 
-        if (type.contains("DIAMOND_ORE") && pdc.getOrDefault(new NamespacedKey("score", "score-diamond"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
+        if (type.equals("DIAMOND") && pdc.getOrDefault(new NamespacedKey("score", "score-diamond"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 diamond " + amount);
             e.setCancelled(true);
-        } else if (type.contains("IRON_ORE") && pdc.getOrDefault(new NamespacedKey("score", "score-iron"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
+        } else if (type.equals("RAW_IRON") && pdc.getOrDefault(new NamespacedKey("score", "score-iron"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 iron " + amount);
             e.setCancelled(true);
-        } else if (type.contains("GOLD_ORE") && pdc.getOrDefault(new NamespacedKey("score", "score-gold"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
+        } else if (type.equals("RAW_GOLD") && pdc.getOrDefault(new NamespacedKey("score", "score-gold"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 gold " + amount);
             e.setCancelled(true);
-        } else if (type.contains("REDSTONE_ORE") && pdc.getOrDefault(new NamespacedKey("score", "score-redstone"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
+        } else if (type.equals("REDSTONE") && pdc.getOrDefault(new NamespacedKey("score", "score-redstone"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 redstone " + amount);
             e.setCancelled(true);
-        } else if (type.contains("COPPER_ORE") && pdc.getOrDefault(new NamespacedKey("score", "score-copper"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
+        } else if (type.equals("RAW_COPPER") && pdc.getOrDefault(new NamespacedKey("score", "score-copper"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 copper " + amount);
             e.setCancelled(true);
-        } else if (type.contains("EMERALD_ORE") && pdc.getOrDefault(new NamespacedKey("score", "score-emerald"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
+        } else if (type.equals("EMERALD") && pdc.getOrDefault(new NamespacedKey("score", "score-emerald"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 emerald " + amount);
             e.setCancelled(true);
-        } else if (type.contains("COAL_ORE") && pdc.getOrDefault(new NamespacedKey("score", "score-coal"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
+        } else if (type.equals("COAL") && pdc.getOrDefault(new NamespacedKey("score", "score-coal"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 coal " + amount);
             e.setCancelled(true);
-        } else if (type.contains("LAPIS_ORE") && pdc.getOrDefault(new NamespacedKey("score", "score-lapis"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
+        } else if (type.equals("LAPIS_LAZULI") && pdc.getOrDefault(new NamespacedKey("score", "score-lapis"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 lapis " + amount);
             e.setCancelled(true);
-        } else if (type.contains("DEBRIS_ORE") && pdc.getOrDefault(new NamespacedKey("score", "score-debris"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
+        } else if (type.equals("ANCIENT_DEBRIS") && pdc.getOrDefault(new NamespacedKey("score", "score-debris"), PersistentDataType.DOUBLE, 0.0) < maxAmount) {
             runConsoleCommands("ei console-modification modification variable " + name + " 40 debris " + amount);
             e.setCancelled(true);
         }

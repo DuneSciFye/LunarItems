@@ -325,18 +325,23 @@ public class BlockBreakListener implements Listener {
                     }
                     else if (itemID.contains("nightspirepick")) {
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                        Collection<ItemStack> ores = new ArrayList<>();
                         boolean smeltingEnabled = container.getOrDefault(keySmelting, PersistentDataType.STRING, "Disabled").equals("Enabled");
 
-                        for (ItemStack drop : drops) {
-                            if (oreDrops.contains(drop.getType()) && ThreadLocalRandom.current().nextInt(4) == 0) {
-                                drop.setAmount(drop.getAmount() * 2);
-                                e.setExpToDrop(e.getExpToDrop() + 2);
+                        drops.removeIf(drop -> {
+                            if (oreDrops.contains(drop.getType())) {
+                                if (ThreadLocalRandom.current().nextInt(4) == 0) {
+                                    drop.setAmount(drop.getAmount() * 2);
+                                    e.setExpToDrop(e.getExpToDrop() + 2);
+                                }
+                                if (smeltingEnabled) {
+                                    ores.add(new ItemStack(smeltedOres.get(drop.getType()), drop.getAmount()));
+                                    return true;
+                                }
                             }
-                            if (smeltingEnabled) {
-                                drops.remove(drop);
-                                drops.add(new ItemStack(smeltedOres.get(drop.getType()), drop.getAmount()));
-                            }
-                        }
+                            return false;
+                        });
+                        drops.addAll(ores);
                         items = dropAllItemStacks(world, loc, drops);
                     }
                     else if (itemID.contains("soulpick"))
