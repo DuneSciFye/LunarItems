@@ -47,6 +47,10 @@ public class SakuraListener implements Listener {
         } else if (tags.contains("sakuraSidestep")) {
             e.setCancelled(true);
             windCharge.remove();
+
+            // Prevent separate worlds
+            if (p.getWorld() != windCharge.getWorld()) return;
+
             if (e.getHitBlock() != null && e.getHitBlockFace() != null) {
                 Location loc = e.getHitBlock().getLocation().add(e.getHitBlockFace().getDirection());
                 loc.setYaw(p.getYaw());
