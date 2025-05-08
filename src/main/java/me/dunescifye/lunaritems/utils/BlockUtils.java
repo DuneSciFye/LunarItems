@@ -170,11 +170,10 @@ public class BlockUtils {
             // Handle center block separately for plugin compatibility
             if (b.equals(center)) {
                 BlockData data = b.getBlockData();
+                if (data instanceof Door door && door.getHalf() == Bisected.Half.TOP) {
+                    Block halfBlock = b.getRelative(BlockFace.DOWN);
 
-                if (data instanceof Door door) {
-                    Block halfBlock = door.getHalf() == Bisected.Half.TOP
-                        ? b.getRelative(BlockFace.DOWN)
-                        : b.getRelative(BlockFace.UP);
+                    drops.add(new ItemStack(halfBlock.getType()));
                     halfBlock.setType(Material.AIR);
                 }
                 else if (p.isSneaking() && data instanceof Slab slab && slab.getType() == Slab.Type.DOUBLE) {
