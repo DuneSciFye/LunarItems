@@ -35,7 +35,7 @@ public class FUtils {
             if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING))
                 continue;
             if (testBlock(b, predicates) && isInClaimOrWilderness(p, b.getLocation())) {
-                if (testBlock(b, ores) && !heldItem.containsEnchantment(Enchantment.SILK_TOUCH))
+                if (testBlock(b, ores) && !heldItem.containsEnchantment(Enchantment.SILK_TOUCH) && !b.getType().equals(Material.ANCIENT_DEBRIS))
                     drops.addAll(b.getDrops(heldItem));
                 drops.addAll(b.getDrops(heldItem));
                 p.giveExp(exp);

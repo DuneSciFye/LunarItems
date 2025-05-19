@@ -4,7 +4,6 @@ import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.commands.TrashCommand;
 import me.dunescifye.lunaritems.listeners.AntiDropTracker;
 import me.dunescifye.lunaritems.listeners.ItemFrameToInvTracker;
-import me.dunescifye.lunaritems.listeners.MaceBreak;
 import me.dunescifye.lunaritems.utils.ConfigUtils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -48,10 +47,6 @@ public class Config {
         TrashCommand.enabled = ConfigUtils.setupConfig("TrashCommand.Enabled", config, true);
         TrashCommand.inventoryName = LegacyComponentSerializer.legacyAmpersand().deserialize(ConfigUtils.setupConfig("TrashCommand.InventoryName", config, "Trash"));
         TrashCommand.message = LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + ConfigUtils.setupConfig("TrashCommand.Message", config, "&cYou cannot trash non vanilla items!"));
-
-        // If Maces will break on death
-        MaceBreak.enabled = config.getBoolean("MaceBreak.Enabled", MaceBreak.enabled);
-        MaceBreak.message = config.getString("MaceBreak.Message", MaceBreak.message);
 
         plugin.saveConfig();
     }
