@@ -2,30 +2,15 @@ package me.dunescifye.lunaritems.listeners;
 
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent;
 import me.dunescifye.lunaritems.LunarItems;
-import me.dunescifye.lunaritems.utils.Utils;
-import net.coreprotect.CoreProtect;
-import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDropItemEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-
-import static me.dunescifye.lunaritems.files.Config.prefix;
-import static me.dunescifye.lunaritems.utils.Utils.getCoreProtect;
 
 public class ItemFrameToInvTracker implements Listener {
 

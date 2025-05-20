@@ -2,8 +2,6 @@ package me.dunescifye.lunaritems.utils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import me.dunescifye.lunaritems.LunarItems;
-import net.coreprotect.CoreProtect;
-import net.coreprotect.CoreProtectAPI;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -253,31 +250,6 @@ public class BlockUtils {
         }
 
         return items;
-    }
-
-    private static CoreProtectAPI getCoreProtect() {
-        Plugin plugin = getServer().getPluginManager().getPlugin("CoreProtect");
-
-        // Check that CoreProtect is loaded
-        if (!(plugin instanceof CoreProtect)) {
-            System.out.println("core protect plugin not found");
-            return null;
-        }
-
-        // Check that the API is enabled
-        CoreProtectAPI CoreProtect = ((CoreProtect) plugin).getAPI();
-        if (!CoreProtect.isEnabled()) {
-            System.out.println("core protect api is not enabled");
-            return null;
-        }
-
-        // Check that a compatible version of the API is loaded
-        if (CoreProtect.APIVersion() < 10) {
-            System.out.println("core protect api version is not supported");
-            return null;
-        }
-
-        return CoreProtect;
     }
 
     public static void boneMealRadius(Block center, int radius) {

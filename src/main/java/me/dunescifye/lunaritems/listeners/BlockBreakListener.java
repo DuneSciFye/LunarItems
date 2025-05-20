@@ -481,7 +481,7 @@ public class BlockBreakListener implements Listener {
                 //Testing claim
                 if (isInClaimOrWilderness(player, b.getLocation())) {
                     drops.addAll(b.getDrops(item));
-                    if (Utils.isNaturallyGenerated(b) && ThreadLocalRandom.current().nextInt(4) == 0) drops.addAll(b.getDrops(item));
+                    if (ThreadLocalRandom.current().nextInt(4) == 0) drops.addAll(b.getDrops(item));
                     b.setType(Material.AIR);
                     this.veinMineOres25ChanceDouble(b, drops, material, player, item);
                 }

@@ -1,10 +1,6 @@
 package me.dunescifye.lunaritems.utils;
 
-import me.dunescifye.lunaritems.LunarItems;
-import net.coreprotect.CoreProtect;
-import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
@@ -15,48 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 import static me.dunescifye.lunaritems.utils.ConfigUtils.isInteger;
-import static org.bukkit.Bukkit.getServer;
 
 public class Utils {
-
-    private static final CoreProtectAPI coreProtectAPI;
-
-    static {
-        Plugin plugin = getServer().getPluginManager().getPlugin("CoreProtect");
-        Logger logger = LunarItems.getPlugin().getLogger();
-
-        // Check that CoreProtect is loaded
-        if (!(plugin instanceof CoreProtect)) {
-            logger.warning("core protect plugin not found");
-            coreProtectAPI = null;
-        } else {
-            // Check that the API is enabled
-            CoreProtectAPI CoreProtect = ((CoreProtect) plugin).getAPI();
-            if (!CoreProtect.isEnabled()) {
-                logger.warning("core protect api is not enabled");
-                coreProtectAPI = null;
-            } else {
-                // Check that a compatible version of the API is loaded
-                if (CoreProtect.APIVersion() < 10) {
-                    logger.warning("core protect api version is not supported");
-                    coreProtectAPI = null;
-                } else {
-                    coreProtectAPI = CoreProtect;
-                }
-            }
-        }
-    }
-
-    public static CoreProtectAPI getCoreProtect() {
-        return coreProtectAPI;
-    }
 
     public static void runConsoleCommands(String... commands){
         Server server = Bukkit.getServer();
@@ -64,20 +25,6 @@ public class Utils {
         for (String command : commands){
             server.dispatchCommand(console, command);
         }
-    }
-
-    public static boolean isNaturallyGenerated(Block block) {
-        List<String[]> lookup = coreProtectAPI.queueLookup(block);
-        if (lookup == null || lookup.isEmpty()) {
-            lookup = coreProtectAPI.blockLookup(block, 2147483647);
-        } else {
-            return false;
-        }
-        if (lookup != null && !lookup.isEmpty()) {
-            CoreProtectAPI.ParseResult parseResult = coreProtectAPI.parseResult(lookup.getFirst());
-            return parseResult.getPlayer().startsWith("#") || parseResult.isRolledBack();
-        }
-        return true;
     }
 
 
