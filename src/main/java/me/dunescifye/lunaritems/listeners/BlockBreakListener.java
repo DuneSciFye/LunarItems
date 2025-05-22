@@ -308,6 +308,26 @@ public class BlockBreakListener implements Listener {
                     }
                     else if (itemID.contains("ancienttshovel"))
                         items = dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, ancientShovelPredicates));
+                    else if (itemID.contains("creakingshovel")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, ancientShovelPredicates);
+                        // Auto Sell
+                        if (("Enabled").equals(container.get(keyAutoSell, PersistentDataType.STRING))) {
+                            double totalPrice = 0.0;
+
+                            Iterator<ItemStack> iterator = drops.iterator();
+                            while (iterator.hasNext()) {
+                                ItemStack drop = iterator.next();
+                                Double price = container.get(new NamespacedKey("score", "score-" + drop.getType().toString().toLowerCase()), PersistentDataType.DOUBLE);
+                                if (price != null) {
+                                    totalPrice += price;
+                                    iterator.remove();
+                                }
+                            }
+
+                            runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 money " + totalPrice);
+                        }
+                        items = dropAllItemStacks(world, loc, drops);
+                    }
                     else
                         items = dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, shovelPredicates));
                 }
@@ -419,6 +439,7 @@ public class BlockBreakListener implements Listener {
 
         // Remove drops if event is cancelled
         if (event.isCancelled()) for (Item itemDrop : items) itemDrop.remove();
+
 
     }
 
