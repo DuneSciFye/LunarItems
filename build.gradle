@@ -55,6 +55,9 @@ shadowJar {
     relocate 'com.jeff_media.customblockdata', 'me.dunescifye.libs.customblockdata'
     relocate 'com.jeff_media.morepersistentdatatypes', 'me.dunescifye.libs.morepersistentdatatypes'
     relocate 'dev.jorel.commandapi', 'me.dunescifye.libs.lunaritems.commandapi'
+    archiveBaseName.set("LunarItems")
+    archiveClassifier.set("") // removes the "-all" suffix
+    archiveVersion.set("")    // removes the version number
 }
 
 def targetJavaVersion = 21

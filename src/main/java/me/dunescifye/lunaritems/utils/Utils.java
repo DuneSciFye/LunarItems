@@ -8,8 +8,10 @@ import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
@@ -207,5 +209,17 @@ public class Utils {
         Map.entry(Material.MAGENTA_TERRACOTTA, Material.MAGENTA_GLAZED_TERRACOTTA),
         Map.entry(Material.PINK_TERRACOTTA, Material.PINK_GLAZED_TERRACOTTA)
     );
+
+
+    public static Material smeltMaterial(Material mat) {
+        Iterator<Recipe> iter = Bukkit.recipeIterator();
+        while (iter.hasNext()) {
+            Recipe recipe = iter.next();
+            if (!(recipe instanceof FurnaceRecipe furnaceRecipe)) continue;
+            if (furnaceRecipe.getInput().getType() != mat) continue;
+            return recipe.getResult().getType();
+        }
+        return mat;
+    }
 
 }

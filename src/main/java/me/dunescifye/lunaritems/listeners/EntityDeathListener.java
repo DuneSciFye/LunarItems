@@ -1,11 +1,10 @@
 package me.dunescifye.lunaritems.listeners;
 
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Donkey;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Minecart;
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -16,7 +15,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static me.dunescifye.lunaritems.utils.Utils.smeltedOres;
 
 public class EntityDeathListener implements Listener {
 
@@ -31,6 +33,7 @@ public class EntityDeathListener implements Listener {
         LivingEntity entity = e.getEntity();
         Player p = e.getEntity().getKiller();
         if (p == null) return;
+
         ItemStack helmet = p.getInventory().getHelmet(),
             chestplate = p.getInventory().getChestplate(),
             leggings = p.getInventory().getLeggings(),

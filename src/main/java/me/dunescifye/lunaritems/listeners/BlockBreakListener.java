@@ -74,18 +74,35 @@ public class BlockBreakListener implements Listener {
     public void onBlockDropItems(BlockDropItemEvent e) {
         Player p = e.getPlayer();
         ItemStack item = p.getInventory().getItemInMainHand();
-        if (!item.hasItemMeta()) return;
-        PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-        String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
-        if (itemID == null) return;
-
         Inventory inv = p.getInventory();
+        List<Item> items = e.getItems();
 
-        if (e.getBlockState().getBlockData() instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()) {
-            // Auto Pickup crops
-            if (itemID.contains("soulhoe") || itemID.contains("demonslimehoe"))
-                e.getItems().removeIf(drop -> inv.addItem(drop.getItemStack()).isEmpty());
+        if (item.hasItemMeta()) {
+            PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
+            String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
+            if (itemID != null) {
+                if (e.getBlockState().getBlockData() instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()) {
+                    // Auto Pickup crops
+                    if (itemID.contains("soulhoe") || itemID.contains("demonslimehoe"))
+                        items.removeIf(drop -> inv.addItem(drop.getItemStack()).isEmpty());
+                }
+            }
         }
+
+        ItemStack offhandItem = p.getInventory().getItemInOffHand();
+        if (offhandItem.hasItemMeta()) {
+            PersistentDataContainer pdc = offhandItem.getItemMeta().getPersistentDataContainer();
+            String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
+            if (itemID != null) {
+                if (itemID.contains("creakingsun")) {
+                    for (Item drop : items) {
+                        Material smeltedMat = smeltedOres.get(drop.getItemStack().getType());
+                        if (smeltedMat != null) drop.setItemStack(drop.getItemStack().withType(smeltedMat));
+                    }
+                }
+            }
+        }
+
     }
 
     // Monitor priority so it ignores when EI cancels
@@ -125,7 +142,7 @@ public class BlockBreakListener implements Listener {
                     b.setType(Material.AIR);
                 }
                 case
-                    "elevator" -> {
+                  "elevator" -> {
                     // Drop custom item
                     Location loc = b.getLocation();
                     e.setDropItems(false);
@@ -159,24 +176,24 @@ public class BlockBreakListener implements Listener {
                 Collection<ItemStack> drops = b.getDrops(item);
                 switch (Objects.requireNonNull(itemID)) {
                     case "nexushoe" ->
-                        handleNexusHoe(p, NexusHoePyroFarmingXPChance);
+                      handleNexusHoe(p, NexusHoePyroFarmingXPChance);
                     case "nexushoemega" ->
-                        handleNexusHoe(p, NexusHoeMegaPyroFarmingXPChance);
+                      handleNexusHoe(p, NexusHoeMegaPyroFarmingXPChance);
                     case "nexushoeo" ->
-                        handleNexusHoe(p, NexusHoeOPyroFarmingXPChance);
+                      handleNexusHoe(p, NexusHoeOPyroFarmingXPChance);
                     case "ancientthoe", "ancientthoeo" ->
-                        handleAncienttHoe(drops, p, b, loc, item, meta, container, AncienttItemsConfig.AncienttHoeParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeFireworkChance, AncienttItemsConfig.AncienttHoeFarmKeyChance, AncienttItemsConfig.AncienttHoeParrotSpawnerChance, AncienttItemsConfig.AncienttHoeInfiniteSeedPouchChance);
+                      handleAncienttHoe(drops, p, b, loc, item, meta, container, AncienttItemsConfig.AncienttHoeParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeFireworkChance, AncienttItemsConfig.AncienttHoeFarmKeyChance, AncienttItemsConfig.AncienttHoeParrotSpawnerChance, AncienttItemsConfig.AncienttHoeInfiniteSeedPouchChance);
                     case "ancientthoemega"->
-                        handleAncienttHoe(drops, p, b, loc, item, meta, container, AncienttItemsConfig.AncienttHoeMegaParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeMegaFireworkChance, AncienttItemsConfig.AncienttHoeMegaFarmKeyChance, AncienttItemsConfig.AncienttHoeMegaParrotSpawnerChance, AncienttItemsConfig.AncienttHoeMegaInfiniteSeedPouchChance);
+                      handleAncienttHoe(drops, p, b, loc, item, meta, container, AncienttItemsConfig.AncienttHoeMegaParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeMegaFireworkChance, AncienttItemsConfig.AncienttHoeMegaFarmKeyChance, AncienttItemsConfig.AncienttHoeMegaParrotSpawnerChance, AncienttItemsConfig.AncienttHoeMegaInfiniteSeedPouchChance);
                 }
                 // Auto Replant
                 if (itemID.contains("celestialhoe") ||
-                    itemID.contains("demonslimehoe") ||
-                    itemID.contains("soulhoem") ||
-                    itemID.contains("catsagehoe") ||
-                    itemID.contains("twistedhoe") ||
-                    itemID.contains("nightmarehoe") ||
-                    itemID.contains("aquatichoe")) {
+                  itemID.contains("demonslimehoe") ||
+                  itemID.contains("soulhoem") ||
+                  itemID.contains("catsagehoe") ||
+                  itemID.contains("twistedhoe") ||
+                  itemID.contains("nightmarehoe") ||
+                  itemID.contains("aquatichoe")) {
                     replant(b);
                 }
                 // 65% chance to auto replant for regular soul hoe and soul hoeo
@@ -212,12 +229,19 @@ public class BlockBreakListener implements Listener {
                     replant(b, 1);
                 }
                 // Auto replant two stages higher
-                else if (itemID.contains("angelichoem") ) {
+                else if (itemID.contains("angelichoem") || itemID.contains("krampushoem")) {
                     replant(b, 2);
                 }
                 // Auto replant 1 stage higher
                 else if (itemID.contains("angelichoe") || itemID.contains("krampushoe") || itemID.contains("sakurahoe")) {
                     replant(b, 1);
+                }
+                else if (itemID.contains("sakurahoem")) {
+                    Double cropsFarmed = container.get(keyCropsFarmed, PersistentDataType.DOUBLE);
+                    if (cropsFarmed != null) {
+                        container.set(keyCropsFarmed, PersistentDataType.DOUBLE, cropsFarmed + 1);
+                        item.setItemMeta(meta);
+                    }
                 }
             }
             else e.setCancelled(true);
@@ -247,8 +271,8 @@ public class BlockBreakListener implements Listener {
                         Material sapling = Material.getMaterial(customDrop);
                         if (sapling != null) {
                             drops = drops.stream()
-                                .map(drop -> drop.getType().toString().contains("_SAPLING") ? new ItemStack(sapling, drop.getAmount()) : drop)
-                                .collect(Collectors.toList());
+                              .map(drop -> drop.getType().toString().contains("_SAPLING") ? new ItemStack(sapling, drop.getAmount()) : drop)
+                              .collect(Collectors.toList());
                         }
                         Inventory inv = p.getInventory();
                         drops.removeIf(drop -> inv.addItem(drop).isEmpty());
@@ -259,43 +283,43 @@ public class BlockBreakListener implements Listener {
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
                         if (mat != null)
                             drops = drops.stream()
-                                .map(drop -> Tag.LOGS.isTagged(drop.getType()) ? new ItemStack(mat, drop.getAmount()) : drop)
-                                .toList();
+                              .map(drop -> Tag.LOGS.isTagged(drop.getType()) ? new ItemStack(mat, drop.getAmount()) : drop)
+                              .toList();
                         items = dropAllItemStacks(world, loc, drops);
                     } else if (itemID.contains("aquaticaxe") && testBlock(b, axePredicates)) {
                         e.setDropItems(false);
                         //Change log drops
                         String material = b.getType().toString().toUpperCase();
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates).stream()
-                            .map(drop -> {
-                                Material newMaterial = customDrop.equalsIgnoreCase("STRIPPED") ? Material.getMaterial("STRIPPED_" + material) : Material.getMaterial(material.substring(0, material.length() - 3) + customDrop.toUpperCase());
-                                return (drop.getType().toString().contains("LOG") && newMaterial != null) ? new ItemStack(newMaterial, drop.getAmount()) : drop;
-                            })
-                            .collect(Collectors.toList());
+                          .map(drop -> {
+                              Material newMaterial = customDrop.equalsIgnoreCase("STRIPPED") ? Material.getMaterial("STRIPPED_" + material) : Material.getMaterial(material.substring(0, material.length() - 3) + customDrop.toUpperCase());
+                              return (drop.getType().toString().contains("LOG") && newMaterial != null) ? new ItemStack(newMaterial, drop.getAmount()) : drop;
+                          })
+                          .collect(Collectors.toList());
                         items = dropAllItemStacks(world, loc, drops);
                     } else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
                         e.setDropItems(false);
                         Material mat = Material.getMaterial(customDrop.toUpperCase());
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, shovelPredicates);
                         if (mat != null) drops = drops.stream()
-                            .map(drop -> new ItemStack(mat, drop.getAmount()))
-                            .toList();
+                          .map(drop -> new ItemStack(mat, drop.getAmount()))
+                          .toList();
                         items = dropAllItemStacks(world, loc, drops);
                     } else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
                         e.setDropItems(false);
                         Material mat = Material.getMaterial(customDrop.toUpperCase());
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
                         if (mat != null) drops = drops.stream()
-                            .map(drop -> new ItemStack(mat, drop.getAmount()))
-                            .toList();
+                          .map(drop -> new ItemStack(mat, drop.getAmount()))
+                          .toList();
                         items = dropAllItemStacks(world, loc, drops);
                     } else if (item.getType().equals(Material.NETHERITE_PICKAXE) && testBlock(b, pickaxePredicates)) {
                         e.setDropItems(false);
                         Material mat = Material.getMaterial(customDrop.toUpperCase());
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
                         if (mat != null) drops = drops.stream()
-                            .map(drop -> new ItemStack(mat, drop.getAmount()))
-                            .toList();
+                          .map(drop -> new ItemStack(mat, drop.getAmount()))
+                          .toList();
                         items = dropAllItemStacks(world, loc, drops);
                     }
                 }
@@ -485,7 +509,7 @@ public class BlockBreakListener implements Listener {
             } else {
 
              */
-                Bukkit.getScheduler().runTask(getPlugin(), () -> block.setType(material));
+            Bukkit.getScheduler().runTask(getPlugin(), () -> block.setType(material));
             //}
         }
     }
