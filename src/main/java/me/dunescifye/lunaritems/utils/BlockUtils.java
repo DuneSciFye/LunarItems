@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static me.dunescifye.lunaritems.LunarItems.getPlugin;
-import static org.bukkit.Bukkit.getServer;
 
 public class BlockUtils {
 

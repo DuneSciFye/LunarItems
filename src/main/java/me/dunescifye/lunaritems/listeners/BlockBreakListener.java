@@ -347,8 +347,9 @@ public class BlockBreakListener implements Listener {
                                     iterator.remove();
                                 }
                             }
-
-                            runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 money " + totalPrice);
+                            String formattedTotal = String.format("%.2f", totalPrice);
+                            runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
+                              "money " + formattedTotal);
                         }
                         items = dropAllItemStacks(world, loc, drops);
                     }
@@ -365,6 +366,15 @@ public class BlockBreakListener implements Listener {
                         PlayerInventory inv = p.getInventory();
                         drops.removeIf(drop -> inv.addItem(drop).isEmpty());
                         drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
+                        items = dropAllItemStacks(world, loc, drops);
+                    }
+                    else if (itemID.contains("creakingpick")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                        if (("Enabled").equals(container.get(keyVoid, PersistentDataType.STRING))) {
+                            drops.removeIf(drop ->
+                                !oreDrops.contains(drop.getType())
+                            );
+                        }
                         items = dropAllItemStacks(world, loc, drops);
                     }
                     else if (itemID.contains("nightspirepick")) {
