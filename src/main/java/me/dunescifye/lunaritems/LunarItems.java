@@ -21,6 +21,7 @@ public final class LunarItems extends JavaPlugin {
 
     public static final NamespacedKey keyEIID = new NamespacedKey("executableitems", "ei-id");
     public static final NamespacedKey keyInfiniteBlock = new NamespacedKey("infiniteblocks", "infinite_block");
+    public static final NamespacedKey keyCosmosEnchant = new NamespacedKey("cosmosenchants", "cosmosenchant");
     public static final NamespacedKey keyLocation = new NamespacedKey("lunaritems", "location");
     public static final NamespacedKey keyUses = new NamespacedKey("score", "score-uses");
     public static final NamespacedKey keyUUID = new NamespacedKey("lunaritems", "uuid");
