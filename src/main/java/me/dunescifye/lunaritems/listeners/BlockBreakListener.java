@@ -373,8 +373,7 @@ public class BlockBreakListener implements Listener {
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
                         if (("Enabled").equals(container.get(keyVoid, PersistentDataType.STRING))) {
                             drops.removeIf(drop ->
-                                !oreDrops.contains(drop.getType())
-                            );
+                                !oreDrops.contains(drop.getType()) && !oreBlocks.contains(drop.getType()));
                         }
                         items = dropAllItemStacks(world, loc, drops);
                     }

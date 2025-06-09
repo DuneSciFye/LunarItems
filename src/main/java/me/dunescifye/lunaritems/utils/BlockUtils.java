@@ -51,15 +51,47 @@ public class BlockUtils {
     );
 
     public static List<Material> oreDrops = List.of(
-        Material.RAW_GOLD,
-        Material.RAW_IRON,
-        Material.COAL,
-        Material.RAW_COPPER,
-        Material.REDSTONE,
-        Material.LAPIS_LAZULI,
-        Material.DIAMOND,
-        Material.EMERALD,
-        Material.NETHERITE_SCRAP
+      Material.RAW_GOLD,
+      Material.RAW_IRON,
+      Material.COAL,
+      Material.RAW_COPPER,
+      Material.REDSTONE,
+      Material.LAPIS_LAZULI,
+      Material.DIAMOND,
+      Material.EMERALD,
+      Material.NETHERITE_SCRAP
+    );
+
+    public static List<Material> oreBlocks = List.of(
+      Material.GOLD_ORE,
+      Material.DEEPSLATE_GOLD_ORE,
+      Material.IRON_ORE,
+      Material.DEEPSLATE_IRON_ORE,
+      Material.COAL_ORE,
+      Material.DEEPSLATE_COAL_ORE,
+      Material.COPPER_ORE,
+      Material.DEEPSLATE_COPPER_ORE,
+      Material.REDSTONE_ORE,
+      Material.DEEPSLATE_REDSTONE_ORE,
+      Material.LAPIS_ORE,
+      Material.DEEPSLATE_LAPIS_ORE,
+      Material.DIAMOND_ORE,
+      Material.DEEPSLATE_DIAMOND_ORE,
+      Material.EMERALD_ORE,
+      Material.DEEPSLATE_EMERALD_ORE,
+      Material.ANCIENT_DEBRIS,
+      Material.GOLD_BLOCK,
+      Material.RAW_GOLD_BLOCK,
+      Material.IRON_BLOCK,
+      Material.RAW_IRON_BLOCK,
+      Material.COAL_BLOCK,
+      Material.COPPER_BLOCK,
+      Material.RAW_COPPER_BLOCK,
+      Material.REDSTONE_BLOCK,
+      Material.LAPIS_BLOCK,
+      Material.DIAMOND_BLOCK,
+      Material.EMERALD_BLOCK,
+      Material.NETHERITE_BLOCK
     );
 
     public static List<List<Predicate<Block>>> pickaxePredicates = List.of(
