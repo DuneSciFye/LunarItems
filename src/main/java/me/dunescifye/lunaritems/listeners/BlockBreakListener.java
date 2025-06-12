@@ -171,7 +171,7 @@ public class BlockBreakListener implements Listener {
         Location loc = b.getLocation();
 
         // Hoes
-        if (b.getBlockData() instanceof Ageable ageable && b.getType() != Material.SUGAR_CANE && item.getType() == Material.NETHERITE_HOE) {
+        if (b.getBlockData() instanceof Ageable ageable && b.getType() != Material.SUGAR_CANE && b.getType() != Material.CACTUS && item.getType() == Material.NETHERITE_HOE) {
             if (ageable.getAge() == ageable.getMaximumAge()) {
                 Collection<ItemStack> drops = b.getDrops(item);
                 switch (Objects.requireNonNull(itemID)) {
@@ -348,7 +348,7 @@ public class BlockBreakListener implements Listener {
                                     iterator.remove();
                                 }
                             }
-                            String formattedTotal = String.format("%.2f", totalPrice);
+                            String formattedTotal = String.format("%.4f", totalPrice);
                             runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
                               "money " + formattedTotal);
                         }

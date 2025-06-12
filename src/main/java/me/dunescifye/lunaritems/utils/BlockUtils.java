@@ -59,7 +59,9 @@ public class BlockUtils {
       Material.LAPIS_LAZULI,
       Material.DIAMOND,
       Material.EMERALD,
-      Material.NETHERITE_SCRAP
+      Material.NETHERITE_SCRAP,
+      Material.GOLD_NUGGET,
+      Material.QUARTZ
     );
 
     public static List<Material> oreBlocks = List.of(
@@ -91,7 +93,9 @@ public class BlockUtils {
       Material.LAPIS_BLOCK,
       Material.DIAMOND_BLOCK,
       Material.EMERALD_BLOCK,
-      Material.NETHERITE_BLOCK
+      Material.NETHERITE_BLOCK,
+      Material.NETHER_GOLD_ORE,
+      Material.NETHER_QUARTZ_ORE
     );
 
     public static List<List<Predicate<Block>>> pickaxePredicates = List.of(
