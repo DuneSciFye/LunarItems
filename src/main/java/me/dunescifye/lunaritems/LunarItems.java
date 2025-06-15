@@ -37,6 +37,7 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyAutoPickup = new NamespacedKey("score", "score-autopickup");
     public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
     public static final NamespacedKey keyAutoSell = new NamespacedKey("score", "score-autosell");
+    public static final NamespacedKey keyMoney = new NamespacedKey("score", "score-money");
     public static final NamespacedKey keyCropsFarmed = new NamespacedKey("score", "score-cropsfarmed");
     public static final NamespacedKey keyVoid = new NamespacedKey("score", "score-void");
 
@@ -123,6 +124,7 @@ public final class LunarItems extends JavaPlugin {
         //if (ItemFrameToInvTracker.enabled) new ItemFrameToInvTracker().registerEvents(this);
         if (TrashCommand.enabled) new TrashCommand().registerEvents(this);
         Bukkit.getPluginManager().registerEvents(new SakuraListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
     }
 
     private void registerCommands() {

@@ -31,6 +31,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -172,7 +174,7 @@ public class BlockBreakListener implements Listener {
 
         // Hoes
         if (b.getBlockData() instanceof Ageable ageable && b.getType() != Material.SUGAR_CANE && b.getType() != Material.CACTUS && item.getType() == Material.NETHERITE_HOE) {
-            if (ageable.getAge() == ageable.getMaximumAge()) {
+            if (b.getType() != Material.MELON_STEM && b.getType() != Material.PUMPKIN_STEM && ageable.getAge() == ageable.getMaximumAge()) {
                 Collection<ItemStack> drops = b.getDrops(item);
                 switch (Objects.requireNonNull(itemID)) {
                     case "nexushoe" ->
@@ -337,19 +339,19 @@ public class BlockBreakListener implements Listener {
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, ancientShovelPredicates);
                         // Auto Sell
                         if (("Enabled").equals(container.get(keyAutoSell, PersistentDataType.STRING))) {
-                            double totalPrice = 0.0;
+                            BigDecimal totalPrice = BigDecimal.valueOf(container.get(keyMoney, PersistentDataType.DOUBLE));
 
                             Iterator<ItemStack> iterator = drops.iterator();
                             while (iterator.hasNext()) {
                                 ItemStack drop = iterator.next();
                                 Double price = container.get(new NamespacedKey("score", "score-" + drop.getType().toString().toLowerCase()), PersistentDataType.DOUBLE);
                                 if (price != null) {
-                                    totalPrice += price;
+                                    totalPrice = totalPrice.add(BigDecimal.valueOf(price));
                                     iterator.remove();
                                 }
                             }
-                            String formattedTotal = String.format("%.4f", totalPrice);
-                            runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
+                            String formattedTotal = totalPrice.setScale(4, RoundingMode.HALF_UP).toPlainString();
+                            runConsoleCommands("ei console-modification set variable " + p.getName() + " -1 " +
                               "money " + formattedTotal);
                         }
                         items = dropAllItemStacks(world, loc, drops);
