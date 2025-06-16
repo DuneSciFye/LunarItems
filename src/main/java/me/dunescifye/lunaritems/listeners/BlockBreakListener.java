@@ -96,7 +96,7 @@ public class BlockBreakListener implements Listener {
             PersistentDataContainer pdc = offhandItem.getItemMeta().getPersistentDataContainer();
             String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
             if (itemID != null) {
-                if (itemID.contains("creakingsun")) {
+                if (itemID.contains("creakingoregen")) {
                     for (Item drop : items) {
                         Material smeltedMat = smeltedOres.get(drop.getItemStack().getType());
                         if (smeltedMat != null) drop.setItemStack(drop.getItemStack().withType(smeltedMat));
@@ -174,7 +174,7 @@ public class BlockBreakListener implements Listener {
 
         // Hoes
         if (b.getBlockData() instanceof Ageable ageable && b.getType() != Material.SUGAR_CANE && b.getType() != Material.CACTUS && item.getType() == Material.NETHERITE_HOE) {
-            if (b.getType() != Material.MELON_STEM && b.getType() != Material.PUMPKIN_STEM && ageable.getAge() == ageable.getMaximumAge()) {
+            if (!b.getType().toString().contains("_STEM") && ageable.getAge() == ageable.getMaximumAge()) {
                 Collection<ItemStack> drops = b.getDrops(item);
                 switch (Objects.requireNonNull(itemID)) {
                     case "nexushoe" ->

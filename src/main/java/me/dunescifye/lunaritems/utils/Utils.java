@@ -188,7 +188,8 @@ public class Utils {
         Map.entry(Material.REDSTONE, Material.REDSTONE),
         Map.entry(Material.REDSTONE_ORE, Material.REDSTONE),
         Map.entry(Material.DEEPSLATE_REDSTONE_ORE, Material.REDSTONE),
-        Map.entry(Material.ANCIENT_DEBRIS, Material.NETHERITE_SCRAP)
+        Map.entry(Material.ANCIENT_DEBRIS, Material.NETHERITE_SCRAP),
+      Map.entry(Material.NETHER_QUARTZ_ORE, Material.QUARTZ)
     );
 
     public static final Map<Material, Material> glazeTerracotta = Map.ofEntries(
