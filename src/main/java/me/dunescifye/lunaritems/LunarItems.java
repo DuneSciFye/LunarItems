@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -109,6 +110,8 @@ public final class LunarItems extends JavaPlugin {
     }
 
     private void registerEvents() {
+        PluginManager pm = Bukkit.getPluginManager();
+
         new BlockBreakListener().blockBreakHandler(this);
         new PlayerInteractListener().playerInteractHandler(this);
         new PlayerToggleSneakListener().playerToggleSneakHandler(this);
@@ -118,13 +121,14 @@ public final class LunarItems extends JavaPlugin {
         new EntityDeathListener().entityDeathHandler(this);
         new EntityDamageListener().entityDamageHandler(this);
         new PlayerJumpListener().playerJumpHandler(this);
-        new PlayerLeaveListener().playerLeaveListener(this);
         new PlayerRunCommandListener().playerRunCommandHandler(this);
         if (AntiDropTracker.enabled) new AntiDropTracker().registerEvents(this);
         //if (ItemFrameToInvTracker.enabled) new ItemFrameToInvTracker().registerEvents(this);
         if (TrashCommand.enabled) new TrashCommand().registerEvents(this);
         Bukkit.getPluginManager().registerEvents(new SakuraListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
+        pm.registerEvents(new PlayerCollectItemListener(), this);
+        pm.registerEvents(new PlayerTeleportListener(), this);
     }
 
     private void registerCommands() {

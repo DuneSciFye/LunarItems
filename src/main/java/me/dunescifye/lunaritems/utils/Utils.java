@@ -1,5 +1,6 @@
 package me.dunescifye.lunaritems.utils;
 
+import me.dunescifye.lunaritems.LunarItems;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -127,6 +129,23 @@ public class Utils {
             }
         }
 
+        ItemStack item = player.getInventory().getItemInOffHand();
+        if (item.hasItemMeta()) {
+            String itemID = item.getItemMeta().getPersistentDataContainer().get(LunarItems.keyEIID,
+              PersistentDataType.STRING);
+            if (itemID != null && itemID.contains("sunbuilder")) {
+                for (int x = xStart; x <= xEnd; x++) {
+                    for (int y = yStart; y <= yEnd; y++) {
+                        for (int z = zStart; z <= zEnd; z++) {
+                            Block b = origin.getRelative(x, y, z);
+                            if (b.getY() >= player.getY()) blocks.add(b);
+                        }
+                    }
+                }
+                return blocks;
+            }
+        }
+
         for (int x = xStart; x <= xEnd; x++) {
             for (int y = yStart; y <= yEnd; y++) {
                 for (int z = zStart; z <= zEnd; z++) {
@@ -164,32 +183,55 @@ public class Utils {
     }
 
     public static final Map<Material, Material> smeltedOres = Map.ofEntries(
-        Map.entry(Material.COAL, Material.COAL),
-        Map.entry(Material.COAL_ORE, Material.COAL),
-        Map.entry(Material.DEEPSLATE_COAL_ORE, Material.COAL),
-        Map.entry(Material.RAW_COPPER, Material.COPPER_INGOT),
-        Map.entry(Material.COPPER_ORE, Material.COPPER_INGOT),
-        Map.entry(Material.DEEPSLATE_COPPER_ORE, Material.COPPER_INGOT),
-        Map.entry(Material.DIAMOND, Material.DIAMOND),
-        Map.entry(Material.DIAMOND_ORE, Material.DIAMOND),
-        Map.entry(Material.DEEPSLATE_DIAMOND_ORE, Material.DIAMOND),
-        Map.entry(Material.EMERALD, Material.EMERALD),
-        Map.entry(Material.EMERALD_ORE, Material.EMERALD),
-        Map.entry(Material.DEEPSLATE_EMERALD_ORE, Material.EMERALD),
-        Map.entry(Material.RAW_GOLD, Material.GOLD_INGOT),
-        Map.entry(Material.GOLD_ORE, Material.GOLD_INGOT),
-        Map.entry(Material.DEEPSLATE_GOLD_ORE, Material.GOLD_INGOT),
-        Map.entry(Material.RAW_IRON, Material.IRON_INGOT),
-        Map.entry(Material.IRON_ORE, Material.IRON_INGOT),
-        Map.entry(Material.DEEPSLATE_IRON_ORE, Material.IRON_INGOT),
-        Map.entry(Material.LAPIS_LAZULI, Material.LAPIS_LAZULI),
-        Map.entry(Material.LAPIS_ORE, Material.LAPIS_LAZULI),
-        Map.entry(Material.DEEPSLATE_LAPIS_ORE, Material.LAPIS_LAZULI),
-        Map.entry(Material.REDSTONE, Material.REDSTONE),
-        Map.entry(Material.REDSTONE_ORE, Material.REDSTONE),
-        Map.entry(Material.DEEPSLATE_REDSTONE_ORE, Material.REDSTONE),
-        Map.entry(Material.ANCIENT_DEBRIS, Material.NETHERITE_SCRAP),
-      Map.entry(Material.NETHER_QUARTZ_ORE, Material.QUARTZ)
+      Map.entry(Material.COAL, Material.COAL),
+      Map.entry(Material.COAL_ORE, Material.COAL),
+      Map.entry(Material.DEEPSLATE_COAL_ORE, Material.COAL),
+      Map.entry(Material.RAW_COPPER, Material.COPPER_INGOT),
+      Map.entry(Material.COPPER_ORE, Material.COPPER_INGOT),
+      Map.entry(Material.DEEPSLATE_COPPER_ORE, Material.COPPER_INGOT),
+      Map.entry(Material.DIAMOND, Material.DIAMOND),
+      Map.entry(Material.DIAMOND_ORE, Material.DIAMOND),
+      Map.entry(Material.DEEPSLATE_DIAMOND_ORE, Material.DIAMOND),
+      Map.entry(Material.EMERALD, Material.EMERALD),
+      Map.entry(Material.EMERALD_ORE, Material.EMERALD),
+      Map.entry(Material.DEEPSLATE_EMERALD_ORE, Material.EMERALD),
+      Map.entry(Material.RAW_GOLD, Material.GOLD_INGOT),
+      Map.entry(Material.GOLD_ORE, Material.GOLD_INGOT),
+      Map.entry(Material.DEEPSLATE_GOLD_ORE, Material.GOLD_INGOT),
+      Map.entry(Material.RAW_IRON, Material.IRON_INGOT),
+      Map.entry(Material.IRON_ORE, Material.IRON_INGOT),
+      Map.entry(Material.DEEPSLATE_IRON_ORE, Material.IRON_INGOT),
+      Map.entry(Material.LAPIS_LAZULI, Material.LAPIS_LAZULI),
+      Map.entry(Material.LAPIS_ORE, Material.LAPIS_LAZULI),
+      Map.entry(Material.DEEPSLATE_LAPIS_ORE, Material.LAPIS_LAZULI),
+      Map.entry(Material.REDSTONE, Material.REDSTONE),
+      Map.entry(Material.REDSTONE_ORE, Material.REDSTONE),
+      Map.entry(Material.DEEPSLATE_REDSTONE_ORE, Material.REDSTONE),
+      Map.entry(Material.ANCIENT_DEBRIS, Material.NETHERITE_SCRAP),
+      Map.entry(Material.NETHERITE_SCRAP, Material.NETHERITE_SCRAP),
+      Map.entry(Material.NETHER_QUARTZ_ORE, Material.QUARTZ),
+      Map.entry(Material.QUARTZ, Material.QUARTZ)
+    );
+
+    public static final Map<Material, String> logMap = Map.ofEntries(
+      Map.entry(Material.OAK_LOG, "oak"),
+      Map.entry(Material.STRIPPED_OAK_LOG, "oak"),
+      Map.entry(Material.BIRCH_LOG, "birch"),
+      Map.entry(Material.STRIPPED_BIRCH_LOG, "birch"),
+      Map.entry(Material.DARK_OAK_LOG, "dark_oak"),
+      Map.entry(Material.STRIPPED_DARK_OAK_LOG, "dark_oak"),
+      Map.entry(Material.SPRUCE_LOG, "spruce"),
+      Map.entry(Material.STRIPPED_SPRUCE_LOG, "spruce"),
+      Map.entry(Material.JUNGLE_LOG, "jungle"),
+      Map.entry(Material.STRIPPED_JUNGLE_LOG, "jungle"),
+      Map.entry(Material.ACACIA_LOG, "acacia"),
+      Map.entry(Material.STRIPPED_ACACIA_LOG, "acacia"),
+      Map.entry(Material.PALE_OAK_LOG, "pale_oak"),
+      Map.entry(Material.STRIPPED_PALE_OAK_LOG, "pale_oak"),
+      Map.entry(Material.MANGROVE_LOG, "mangrove"),
+      Map.entry(Material.STRIPPED_MANGROVE_LOG, "mangrove"),
+      Map.entry(Material.CHERRY_LOG, "cherry"),
+      Map.entry(Material.STRIPPED_CHERRY_LOG, "cherry")
     );
 
     public static final Map<Material, Material> glazeTerracotta = Map.ofEntries(

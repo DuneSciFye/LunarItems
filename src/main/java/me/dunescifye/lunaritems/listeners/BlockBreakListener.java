@@ -232,7 +232,7 @@ public class BlockBreakListener implements Listener {
                     replant(b, 1);
                 }
                 // Auto replant two stages higher
-                else if (itemID.contains("angelichoem") || itemID.contains("krampushoem")) {
+                else if (itemID.contains("angelichoem") || itemID.contains("krampushoem") || itemID.contains("sunhoe")) {
                     replant(b, 2);
                 }
                 // Auto replant 1 stage higher
@@ -371,6 +371,20 @@ public class BlockBreakListener implements Listener {
                         drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
                         items = dropAllItemStacks(world, loc, drops);
                     }
+                    else if (itemID.contains("sunpick")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                        drops.removeIf(drop -> {
+                            Material dropMat = drop.getType();
+                            if (oreDrops.contains(dropMat) || oreBlocks.contains(dropMat)) {
+                                Material smeltedMat = smeltedOres.get(dropMat);
+                                runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
+                                  " " + smeltedMat.toString() + " " + drop.getAmount());
+                                return true;
+                            }
+                            return false;
+                        });
+                        items = dropAllItemStacks(world, loc, drops);
+                    }
                     else if (itemID.contains("creakingpick")) {
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
                         if (("Enabled").equals(container.get(keyVoid, PersistentDataType.STRING))) {
@@ -445,6 +459,19 @@ public class BlockBreakListener implements Listener {
                     e.setDropItems(false);
                     if (itemID.contains("ancienttaxe"))
                         items = dropAllItemStacks(world, loc, BlockUtils.breakInFacing(b, radius, depth, p, ancientAxePredicates));
+                    else if (itemID.contains("sunaxe")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
+                        drops.removeIf(drop -> {
+                            Material dropMat = drop.getType();
+                            if (logMap.containsKey(dropMat)) {
+                                runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
+                                  " " + logMap.get(dropMat) + " 1");
+                                return true;
+                            }
+                            return false;
+                        });
+                        items = dropAllItemStacks(world, loc, drops);
+                    }
                     else
                         items = dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, axePredicates));
                 }
