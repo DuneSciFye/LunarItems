@@ -30,7 +30,7 @@ public class PlayerDeathListener implements Listener {
 
         String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
 
-        if (itemID.contains("creakingshovel") && e.getDamageSource().getDamageType().equals(DamageType.FALL)) {
+        if (itemID!= null && itemID.contains("creakingshovel") && e.getDamageSource().getDamageType().equals(DamageType.FALL)) {
             e.setCancelled(true);
             if (!CooldownManager.hasCooldown(creakingShovelCDs, p.getUniqueId())) {
                 p.setVelocity(p.getVelocity().setY(3));

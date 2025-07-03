@@ -71,7 +71,7 @@ public final class LunarItems extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this).beLenientForMinorVersions(true));
     }
 
     @Override
@@ -129,6 +129,7 @@ public final class LunarItems extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
         pm.registerEvents(new PlayerCollectItemListener(), this);
         pm.registerEvents(new PlayerTeleportListener(), this);
+        pm.registerEvents(new ItemDragListener(), this);
     }
 
     private void registerCommands() {
