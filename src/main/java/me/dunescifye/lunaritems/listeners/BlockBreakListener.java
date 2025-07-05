@@ -378,7 +378,7 @@ public class BlockBreakListener implements Listener {
                             if (oreDrops.contains(dropMat) || oreBlocks.contains(dropMat)) {
                                 Material smeltedMat = smeltedOres.get(dropMat);
                                 runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
-                                  " " + smeltedMat.toString() + " " + drop.getAmount());
+                                  " " + smeltedMat.toString() + " " + 1);
                                 return true;
                             }
                             return false;
