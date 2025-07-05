@@ -69,13 +69,13 @@ public class ItemDragListener implements Listener {
 
       if (uniqueEggs >= 16 && !eggNames.contains(spawnEgg)) return;
 
-      Double spawnEggAmount = pdc.get(new NamespacedKey("score", "score-" + spawnEgg.toLowerCase()),
-        PersistentDataType.DOUBLE);
+      Double spawnEggAmount = pdc.getOrDefault(new NamespacedKey("score", "score-" + spawnEgg.toLowerCase()),
+        PersistentDataType.DOUBLE, 0.0);
 
-      if (spawnEggAmount == null || spawnEggAmount >= 32) return;
+      if (spawnEggAmount >= 32) return;
 
       cursorItem.setAmount(cursorItem.getAmount() - 1);
-      Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " " + slot + " " + spawnEgg + " 1");
+      Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " " + slot + " " + spawnEgg.toLowerCase() + " 1");
     } else if (itemID.equals("sunportablemobspawnerm")) {
       if (!cursorItem.getType().toString().contains("_SPAWN_EGG")) return;
 
@@ -97,13 +97,13 @@ public class ItemDragListener implements Listener {
 
       if (uniqueEggs >= 32 && !eggNames.contains(spawnEgg)) return;
 
-      Double spawnEggAmount = pdc.get(new NamespacedKey("score", "score-" + spawnEgg.toLowerCase()),
-        PersistentDataType.DOUBLE);
+      Double spawnEggAmount = pdc.getOrDefault(new NamespacedKey("score", "score-" + spawnEgg.toLowerCase()),
+        PersistentDataType.DOUBLE, 0.0);
 
-      if (spawnEggAmount == null || spawnEggAmount >= 64) return;
+      if (spawnEggAmount >= 64) return;
 
       cursorItem.setAmount(cursorItem.getAmount() - 1);
-      Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " " + slot + " " + spawnEgg + " 1");
+      Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " " + slot + " " + spawnEgg.toLowerCase() + " 1");
     }
   }
 

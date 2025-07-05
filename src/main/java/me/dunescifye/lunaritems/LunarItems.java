@@ -130,6 +130,7 @@ public final class LunarItems extends JavaPlugin {
         pm.registerEvents(new PlayerCollectItemListener(), this);
         pm.registerEvents(new PlayerTeleportListener(), this);
         pm.registerEvents(new ItemDragListener(), this);
+        pm.registerEvents(new FallingBlockListener(), this);
     }
 
     private void registerCommands() {
