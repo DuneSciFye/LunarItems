@@ -4,6 +4,7 @@ import me.dunescifye.lunaritems.utils.FUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -11,6 +12,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.metadata.MetadataValue;
 
 import java.util.List;
+import java.util.UUID;
 
 public class FallingBlockListener implements Listener {
 
@@ -21,9 +23,14 @@ public class FallingBlockListener implements Listener {
       Entity entity = e.getEntity();
       if (!entity.hasMetadata("owner")) return;
       List<MetadataValue> meta = entity.getMetadata("owner");
-      String playerUUID = meta.get(0).asString();
+      UUID playerUUID = UUID.fromString(meta.get(0).asString());
 
-      if (!FUtils.isInClaimOrWilderness(Bukkit.getPlayer(playerUUID), e.getBlock().getLocation())) e.setCancelled(true);
+      Player p = Bukkit.getPlayer(playerUUID);
+      if (p == null) return;
+
+      if (!FUtils.isInClaimOrWilderness(Bukkit.getPlayer(playerUUID), e.getBlock().getLocation())) {
+        e.setCancelled(true);
+      }
     }
   }
 }
