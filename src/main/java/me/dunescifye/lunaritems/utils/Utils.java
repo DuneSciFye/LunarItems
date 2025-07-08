@@ -210,6 +210,7 @@ public class Utils {
       Map.entry(Material.ANCIENT_DEBRIS, Material.NETHERITE_SCRAP),
       Map.entry(Material.NETHERITE_SCRAP, Material.NETHERITE_SCRAP),
       Map.entry(Material.NETHER_QUARTZ_ORE, Material.QUARTZ),
+      Map.entry(Material.NETHER_GOLD_ORE, Material.GOLD_ORE),
       Map.entry(Material.QUARTZ, Material.QUARTZ)
     );
 
