@@ -375,7 +375,7 @@ public class BlockBreakListener implements Listener {
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
                         drops.removeIf(drop -> {
                             Material dropMat = drop.getType();
-                            if (oreDrops.contains(dropMat) || oreBlocks.contains(dropMat)) {
+                            if (smeltedOres.containsKey(dropMat)) {
                                 Material smeltedMat = smeltedOres.get(dropMat);
                                 runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
                                   " " + smeltedMat.toString() + " " + 1);
