@@ -188,6 +188,18 @@ public class BlockBreakListener implements Listener {
                     case "ancientthoemega"->
                       handleAncienttHoe(drops, p, b, loc, item, meta, container, AncienttItemsConfig.AncienttHoeMegaParrotSpawnEggChance, AncienttItemsConfig.AncienttHoeMegaFireworkChance, AncienttItemsConfig.AncienttHoeMegaFarmKeyChance, AncienttItemsConfig.AncienttHoeMegaParrotSpawnerChance, AncienttItemsConfig.AncienttHoeMegaInfiniteSeedPouchChance);
                 }
+                // Auto Sell
+                if (("Enabled").equals(container.get(keyAutoSell, PersistentDataType.STRING))) {
+                    e.setDropItems(false);
+                    BigDecimal totalPrice = BigDecimal.valueOf(container.get(keyMoney, PersistentDataType.DOUBLE));
+                    Double price = container.get(new NamespacedKey("score", "score-" + b.getType().toString().toLowerCase()), PersistentDataType.DOUBLE);
+                    if (price != null) {
+                        totalPrice = totalPrice.add(BigDecimal.valueOf(price));
+                        String formattedTotal = totalPrice.setScale(4, RoundingMode.HALF_UP).toPlainString();
+                        runConsoleCommands("ei console-modification set variable " + p.getName() + " -1 " +
+                          "money " + formattedTotal);
+                    }
+                }
                 // Auto Replant
                 if (itemID.contains("celestialhoe") ||
                   itemID.contains("demonslimehoe") ||
@@ -218,11 +230,6 @@ public class BlockBreakListener implements Listener {
                 }
                 else if (itemID.contains("nightspirehoe")) {
                     replant(b, 2);
-                    if (("Enabled").equals(container.get(keyAutoSell, PersistentDataType.STRING))) {
-                        e.setDropItems(false);
-                        Double price = container.get(new NamespacedKey("score", "score-" + b.getType().toString().toLowerCase()), PersistentDataType.DOUBLE);
-                        if (price != null) runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 money " + price);
-                    }
                 }
                 else if (itemID.contains("aetherhoe")) {
                     if (ThreadLocalRandom.current().nextInt(10) == 0) {
@@ -369,6 +376,28 @@ public class BlockBreakListener implements Listener {
                         PlayerInventory inv = p.getInventory();
                         drops.removeIf(drop -> inv.addItem(drop).isEmpty());
                         drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
+                        items = dropAllItemStacks(world, loc, drops);
+                    }
+                    else if (itemID.contains("abysspick")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                        Collection<ItemStack> quartz = new ArrayList<>();
+                        if (("Enabled").equals(container.get(keyGraniteMode, PersistentDataType.STRING))) {
+                            drops.removeIf(drop -> {
+                                if (drop.getType().equals(Material.GRANITE)) {
+                                    quartz.add(new ItemStack(Material.QUARTZ_BLOCK, drop.getAmount() * 2));
+                                    return true;
+                                } return false;
+                            });
+                        }
+                        if (("Enabled").equals(container.get(keyDioriteMode, PersistentDataType.STRING))) {
+                            drops.removeIf(drop -> {
+                                if (drop.getType().equals(Material.DIORITE)) {
+                                    quartz.add(drop.withType(Material.QUARTZ_BLOCK));
+                                    return true;
+                                } return false;
+                            });
+                        }
+                        drops.addAll(quartz);
                         items = dropAllItemStacks(world, loc, drops);
                     }
                     else if (itemID.contains("sunpick")) {
