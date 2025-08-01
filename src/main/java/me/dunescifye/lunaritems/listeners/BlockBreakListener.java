@@ -239,8 +239,12 @@ public class BlockBreakListener implements Listener {
                     replant(b, 1);
                 }
                 // Auto replant two stages higher
-                else if (itemID.contains("angelichoem") || itemID.contains("krampushoem") || itemID.contains("sunhoe")) {
+                else if (itemID.contains("angelichoem") || itemID.contains("krampushoem")) {
                     replant(b, 2);
+                }
+                // Auto replant two stages higher from inv
+                else if (itemID.contains("sunhoe")) {
+                    replantFromInv(p, b, 2);
                 }
                 // Auto replant 1 stage higher
                 else if (itemID.contains("angelichoe") || itemID.contains("krampushoe") || itemID.contains("sakurahoe")) {
@@ -272,7 +276,7 @@ public class BlockBreakListener implements Listener {
                 int depth = (int) (double) container.getOrDefault(keyDepth, PersistentDataType.DOUBLE, 0.0);
                 // Custom drop
                 String customDrop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
-                if (customDrop != null) {
+                if (customDrop != null && !customDrop.isEmpty()) {
                     if (itemID.contains("aetheraxe") && testBlock(b, axePredicates)) {
                         e.setDropItems(false);
                         // Will do 3x3x3 if axe is being thrown, otherwise use item's radius and depth
@@ -499,6 +503,21 @@ public class BlockBreakListener implements Listener {
                             }
                             return false;
                         });
+                        items = dropAllItemStacks(world, loc, drops);
+                    }
+                    else if (itemID.contains("demonslimeaxe")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
+                        if ("true".equals(container.get(keyCoal, PersistentDataType.STRING))) {
+                            Collection<ItemStack> coal = new ArrayList<>();
+                            drops.removeIf(drop -> {
+                                if (drop.getType().toString().contains("_LOG")) {
+                                    coal.add(new ItemStack(Material.COAL, drop.getAmount()));
+                                    return true;
+                                }
+                                return false;
+                            });
+                            drops.addAll(coal);
+                        }
                         items = dropAllItemStacks(world, loc, drops);
                     }
                     else
