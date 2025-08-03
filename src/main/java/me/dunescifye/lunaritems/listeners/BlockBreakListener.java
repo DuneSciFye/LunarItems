@@ -208,7 +208,8 @@ public class BlockBreakListener implements Listener {
                   itemID.contains("twistedhoe") ||
                   itemID.contains("nightmarehoe") ||
                   itemID.contains("aquatichoe") ||
-                  itemID.contains("creakinghoe")) {
+                  itemID.contains("creakinghoe") ||
+                  itemID.contains("abysshoem")) {
                     replant(b);
                 }
                 // 65% chance to auto replant for regular soul hoe and soul hoeo
@@ -376,6 +377,28 @@ public class BlockBreakListener implements Listener {
                         PlayerInventory inv = p.getInventory();
                         drops.removeIf(drop -> inv.addItem(drop).isEmpty());
                         drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
+                        items = dropAllItemStacks(world, loc, drops);
+                    }
+                    else if (itemID.contains("abysspickm")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                        Collection<ItemStack> quartz = new ArrayList<>();
+                        if (("Enabled").equals(container.get(keyGraniteMode, PersistentDataType.STRING))) {
+                            drops.removeIf(drop -> {
+                                if (drop.getType().equals(Material.GRANITE)) {
+                                    quartz.add(new ItemStack(Material.QUARTZ_BLOCK, drop.getAmount() * 3));
+                                    return true;
+                                } return false;
+                            });
+                        }
+                        if (("Enabled").equals(container.get(keyDioriteMode, PersistentDataType.STRING))) {
+                            drops.removeIf(drop -> {
+                                if (drop.getType().equals(Material.DIORITE)) {
+                                    quartz.add(new ItemStack(Material.QUARTZ_BLOCK, drop.getAmount() * 2));
+                                    return true;
+                                } return false;
+                            });
+                        }
+                        drops.addAll(quartz);
                         items = dropAllItemStacks(world, loc, drops);
                     }
                     else if (itemID.contains("abysspick")) {

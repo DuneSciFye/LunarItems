@@ -51,7 +51,54 @@ public class AbyssListener implements Listener {
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
         if (itemID != null) {
-          if (itemID.contains("abyssmace")) {
+          if (itemID.contains("abyssmacem")) {
+            double kills = pdc.getOrDefault(keyKills, PersistentDataType.DOUBLE, 0.0);
+            if (kills >= 40 && ThreadLocalRandom.current().nextInt(40) == 0) {
+              Entity skeleton = damager.getWorld().spawnEntity(damager.getLocation(), EntityType.SKELETON, CreatureSpawnEvent.SpawnReason.CUSTOM);
+              skeleton.setMetadata("abyssmace", new FixedMetadataValue(LunarItems.getPlugin(), 1));
+              ((Mob) skeleton).setTarget(victim);
+
+              Bukkit.getScheduler().runTaskLater(LunarItems.getPlugin(), () -> {
+                if (!skeleton.isDead()) skeleton.remove();
+              }, 20L * 80L);
+            }
+            if (kills >= 50 && ThreadLocalRandom.current().nextInt(40) == 0) {
+              Entity zombie = damager.getWorld().spawnEntity(damager.getLocation(), EntityType.ZOMBIE,
+                CreatureSpawnEvent.SpawnReason.CUSTOM);
+              zombie.setMetadata("abyssmace", new FixedMetadataValue(LunarItems.getPlugin(), 1));
+              ((Mob) zombie).setTarget(victim);
+
+              Bukkit.getScheduler().runTaskLater(LunarItems.getPlugin(), () -> {
+                if (!zombie.isDead()) zombie.remove();
+              }, 20L * 80L);
+            }
+            if (kills >= 90 && ThreadLocalRandom.current().nextInt(40) == 0) {
+              Entity endermite = damager.getWorld().spawnEntity(damager.getLocation(), EntityType.ENDERMITE,
+                CreatureSpawnEvent.SpawnReason.CUSTOM);
+              endermite.setMetadata("abyssmace", new FixedMetadataValue(LunarItems.getPlugin(), 1));
+              ((Mob) endermite).setTarget(victim);
+
+              Bukkit.getScheduler().runTaskLater(LunarItems.getPlugin(), () -> {
+                if (!endermite.isDead()) endermite.remove();
+              }, 20L * 80L);
+            }
+            if (kills >= 200 && ThreadLocalRandom.current().nextInt(40) == 0) {
+              Entity blaze1 = damager.getWorld().spawnEntity(damager.getLocation(), EntityType.BLAZE,
+                CreatureSpawnEvent.SpawnReason.CUSTOM);
+              Entity blaze2 = damager.getWorld().spawnEntity(damager.getLocation(), EntityType.BLAZE,
+                CreatureSpawnEvent.SpawnReason.CUSTOM);
+              blaze1.setMetadata("abyssmace", new FixedMetadataValue(LunarItems.getPlugin(), 1));
+              ((Mob) blaze1).setTarget(victim);
+              blaze2.setMetadata("abyssmace", new FixedMetadataValue(LunarItems.getPlugin(), 1));
+              ((Mob) blaze2).setTarget(victim);
+
+              Bukkit.getScheduler().runTaskLater(LunarItems.getPlugin(), () -> {
+                if (!blaze1.isDead()) blaze1.remove();
+                if (!blaze2.isDead()) blaze2.remove();
+              }, 20L * 80L * 2L);
+            }
+          }
+          else if (itemID.contains("abyssmace")) {
             double kills = pdc.getOrDefault(keyKills, PersistentDataType.DOUBLE, 0.0);
             if (kills >= 50 && ThreadLocalRandom.current().nextInt(40) == 0) {
               Entity skeleton = damager.getWorld().spawnEntity(damager.getLocation(), EntityType.SKELETON, CreatureSpawnEvent.SpawnReason.CUSTOM);

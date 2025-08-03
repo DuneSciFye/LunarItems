@@ -1,6 +1,7 @@
 package me.dunescifye.lunaritems.listeners;
 
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.commands.AntiDropCommand;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -34,7 +35,7 @@ public class AntiDropTracker implements Listener {
         ItemStack item = e.getItemDrop().getItemStack();
         if (!item.hasItemMeta()) return;
         PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-        if (!pdc.has(LunarItems.keyEIID) && !pdc.has(LunarItems.keyInfiniteBlock) && !pdc.has(LunarItems.keyCosmosEnchant)
+        if (!pdc.has(AntiDropCommand.keyAntiDrop) && !pdc.has(LunarItems.keyEIID) && !pdc.has(LunarItems.keyInfiniteBlock) && !pdc.has(LunarItems.keyCosmosEnchant)
           && item.getType() != Material.BLAZE_ROD && item.getType() != Material.TRIPWIRE_HOOK) return;
 
         Player p = e.getPlayer();

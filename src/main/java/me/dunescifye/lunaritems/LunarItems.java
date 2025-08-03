@@ -143,6 +143,7 @@ public final class LunarItems extends JavaPlugin {
         UpdateLoreCommand.register();
         if (TrashCommand.enabled) TrashCommand.register();
         FixWorldCommand.register();
+        AntiDropCommand.register();
     }
 
     @Override
@@ -152,6 +153,7 @@ public final class LunarItems extends JavaPlugin {
         CommandAPI.unregister("resetlore");
         CommandAPI.unregister("updatelore");
         CommandAPI.unregister("trash");
+        CommandAPI.unregister("antidrop");
 
         CommandAPI.onDisable();
     }
