@@ -237,6 +237,14 @@ public class AbyssListener implements Listener {
       e.setCancelled(true);
     }
   }
+
+  @EventHandler
+  public void onMagmaDamage(EntityDamageByEntityEvent e) {
+    if (e.getDamager().hasMetadata("passive")) {
+      e.setCancelled(true);
+    }
+  }
+
   @EventHandler
   public void onWardenAnger(WardenAngerChangeEvent e) {
     if (e.getEntity().hasMetadata("passive")) {

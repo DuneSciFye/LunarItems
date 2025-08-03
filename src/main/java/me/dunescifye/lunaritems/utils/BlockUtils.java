@@ -322,4 +322,37 @@ public class BlockUtils {
         });
     }
 
+    public static Map<Material, Material> cropToSeed = Map.ofEntries(
+        Map.entry(Material.COCOA, Material.COCOA_BEANS),
+        Map.entry(Material.WHEAT, Material.WHEAT_SEEDS),
+        Map.entry(Material.POTATOES, Material.POTATO),
+        Map.entry(Material.CARROTS, Material.CARROT),
+        Map.entry(Material.BEETROOTS, Material.BEETROOT_SEEDS),
+        Map.entry(Material.MELON_STEM, Material.MELON_SEEDS),
+        Map.entry(Material.PUMPKIN_STEM, Material.PUMPKIN_SEEDS),
+        Map.entry(Material.NETHER_WART, Material.NETHER_WART)
+    );
+
+    public static void replantFromInv(Player p, Block b, int newAge) {
+        Material mat = b.getType();
+        if (!cropToSeed.containsKey(mat)) return;
+        ItemStack toRemove = new ItemStack(cropToSeed.get(mat));
+        if (p.getInventory().removeItem(toRemove).isEmpty()) {
+            if (b.getBlockData() instanceof Directional directional) {
+                Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                    b.setType(mat);
+                    BlockData blockData = b.getBlockData();
+                    ((Directional) blockData).setFacing(directional.getFacing());
+                    ((Ageable) blockData).setAge(newAge);
+                    b.setBlockData(blockData);
+                });
+            } else Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                b.setType(mat);
+                BlockData blockData = b.getBlockData();
+                ((Ageable) blockData).setAge(newAge);
+                b.setBlockData(blockData);
+            });
+        }
+    }
+
 }

@@ -43,6 +43,7 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyVoid = new NamespacedKey("score", "score-void");
     public static final NamespacedKey keyGraniteMode = new NamespacedKey("score", "score-granitemode");
     public static final NamespacedKey keyDioriteMode = new NamespacedKey("score", "score-dioritemode");
+    public static final NamespacedKey keyCoal = new NamespacedKey("score", "score-coal");
 
     public static Map<String, ItemStack> items = new HashMap<>();
     public static Map<NamespacedKey, PersistentDataType> dataType = new HashMap<>();
