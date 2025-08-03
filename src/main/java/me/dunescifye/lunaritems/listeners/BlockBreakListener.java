@@ -173,8 +173,12 @@ public class BlockBreakListener implements Listener {
         Location loc = b.getLocation();
 
         // Hoes
+        if (item.getType() == Material.NETHERITE_HOE && b.getType().toString().contains("_STEM")) {
+            e.setCancelled(true);
+            return;
+        }
         if (b.getBlockData() instanceof Ageable ageable && b.getType() != Material.SUGAR_CANE && b.getType() != Material.CACTUS && item.getType() == Material.NETHERITE_HOE) {
-            if (!b.getType().toString().contains("_STEM") && ageable.getAge() == ageable.getMaximumAge()) {
+            if (ageable.getAge() == ageable.getMaximumAge()) {
                 Collection<ItemStack> drops = b.getDrops(item);
                 switch (Objects.requireNonNull(itemID)) {
                     case "nexushoe" ->
