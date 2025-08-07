@@ -213,7 +213,8 @@ public class BlockBreakListener implements Listener {
                   itemID.contains("nightmarehoe") ||
                   itemID.contains("aquatichoe") ||
                   itemID.contains("creakinghoe") ||
-                  itemID.contains("abysshoem")) {
+                  itemID.contains("abysshoem") ||
+                  itemID.contains("discoveryhoe2")) {
                     replant(b);
                 }
                 // 65% chance to auto replant for regular soul hoe and soul hoeo
