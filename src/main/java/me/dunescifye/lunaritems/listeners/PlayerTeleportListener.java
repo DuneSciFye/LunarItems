@@ -39,7 +39,7 @@ public class PlayerTeleportListener implements Listener {
             ItemMeta meta = invItem.getItemMeta();
             PersistentDataContainer pdc = meta.getPersistentDataContainer();
             String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
-            if (itemID == null || !itemID.contains("suntracker")) continue;
+            if (itemID == null || !itemID.contains("sunbuilder")) continue;
 
             String world4 = pdc.get(keyWorld4, PersistentDataType.STRING);
             String world3 = pdc.get(keyWorld3, PersistentDataType.STRING);
