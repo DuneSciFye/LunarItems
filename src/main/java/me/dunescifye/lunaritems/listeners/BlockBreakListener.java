@@ -162,6 +162,20 @@ public class BlockBreakListener implements Listener {
             }
         }
 
+        for (ItemStack item : p.getInventory().getContents()) {
+            if (item == null || !item.hasItemMeta()) continue;
+            ItemMeta meta = item.getItemMeta();
+            PersistentDataContainer pdc = meta.getPersistentDataContainer();
+            String itemID = pdc.get(keyEIID, PersistentDataType.STRING);
+            if (itemID != null && itemID.contains("creakingscribe")) {
+                Double blocksBroken = pdc.get(keyBlocks_Broken, PersistentDataType.DOUBLE);
+                if (blocksBroken == null) continue;
+                pdc.set(keyBlocks_Broken, PersistentDataType.DOUBLE, (blocksBroken + 1));
+                meta.lore(updateLore(item, "心" + blocksBroken.intValue(), "心" + (blocksBroken.intValue() + 1)));
+                item.setItemMeta(meta);
+            }
+        }
+
         ItemStack item = p.getInventory().getItemInMainHand();
         if (!item.hasItemMeta()) return;
         ItemMeta meta = item.getItemMeta();
@@ -292,22 +306,16 @@ public class BlockBreakListener implements Listener {
                     Collection<ItemStack> drops = p.hasMetadata("ignoreBlockBreak") ? breakInFacing(b, 0, 1, p, axePredicates) : breakInFacing(b, radius, depth, p, axePredicates);
                     if (b.getBlockData() instanceof Door door && door.getHalf() == Bisected.Half.TOP) drops.add(new ItemStack(door.getMaterial()));
                     Material sapling = Material.getMaterial(customDrop);
-                    Collection<ItemStack> saplings = new ArrayList<>();
                     if (sapling != null) {
-                        drops.removeIf(drop -> {
-                            if (drop.getType().toString().contains("_SAPLING")) {
-                                saplings.add(new ItemStack(sapling, drop.getAmount()));
-                                return true;
-                            }
-                            return false;
-                        });
+                        drops = drops.stream()
+                            .map(drop -> drop.getType().toString().contains("_SAPLING") ? new ItemStack(sapling, drop.getAmount()) : drop)
+                            .collect(Collectors.toList());
                     }
-                    drops.addAll(saplings);
                     Inventory inv = p.getInventory();
                     drops.removeIf(drop -> inv.addItem(drop).isEmpty());
                     items = dropAllItemStacks(world, loc, drops);
                 }
-                if (customDrop != null && !customDrop.isEmpty()) {
+                else if (customDrop != null && !customDrop.isEmpty()) {
                     if (itemID.contains("catsageaxe") && testBlock(b, axePredicates)) {
                         e.setDropItems(false);
                         Material mat = Material.getMaterial(customDrop);
