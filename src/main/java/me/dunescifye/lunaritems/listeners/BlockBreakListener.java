@@ -35,7 +35,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static me.dunescifye.lunaritems.LunarItems.*;
 import static me.dunescifye.lunaritems.files.Config.prefix;
@@ -217,6 +217,22 @@ public class BlockBreakListener implements Listener {
                   itemID.contains("discoveryhoe2")) {
                     replant(b);
                 }
+                else if (itemID.contains("seraphimhoe")) {
+                    replant(b);
+                    p.setFoodLevel(p.getFoodLevel() + 1);
+                    Double blocksBroken = container.get(keyBlocksBroken, PersistentDataType.DOUBLE);
+                    Double points = container.get(keyPoints, PersistentDataType.DOUBLE);
+                    if (blocksBroken != null && points != null) {
+                        blocksBroken++;
+                        if (blocksBroken >= 1000) {
+                            blocksBroken = 0.0;
+                            points++;
+                            container.set(keyPoints, PersistentDataType.DOUBLE, points);
+                        }
+                        container.set(keyBlocksBroken, PersistentDataType.DOUBLE, blocksBroken);
+                        item.setItemMeta(meta);
+                    }
+                }
                 // 65% chance to auto replant for regular soul hoe and soul hoeo
                 else if (itemID.contains("soulhoe")) {
                     if (ThreadLocalRandom.current().nextInt(100) <= 65) {
@@ -366,6 +382,37 @@ public class BlockBreakListener implements Listener {
                     if (itemID.contains("aethershovel")) {
                         items = dropAllItemStacks(world, loc, p.getInventory().addItem(breakInFacing(b, radius, depth, p, shovelPredicates).toArray(new ItemStack[0])).values());
                     }
+                    else if (itemID.contains("seraphimshovel")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, shovelPredicates);
+
+                        String storedBlock = container.get(keyStoredBlock, PersistentDataType.STRING);
+                        Double amount = container.get(keyAmount, PersistentDataType.DOUBLE);
+                        if (storedBlock != null && amount != null && !drops.isEmpty()) {
+                            Material mat = Material.getMaterial(storedBlock);
+                            if (mat != null) {
+                                for (Iterator<ItemStack> it = drops.iterator(); it.hasNext(); ) {
+                                    ItemStack drop = it.next();
+                                    if (drop.getType() == (mat)) {
+                                        amount += drop.getAmount();
+                                        it.remove();
+                                    }
+                                }
+                            }
+                            container.set(keyAmount, PersistentDataType.DOUBLE, amount);
+                            item.setItemMeta(meta);
+                        }
+
+                        Collection<ItemStack> newDrops = new ArrayList<>();
+                        for (ItemStack drop : drops) {
+                            if (drop.getType() == Material.RED_SAND) newDrops.add(drop.withType(Material.RED_SANDSTONE));
+                            else if (drop.getType() == Material.CLAY_BALL) newDrops.add(drop.withType(Material.BRICK));
+                            else if (drop.getType() == Material.CLAY) newDrops.add(drop.withType(Material.BRICKS));
+                            else if (drop.getType() == Material.SAND) newDrops.add(drop.withType(Material.SANDSTONE));
+                            else newDrops.add(drop);
+                        }
+
+                        items = dropAllItemStacks(world, loc, newDrops);
+                    }
                     else if (itemID.contains("ancienttshovel"))
                         items = dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, ancientShovelPredicates));
                     else if (itemID.contains("creakingshovel")) {
@@ -402,6 +449,28 @@ public class BlockBreakListener implements Listener {
                         PlayerInventory inv = p.getInventory();
                         drops.removeIf(drop -> inv.addItem(drop).isEmpty());
                         drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
+                        items = dropAllItemStacks(world, loc, drops);
+                    }
+                    else if (itemID.contains("seraphimpick")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+
+                        String storedBlock = container.get(keyStoredBlock, PersistentDataType.STRING);
+                        Double amount = container.get(keyAmount, PersistentDataType.DOUBLE);
+                        if (storedBlock != null && amount != null && !drops.isEmpty()) {
+                            Material mat = Material.getMaterial(storedBlock);
+                            if (mat != null) {
+                                for (Iterator<ItemStack> it = drops.iterator(); it.hasNext(); ) {
+                                    ItemStack drop = it.next();
+                                    if (drop.getType() == (mat)) {
+                                        amount += drop.getAmount();
+                                        it.remove();
+                                    }
+                                }
+                            }
+                            container.set(keyAmount, PersistentDataType.DOUBLE, amount);
+                            item.setItemMeta(meta);
+                        }
+
                         items = dropAllItemStacks(world, loc, drops);
                     }
                     else if (itemID.contains("abysspickm")) {
@@ -466,7 +535,7 @@ public class BlockBreakListener implements Listener {
                         Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
                         if (("Enabled").equals(container.get(keyVoid, PersistentDataType.STRING))) {
                             drops.removeIf(drop ->
-                                !oreDrops.contains(drop.getType()) && !oreBlocks.contains(drop.getType()));
+                              !oreDrops.contains(drop.getType()) && !oreBlocks.contains(drop.getType()));
                         }
                         items = dropAllItemStacks(world, loc, drops);
                     }
