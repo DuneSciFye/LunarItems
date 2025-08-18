@@ -135,6 +135,7 @@ public final class LunarItems extends JavaPlugin {
         pm.registerEvents(new ItemDragListener(), this);
         pm.registerEvents(new FallingBlockListener(), this);
         pm.registerEvents(new AbyssListener(), this);
+        pm.registerEvents(new ArmorStandListener(), this);
     }
 
     private void registerCommands() {
