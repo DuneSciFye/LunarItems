@@ -1,6 +1,7 @@
 package me.dunescifye.lunaritems.listeners;
 
 import me.dunescifye.lunaritems.LunarItems;
+import me.dunescifye.lunaritems.files.Config;
 import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -30,6 +31,7 @@ public class EntityDeathListener implements Listener {
     //Armor
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
+        if (Config.factions) return;
         LivingEntity entity = e.getEntity();
         Player p = e.getEntity().getKiller();
         if (p == null) return;

@@ -35,7 +35,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static me.dunescifye.lunaritems.LunarItems.*;
 import static me.dunescifye.lunaritems.files.Config.prefix;
