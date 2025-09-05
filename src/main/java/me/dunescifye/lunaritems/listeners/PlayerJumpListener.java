@@ -31,7 +31,7 @@ public class PlayerJumpListener implements Listener {
                 assert blockID != null;
                 switch (blockID) {
                     case "elevator" -> {
-                        for (int y = 1; y < 320; y++) {
+                        for (int y = 1; y < 450; y++) {
                             Block relative = b.getRelative(0, y, 0);
                             PersistentDataContainer relativeContainer = new CustomBlockData(relative, LunarItems.getPlugin());
                             String relativeID = relativeContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);

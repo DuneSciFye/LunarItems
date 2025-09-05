@@ -212,11 +212,9 @@ public class BlockUtils {
                     continue; // Skip breaking double slab while sneaking to support Purpur slab breaking
                 }
 
-                drops.addAll(b.getDrops(heldItem));
-            } else {
-                drops.addAll(b.getDrops(heldItem));
-                b.setType(Material.AIR);
             }
+            drops.addAll(b.getDrops(heldItem));
+            b.setType(Material.AIR, true);
         }
 
         return drops;
@@ -232,15 +230,12 @@ public class BlockUtils {
         for (Block b : Utils.getBlocksInRadius(center, radius)) {
             PersistentDataContainer blockContainer = new CustomBlockData(b, LunarItems.getPlugin());
             if (blockContainer.has(LunarItems.keyEIID, PersistentDataType.STRING)) continue;
-            if (b.equals(center)) {
-                drops.addAll(b.getDrops(heldItem));
-            }
-            else if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+            if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
                 if (b.getBlockData() instanceof Door door)
                     if (door.getHalf() == Bisected.Half.TOP) b.getRelative(BlockFace.DOWN).setType(Material.AIR);
                     else b.getRelative(BlockFace.UP).setType(Material.AIR);
                 drops.addAll(b.getDrops(heldItem));
-                b.setType(Material.AIR);
+                b.setType(Material.AIR, true);
             }
         }
         return drops;
