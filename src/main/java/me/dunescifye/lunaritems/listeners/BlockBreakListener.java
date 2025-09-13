@@ -553,7 +553,7 @@ public class BlockBreakListener implements Listener {
                         boolean smeltingEnabled = container.getOrDefault(keySmelting, PersistentDataType.STRING, "Disabled").equals("Enabled");
 
                         drops.removeIf(drop -> {
-                            if (oreDrops.contains(drop.getType())) {
+                            if (smeltedOres.containsKey(drop.getType())) {
                                 if (ThreadLocalRandom.current().nextInt(4) == 0) {
                                     drop.setAmount(drop.getAmount() * 2);
                                     e.setExpToDrop(e.getExpToDrop() + 2);
