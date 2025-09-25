@@ -18,6 +18,7 @@ public class PlayerCollectItemListener implements Listener {
 
   public static final NamespacedKey keyVoidMaterial = new NamespacedKey("score", "score-void_material");
   public static final NamespacedKey keyVoidMaterial2 = new NamespacedKey("score", "score-void_material2");
+  public static final NamespacedKey keyVoidMaterial3 = new NamespacedKey("score", "score-void_material3");
 
   @EventHandler
   public void onPlayerCollectItem(EntityPickupItemEvent e) {
@@ -32,11 +33,12 @@ public class PlayerCollectItemListener implements Listener {
 
         String mat = pdc.get(keyVoidMaterial, PersistentDataType.STRING);
         String mat2 = pdc.get(keyVoidMaterial2, PersistentDataType.STRING);
+        String mat3 = pdc.get(keyVoidMaterial3, PersistentDataType.STRING);
 
         Item item = e.getItem();
         Material itemMat = item.getItemStack().getType();
 
-        if ((mat != null && itemMat.equals(Material.getMaterial(mat))) || (mat2 != null && itemMat.equals(Material.getMaterial(mat2)))) {
+        if ((mat != null && itemMat.equals(Material.getMaterial(mat))) || (mat2 != null && itemMat.equals(Material.getMaterial(mat2))) || (mat3 != null && itemMat.equals(Material.getMaterial(mat3)))) {
           e.setCancelled(true);
           e.getItem().remove();
         }
