@@ -266,4 +266,8 @@ public class Utils {
         return mat;
     }
 
+    public static Component translateMessage(String message) {
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+    }
+
 }

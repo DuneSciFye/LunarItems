@@ -2,11 +2,18 @@ package me.dunescifye.lunaritems.listeners;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import eu.decentsoftware.holograms.api.DHAPI;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.utils.BlockUtils;
 import me.dunescifye.lunaritems.utils.CooldownManager;
+import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,9 +24,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.BiomeSearchResult;
 
 import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class PlayerInteractListener implements Listener {
 
@@ -94,6 +103,43 @@ public class PlayerInteractListener implements Listener {
                         } else
                             container.set(LunarItems.keyUses, PersistentDataType.DOUBLE, uses - 1);
                         item.setItemMeta(meta);
+                    }
+                }
+            }
+        } else {
+            if (itemID.contains("seraphimxp")) {
+                System.out.println("d");
+                if (!p.isSneaking()) {
+                    System.out.println("e");
+                    if (CooldownManager.hasCooldown(CooldownManager.seraphimXpCDs, p.getUniqueId())) {
+                        CooldownManager.sendCooldownMessage(p, CooldownManager.getRemainingCooldown(CooldownManager.seraphimXpCDs, p.getUniqueId()));
+                        System.out.println("f");
+                    } else {
+                        System.out.println("g");
+                        Biome biome = RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME).get(new NamespacedKey(
+                          "minecraft",
+                          container.getOrDefault(new NamespacedKey("score", "score-biome"), PersistentDataType.STRING,
+                            "plains").toLowerCase())
+                        );
+                        if (biome != null) {
+                            CooldownManager.setCooldown(CooldownManager.seraphimXpCDs, p.getUniqueId(),
+                              Duration.ofSeconds(5));
+                            World world = p.getWorld();
+                            CompletableFuture<Location> cf = new CompletableFuture<>();
+                            Bukkit.getScheduler().runTaskAsynchronously(LunarItems.getPlugin(), () -> {
+                                BiomeSearchResult searchResult = world.locateNearestBiome(p.getLocation(), 5000, biome);
+                                cf.complete(searchResult == null ? null : searchResult.getLocation());
+                            });
+
+                            cf.whenComplete((location, err) -> {
+                                if (err != null || location == null) p.sendMessage(Utils.translateMessage("&6&lCUSTOM" +
+                                  " &8&l▶ &7No biome found nearby."));
+                                else {
+                                    p.teleportAsync(location);
+                                    CooldownManager.setCooldown(CooldownManager.seraphimXpCDs, p.getUniqueId(), Duration.ofMinutes(8));
+                                }
+                            });
+                        }
                     }
                 }
             }
