@@ -7,7 +7,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -44,24 +43,6 @@ public class SeraphimListener implements Listener {
         if (ThreadLocalRandom.current().nextInt(300) == 1) {
           fish.setAmount(fish.getAmount() + 1);
         }
-      }
-    }
-  }
-
-  @EventHandler
-  public void onPlayerFoodLevelChange(FoodLevelChangeEvent e) {
-    Entity entity = e.getEntity();
-    if (!(entity instanceof Player p)) return;
-    ItemStack item = p.getInventory().getItemInOffHand();
-
-    if (!item.hasItemMeta()) return;
-    PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-    String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
-    if (itemID == null) return;
-
-    if (itemID.contains("seraphimwings")) {
-      if (ThreadLocalRandom.current().nextInt(2) == 0) {
-        e.setCancelled(true);
       }
     }
   }

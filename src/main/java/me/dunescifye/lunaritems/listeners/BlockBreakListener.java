@@ -228,6 +228,7 @@ public class BlockBreakListener implements Listener {
                   itemID.contains("aquatichoe") ||
                   itemID.contains("creakinghoe") ||
                   itemID.contains("abysshoem") ||
+                  itemID.contains("autumnhoe") ||
                   itemID.contains("discoveryhoe2")) {
                     replant(b);
                 }

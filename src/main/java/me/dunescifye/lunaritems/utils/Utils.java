@@ -9,10 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -212,6 +209,16 @@ public class Utils {
       Map.entry(Material.NETHER_QUARTZ_ORE, Material.QUARTZ),
       Map.entry(Material.NETHER_GOLD_ORE, Material.GOLD_ORE),
       Map.entry(Material.QUARTZ, Material.QUARTZ)
+    );
+    public static final Map<Material, Material> smeltedFoods = Map.ofEntries(
+      Map.entry(Material.POTATO, Material.BAKED_POTATO),
+      Map.entry(Material.BEEF, Material.COOKED_BEEF),
+      Map.entry(Material.PORKCHOP, Material.COOKED_PORKCHOP),
+      Map.entry(Material.MUTTON, Material.COOKED_MUTTON),
+      Map.entry(Material.CHICKEN, Material.COOKED_CHICKEN),
+      Map.entry(Material.RABBIT, Material.COOKED_RABBIT),
+      Map.entry(Material.COD, Material.COOKED_COD),
+      Map.entry(Material.SALMON, Material.COOKED_SALMON)
     );
 
     public static final Map<Material, String> logMap = Map.ofEntries(
