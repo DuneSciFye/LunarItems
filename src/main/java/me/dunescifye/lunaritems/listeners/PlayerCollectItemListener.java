@@ -59,12 +59,12 @@ public class PlayerCollectItemListener implements Listener {
         inv.addItem(item.withType(Utils.smeltedOres.get(item.getType())));
         e.setCancelled(true);
         e.getItem().remove();
-        Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " 40 cookedfood 1");
+        Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " 40 cookedfood " + item.getAmount());
       } else if (Utils.smeltedFoods.containsKey(item.getType())) {
         inv.addItem(item.withType(Utils.smeltedFoods.get(item.getType())));
         e.setCancelled(true);
         e.getItem().remove();
-        Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " 40 cookedfood 1");
+        Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " 40 cookedfood " + item.getAmount());
       }
     }
   }

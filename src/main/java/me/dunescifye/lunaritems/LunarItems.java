@@ -3,6 +3,7 @@ package me.dunescifye.lunaritems;
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import dev.jorel.commandapi.network.CommandAPIProtocol;
 import me.dunescifye.lunaritems.commands.*;
 import me.dunescifye.lunaritems.files.*;
 import me.dunescifye.lunaritems.listeners.*;
@@ -87,6 +88,12 @@ public final class LunarItems extends JavaPlugin {
 
         plugin = this;
         CommandAPI.onEnable();
+
+        for (String channelIdentifier : CommandAPIProtocol.getAllChannelIdentifiers()) {
+            Bukkit.getMessenger().unregisterIncomingPluginChannel(this, channelIdentifier);
+            Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, channelIdentifier);
+        }
+
         Config.setup(this);
         NexusItemsConfig.setup();
         BlocksConfig.setup();
