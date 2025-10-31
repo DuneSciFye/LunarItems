@@ -13,6 +13,7 @@ import me.dunescifye.lunaritems.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.type.Door;
@@ -80,13 +81,32 @@ public class BlockBreakListener implements Listener {
         List<Item> items = e.getItems();
 
         if (item.hasItemMeta()) {
-            PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
+            ItemMeta meta = item.getItemMeta();
+            PersistentDataContainer pdc = meta.getPersistentDataContainer();
             String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
+            BlockState blockState = e.getBlockState();
             if (itemID != null) {
-                if (e.getBlockState().getBlockData() instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()) {
+                if (blockState.getBlockData() instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()) {
                     // Auto Pickup crops
                     if (itemID.contains("soulhoe") || itemID.contains("demonslimehoe"))
                         items.removeIf(drop -> inv.addItem(drop.getItemStack()).isEmpty());
+                    else if (itemID.contains("halloweenhoe")) {
+                        for (Item drop : items) {
+                            ItemStack itemStack = drop.getItemStack();
+                            NamespacedKey key =
+                              new NamespacedKey("score", "score-" + itemStack.getType().toString().toLowerCase());
+                            Double amount = pdc.get(key, PersistentDataType.DOUBLE);
+                            if (amount != null) {
+                                if (Objects.equals(pdc.get(key2x, PersistentDataType.STRING), "Enabled"))
+                                    pdc.set(key, PersistentDataType.DOUBLE,
+                                      amount + itemStack.getAmount() + itemStack.getAmount());
+                                else
+                                    pdc.set(key, PersistentDataType.DOUBLE, amount + itemStack.getAmount());
+                                drop.remove();
+                                item.setItemMeta(meta);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -230,6 +250,9 @@ public class BlockBreakListener implements Listener {
                   itemID.contains("abysshoem") ||
                   itemID.contains("autumnhoe") ||
                   itemID.contains("discoveryhoe2")) {
+                    replant(b);
+                }
+                else if (itemID.contains("halloweenhoe")) {
                     replant(b);
                 }
                 else if (itemID.contains("seraphimhoe")) {

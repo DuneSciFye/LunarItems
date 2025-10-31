@@ -49,6 +49,7 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyStoredBlock = new NamespacedKey("score", "score-storedblock");
     public static final NamespacedKey keyAmount = new NamespacedKey("score", "score-amount");
     public static final NamespacedKey keyPoints = new NamespacedKey("score", "score-points");
+    public static final NamespacedKey key2x = new NamespacedKey("score", "score-2x");
 
     public static Map<String, ItemStack> items = new HashMap<>();
     public static Map<NamespacedKey, PersistentDataType> dataType = new HashMap<>();
@@ -89,10 +90,13 @@ public final class LunarItems extends JavaPlugin {
         plugin = this;
         CommandAPI.onEnable();
 
-        for (String channelIdentifier : CommandAPIProtocol.getAllChannelIdentifiers()) {
-            Bukkit.getMessenger().unregisterIncomingPluginChannel(this, channelIdentifier);
-            Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, channelIdentifier);
-        }
+        Bukkit.getScheduler().runTaskLater(LunarItems.getPlugin(), () -> {
+            for (String channel : CommandAPIProtocol.getAllChannelIdentifiers()) {
+                Bukkit.getMessenger().unregisterIncomingPluginChannel(plugin, channel);
+                Bukkit.getMessenger().unregisterOutgoingPluginChannel(plugin, channel);
+
+            }
+        }, 20L);
 
         Config.setup(this);
         NexusItemsConfig.setup();
@@ -147,6 +151,7 @@ public final class LunarItems extends JavaPlugin {
         pm.registerEvents(new FallingBlockListener(), this);
         pm.registerEvents(new AbyssListener(), this);
         pm.registerEvents(new ArmorStandListener(), this);
+        pm.registerEvents(new PlayerFishListener(), this);
     }
 
     private void registerCommands() {
