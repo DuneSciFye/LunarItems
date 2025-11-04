@@ -127,7 +127,10 @@ public class BlockUtils {
     public static List<List<Predicate<Block>>> axePredicates = List.of(
         List.of( // Whitelist
             block -> Tag.MINEABLE_AXE.isTagged(block.getType()),
-            block -> Tag.LEAVES.isTagged(block.getType())
+          block -> Tag.LEAVES.isTagged(block.getType()),
+          block -> block.getType().equals(Material.MUSHROOM_STEM),
+          block -> block.getType().equals(Material.BROWN_MUSHROOM_BLOCK),
+          block -> block.getType().equals(Material.RED_MUSHROOM_BLOCK)
         ),
         List.of( // Blacklist
             block -> block instanceof Container,
@@ -171,7 +174,10 @@ public class BlockUtils {
             block -> Tag.MINEABLE_AXE.isTagged(block.getType()),
             block -> Tag.LEAVES.isTagged(block.getType()),
             block -> block.getType().equals(Material.WATER),
-            block -> block.getType().equals(Material.LAVA)
+            block -> block.getType().equals(Material.LAVA),
+          block -> block.getType().equals(Material.MUSHROOM_STEM),
+          block -> block.getType().equals(Material.BROWN_MUSHROOM_BLOCK),
+          block -> block.getType().equals(Material.RED_MUSHROOM_BLOCK)
         ),
         List.of( // Blacklist
             block -> block.getType().equals(Material.BARREL),
