@@ -14,6 +14,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.type.Door;
@@ -28,6 +29,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -249,11 +251,17 @@ public class BlockBreakListener implements Listener {
                   itemID.contains("creakinghoe") ||
                   itemID.contains("abysshoem") ||
                   itemID.contains("autumnhoe") ||
-                  itemID.contains("discoveryhoe2")) {
+                  itemID.contains("discoveryhoe2") ||
+                  itemID.contains("halloweenhoe")) {
                     replant(b);
                 }
-                else if (itemID.contains("halloweenhoe")) {
-                    replant(b);
+                else if (itemID.contains("amberlighthoe")) {
+                    String offhandItemID = p.getInventory().getItemInOffHand().getPersistentDataContainer().get(keyEIID,
+                      PersistentDataType.STRING);
+                    if (offhandItemID != null && offhandItemID.contains("amberlightfertilizer")) {
+                        replant(b, ThreadLocalRandom.current().nextInt(0, 3));
+                    }
+                    else replant(b);
                 }
                 else if (itemID.contains("seraphimhoe")) {
                     replant(b);
@@ -340,7 +348,64 @@ public class BlockBreakListener implements Listener {
                 int depth = (int) (double) container.getOrDefault(keyDepth, PersistentDataType.DOUBLE, 0.0);
                 // Custom drop
                 String customDrop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
-                if (itemID.contains("aetheraxe") && testBlock(b, axePredicates)) {
+
+                if (itemID.contains("amberlightpick")) {
+                    Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
+                    // Put items in shulker
+                    if (Objects.equals(container.get(keyShulker, PersistentDataType.STRING), "Enabled")) {
+                        ItemStack offhandItem = p.getInventory().getItemInOffHand();
+                        if (offhandItem.getItemMeta() instanceof BlockStateMeta blockStateMeta && blockStateMeta.getBlockState() instanceof ShulkerBox shulkerBox) {
+                            HashMap<Integer, ItemStack> leftovers =
+                              shulkerBox.getInventory().addItem(drops.toArray(new ItemStack[0]));
+                            drops.clear();
+                            drops.addAll(leftovers.values());
+                            blockStateMeta.setBlockState(shulkerBox);
+                            offhandItem.setItemMeta(blockStateMeta);
+                        }
+                    }
+                    // Custom Drops
+                    if (customDrop != null && !customDrop.isEmpty()) {
+                        drops = drops.stream()
+                          .map(drop -> {
+                              Material current = drop.getType();
+                              Material mat = Material.getMaterial(customDrop + current);
+                              if (mat == null) mat = Material.getMaterial(current + customDrop);
+                              if (mat != null) {
+                                  return new ItemStack(mat, drop.getAmount());
+                              }
+                              return drop;
+                          })
+                          .toList();
+                    }
+                    items = dropAllItemStacks(world, loc, drops);
+                } else if (itemID.contains("amberlightaxe")) {
+                    Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
+                    // Custom Drops
+                    if (customDrop != null && !customDrop.isEmpty()) {
+                        drops = drops.stream()
+                          .map(drop -> {
+                              Material mat = null;
+                              String current = drop.getType().toString();
+                              if (customDrop.equals("STRIPPED")) mat = Material.getMaterial("STRIPPED_" + current);
+                              else if (current.startsWith("OAK_")) mat = Material.getMaterial("OAK_" + customDrop);
+                              else if (current.startsWith("BIRCH_")) mat = Material.getMaterial("BIRCH_" + customDrop);
+                              else if (current.startsWith("DARK_OAK_")) mat = Material.getMaterial("DARK_OAK_" + customDrop);
+                              else if (current.startsWith("JUNGLE_")) mat = Material.getMaterial("JUNGLE_" + customDrop);
+                              else if (current.startsWith("SPRUCE_")) mat = Material.getMaterial("SPRUCE_" + customDrop);
+                              else if (current.startsWith("ACACIA_")) mat = Material.getMaterial("ACACIA_" + customDrop);
+                              else if (current.startsWith("MANGROVE_")) mat = Material.getMaterial("MANGROVE_" + customDrop);
+                              else if (current.startsWith("CHERRY_")) mat = Material.getMaterial("CHERRY_" + customDrop);
+                              else if (current.startsWith("PALE_OAK_")) mat = Material.getMaterial("PALE_OAK_" + customDrop);
+                              if (mat != null) {
+                                  return new ItemStack(mat, drop.getAmount());
+                              }
+                              return drop;
+                          })
+                          .toList();
+                    }
+                    items = dropAllItemStacks(world, loc, drops);
+                }
+                else if (itemID.contains("aetheraxe") && testBlock(b, axePredicates)) {
                     e.setCancelled(true);
                     // Will do 3x3x3 if axe is being thrown, otherwise use item's radius and depth
                     Collection<ItemStack> drops = p.hasMetadata("ignoreBlockBreak") ? breakInFacing(b, 0, 1, p, axePredicates) : breakInFacing(b, radius, depth, p, axePredicates);
@@ -410,8 +475,23 @@ public class BlockBreakListener implements Listener {
                 // No custom drop
                 // Shovels
                 else if (item.getType().equals(Material.NETHERITE_SHOVEL) && testBlock(b, shovelPredicates)) {
-                    e.setCancelled(true);
-                    if (itemID.contains("aethershovel")) {
+                     if (itemID.contains("amberlightshovel")) {
+                        Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, shovelPredicates);
+                        // Put items in shulker
+                        if (Objects.equals(container.get(keyShulker, PersistentDataType.STRING), "Enabled")) {
+                            ItemStack offhandItem = p.getInventory().getItemInOffHand();
+                            if (offhandItem.getItemMeta() instanceof BlockStateMeta blockStateMeta && blockStateMeta.getBlockState() instanceof ShulkerBox shulkerBox) {
+                                HashMap<Integer, ItemStack> leftovers =
+                                  shulkerBox.getInventory().addItem(drops.toArray(new ItemStack[0]));
+                                drops.clear();
+                                drops.addAll(leftovers.values());
+                                blockStateMeta.setBlockState(shulkerBox);
+                                offhandItem.setItemMeta(blockStateMeta);
+                            }
+                        }
+                        items = dropAllItemStacks(world, loc, drops);
+                    }
+                    else if (itemID.contains("aethershovel")) {
                         items = dropAllItemStacks(world, loc, p.getInventory().addItem(breakInFacing(b, radius, depth, p, shovelPredicates).toArray(new ItemStack[0])).values());
                     }
                     else if (itemID.contains("seraphimshovel")) {

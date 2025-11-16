@@ -37,6 +37,8 @@ public class HungerListener implements Listener {
       } else {
         e.setCancelled(true);
       }
+    } else if (itemID.contains("amberlightpick") || itemID.contains("amberlightrod")) {
+      e.setCancelled(true);
     }
   }
 

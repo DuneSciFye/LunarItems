@@ -9,10 +9,7 @@ import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.utils.BlockUtils;
 import me.dunescifye.lunaritems.utils.CooldownManager;
 import me.dunescifye.lunaritems.utils.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -27,6 +24,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BiomeSearchResult;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -36,14 +34,14 @@ public class PlayerInteractListener implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (e.getHand() == EquipmentSlot.OFF_HAND) return;
+        Block b = e.getClickedBlock();
 
 
         if (e.getAction().isLeftClick()) {
-            Block b = e.getClickedBlock();
             if (b != null) {
                 if (p.isSneaking()) {
                     PersistentDataContainer pdc = new CustomBlockData(b, LunarItems.getPlugin());
@@ -106,16 +104,41 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
             }
+            else if (itemID.contains("amberlightbuilderschisel") && b != null) {
+                int radius = (int) (double) container.getOrDefault(LunarItems.keyRadius,  PersistentDataType.DOUBLE,
+                  0.0);
+                for (Block block : Utils.getBlocksInRadius(b, radius)) {
+                    String mat = block.getType().toString();
+                    Material newMat;
+                    checkMats: {
+                        newMat = Material.getMaterial(mat + "_STAIRS");
+                        if (newMat != null) break checkMats;
+                        if (mat.contains("_STAIRS")) mat = mat.replace("_STAIRS", "");
+                        newMat = Material.getMaterial(mat + "_SLAB");
+                        if (newMat != null) break checkMats;
+                        if (mat.contains("_SLAB")) mat = mat.replace("_SLAB", "");
+                        newMat = Material.getMaterial(mat + "_WALL");
+                        if (newMat != null) break checkMats;
+                        if (mat.contains("_WALL")) mat = mat.replace("_WALL", "");
+                        newMat = Material.getMaterial("CRACKED_" + mat);
+                        if (newMat != null) break checkMats;
+                        if (mat.contains("CRACKED_")) mat = mat.replace("CRACKED_", "");
+                        newMat = Material.getMaterial("CHISELED_" + mat);
+                        if (newMat != null) break checkMats;
+                        if (mat.contains("CHISELED_")) mat = mat.replace("CHISELED_", "");
+                        newMat = Material.getMaterial(mat);
+                    }
+                    if (newMat != null && !Objects.equals(newMat.toString(), block.getType().toString())) {
+                        block.setType(newMat);
+                    }
+                }
+            }
         } else {
             if (itemID.contains("seraphimxp")) {
-                System.out.println("d");
                 if (!p.isSneaking()) {
-                    System.out.println("e");
                     if (CooldownManager.hasCooldown(CooldownManager.seraphimXpCDs, p.getUniqueId())) {
                         CooldownManager.sendCooldownMessage(p, CooldownManager.getRemainingCooldown(CooldownManager.seraphimXpCDs, p.getUniqueId()));
-                        System.out.println("f");
                     } else {
-                        System.out.println("g");
                         Biome biome = RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME).get(new NamespacedKey(
                           "minecraft",
                           container.getOrDefault(new NamespacedKey("score", "score-biome"), PersistentDataType.STRING,

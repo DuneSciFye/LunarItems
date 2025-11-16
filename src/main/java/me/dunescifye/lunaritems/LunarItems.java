@@ -50,6 +50,7 @@ public final class LunarItems extends JavaPlugin {
     public static final NamespacedKey keyAmount = new NamespacedKey("score", "score-amount");
     public static final NamespacedKey keyPoints = new NamespacedKey("score", "score-points");
     public static final NamespacedKey key2x = new NamespacedKey("score", "score-2x");
+    public static final NamespacedKey keyShulker = new NamespacedKey("score", "score-shulker");
 
     public static Map<String, ItemStack> items = new HashMap<>();
     public static Map<NamespacedKey, PersistentDataType> dataType = new HashMap<>();
@@ -152,6 +153,7 @@ public final class LunarItems extends JavaPlugin {
         pm.registerEvents(new AbyssListener(), this);
         pm.registerEvents(new ArmorStandListener(), this);
         pm.registerEvents(new PlayerFishListener(), this);
+        pm.registerEvents(new EntityBreedListener(), this);
     }
 
     private void registerCommands() {
