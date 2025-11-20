@@ -378,6 +378,32 @@ public class BlockBreakListener implements Listener {
                           .toList();
                     }
                     items = dropAllItemStacks(world, loc, drops);
+                } else if (itemID.contains("amberlightaxem")) {
+                    Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
+                    // Custom Drops
+                    if (customDrop != null && !customDrop.isEmpty()) {
+                        drops = drops.stream()
+                          .map(drop -> {
+                              Material mat = null;
+                              String current = drop.getType().toString();
+                              if (customDrop.equals("STRIPPED")) mat = Material.getMaterial("STRIPPED_" + current);
+                              else if (current.startsWith("OAK_")) mat = Material.getMaterial("OAK_" + customDrop);
+                              else if (current.startsWith("BIRCH_")) mat = Material.getMaterial("BIRCH_" + customDrop);
+                              else if (current.startsWith("DARK_OAK_")) mat = Material.getMaterial("DARK_OAK_" + customDrop);
+                              else if (current.startsWith("JUNGLE_")) mat = Material.getMaterial("JUNGLE_" + customDrop);
+                              else if (current.startsWith("SPRUCE_")) mat = Material.getMaterial("SPRUCE_" + customDrop);
+                              else if (current.startsWith("ACACIA_")) mat = Material.getMaterial("ACACIA_" + customDrop);
+                              else if (current.startsWith("MANGROVE_")) mat = Material.getMaterial("MANGROVE_" + customDrop);
+                              else if (current.startsWith("CHERRY_")) mat = Material.getMaterial("CHERRY_" + customDrop);
+                              else if (current.startsWith("PALE_OAK_")) mat = Material.getMaterial("PALE_OAK_" + customDrop);
+                              if (mat != null) {
+                                  return new ItemStack(mat, drop.getAmount() * 2);
+                              }
+                              return drop;
+                          })
+                          .toList();
+                    }
+                    items = dropAllItemStacks(world, loc, drops);
                 } else if (itemID.contains("amberlightaxe")) {
                     Collection<ItemStack> drops = breakInFacing(b, radius, depth, p, axePredicates);
                     // Custom Drops
