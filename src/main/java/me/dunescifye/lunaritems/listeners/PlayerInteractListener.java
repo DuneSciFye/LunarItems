@@ -15,6 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -105,6 +106,9 @@ public class PlayerInteractListener implements Listener {
                 }
             }
             else if (itemID.contains("amberlightbuilderschisel") && b != null) {
+                BlockBreakEvent event = new BlockBreakEvent(b, p);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) return;
                 int radius = (int) (double) container.getOrDefault(LunarItems.keyRadius,  PersistentDataType.DOUBLE,
                   0.0);
                 for (Block block : Utils.getBlocksInRadius(b, radius)) {
