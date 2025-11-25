@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -55,8 +54,8 @@ public class PlayerCollectItemListener implements Listener {
     if (itemID == null) return;
     if (itemID.contains("autumnsmoker")) {
       ItemStack item = e.getItem().getItemStack();
-      if (Utils.smeltedOres.containsKey(item.getType())) {
-        inv.addItem(item.withType(Utils.smeltedOres.get(item.getType())));
+      if (Utils.rawOres.containsKey(item.getType())) {
+        inv.addItem(item.withType(Utils.rawOres.get(item.getType())));
         e.setCancelled(true);
         e.getItem().remove();
         Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " 40 cookedfood " + item.getAmount());

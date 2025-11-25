@@ -210,6 +210,30 @@ public class Utils {
       Map.entry(Material.NETHER_GOLD_ORE, Material.GOLD_ORE),
       Map.entry(Material.QUARTZ, Material.QUARTZ)
     );
+    public static final Map<Material, Material> rawOres = Map.ofEntries(
+      Map.entry(Material.COAL_ORE, Material.COAL),
+      Map.entry(Material.DEEPSLATE_COAL_ORE, Material.COAL),
+      Map.entry(Material.RAW_COPPER, Material.COPPER_INGOT),
+      Map.entry(Material.COPPER_ORE, Material.COPPER_INGOT),
+      Map.entry(Material.DEEPSLATE_COPPER_ORE, Material.COPPER_INGOT),
+      Map.entry(Material.DIAMOND_ORE, Material.DIAMOND),
+      Map.entry(Material.DEEPSLATE_DIAMOND_ORE, Material.DIAMOND),
+      Map.entry(Material.EMERALD_ORE, Material.EMERALD),
+      Map.entry(Material.DEEPSLATE_EMERALD_ORE, Material.EMERALD),
+      Map.entry(Material.RAW_GOLD, Material.GOLD_INGOT),
+      Map.entry(Material.GOLD_ORE, Material.GOLD_INGOT),
+      Map.entry(Material.DEEPSLATE_GOLD_ORE, Material.GOLD_INGOT),
+      Map.entry(Material.RAW_IRON, Material.IRON_INGOT),
+      Map.entry(Material.IRON_ORE, Material.IRON_INGOT),
+      Map.entry(Material.DEEPSLATE_IRON_ORE, Material.IRON_INGOT),
+      Map.entry(Material.LAPIS_ORE, Material.LAPIS_LAZULI),
+      Map.entry(Material.DEEPSLATE_LAPIS_ORE, Material.LAPIS_LAZULI),
+      Map.entry(Material.REDSTONE_ORE, Material.REDSTONE),
+      Map.entry(Material.DEEPSLATE_REDSTONE_ORE, Material.REDSTONE),
+      Map.entry(Material.ANCIENT_DEBRIS, Material.NETHERITE_SCRAP),
+      Map.entry(Material.NETHER_QUARTZ_ORE, Material.QUARTZ),
+      Map.entry(Material.NETHER_GOLD_ORE, Material.GOLD_ORE)
+    );
     public static final Map<Material, Material> smeltedFoods = Map.ofEntries(
       Map.entry(Material.POTATO, Material.BAKED_POTATO),
       Map.entry(Material.BEEF, Material.COOKED_BEEF),
