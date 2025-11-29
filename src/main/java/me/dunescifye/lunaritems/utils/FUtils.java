@@ -49,9 +49,9 @@ public class FUtils {
         if (LunarItems.griefPreventionEnabled) {
             final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
             return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
-        } else if (LunarItems.factionsUUIDEnabled) {
-            return playerCanBuildDestroyBlock(player, location, "destroy", true);
-        }
+        } //else if (LunarItems.factionsUUIDEnabled) {
+//            return playerCanBuildDestroyBlock(player, location, "destroy", true);
+//        }
         return true;
     }
 }
