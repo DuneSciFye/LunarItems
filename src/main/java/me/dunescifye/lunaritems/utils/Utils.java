@@ -20,6 +20,8 @@ import static me.dunescifye.lunaritems.utils.ConfigUtils.isInteger;
 
 public class Utils {
 
+    public static final NamespacedKey autoSmeltKey = new NamespacedKey("lunaritems", "autosmelt");
+
     public static void runConsoleCommands(String... commands){
         Server server = Bukkit.getServer();
         ConsoleCommandSender console = server.getConsoleSender();

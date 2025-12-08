@@ -19,9 +19,12 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
 import static me.dunescifye.lunaritems.LunarItems.getPlugin;
+import static me.dunescifye.lunaritems.utils.FUtils.isInClaimOrWilderness;
+import static me.dunescifye.lunaritems.utils.Utils.getBlocksInRadius;
 
 public class BlockUtils {
 
@@ -99,21 +102,21 @@ public class BlockUtils {
     );
 
     public static List<List<Predicate<Block>>> pickaxePredicates = List.of(
-        List.of( // Whitelist
-            block -> Tag.MINEABLE_PICKAXE.isTagged(block.getType())
-        ),
-        List.of( // Blacklist
-            block -> block.getType().equals(Material.SPAWNER),
-            block -> block.getType().equals(Material.GILDED_BLACKSTONE),
-            block -> block instanceof Container,
-            block -> block.getType().equals(Material.DROPPER),
-            block -> block.getType().equals(Material.DISPENSER),
-            block -> block.getType().equals(Material.HOPPER),
-            block -> block.getType().equals(Material.FURNACE),
-            block -> block.getType().equals(Material.BLAST_FURNACE),
-            block -> block.getType().equals(Material.SMOKER),
-            block -> Tag.SHULKER_BOXES.isTagged(block.getType())
-        )
+      List.of( // Whitelist
+        block -> Tag.MINEABLE_PICKAXE.isTagged(block.getType())
+      ),
+      List.of( // Blacklist
+        block -> block.getType().equals(Material.SPAWNER),
+        block -> block.getType().equals(Material.GILDED_BLACKSTONE),
+        block -> block instanceof Container,
+        block -> block.getType().equals(Material.DROPPER),
+        block -> block.getType().equals(Material.DISPENSER),
+        block -> block.getType().equals(Material.HOPPER),
+        block -> block.getType().equals(Material.FURNACE),
+        block -> block.getType().equals(Material.BLAST_FURNACE),
+        block -> block.getType().equals(Material.SMOKER),
+        block -> Tag.SHULKER_BOXES.isTagged(block.getType())
+      )
     );
 
     public static List<List<Predicate<Block>>> shovelPredicates = List.of(
@@ -160,14 +163,15 @@ public class BlockUtils {
         )
     );
     public static List<List<Predicate<Block>>> ancientShovelPredicates = List.of(
-        List.of( // Whitelist
-            block -> Tag.MINEABLE_SHOVEL.isTagged(block.getType()),
-            block -> block.getType().equals(Material.WATER),
-            block -> block.getType().equals(Material.LAVA)
-        ),
-        List.of( // Blacklist
-        )
+      List.of( // Whitelist
+        block -> Tag.MINEABLE_SHOVEL.isTagged(block.getType()),
+        block -> block.getType().equals(Material.WATER),
+        block -> block.getType().equals(Material.LAVA)
+      ),
+      List.of( // Blacklist
+      )
     );
+
 
     public static List<List<Predicate<Block>>> ancientAxePredicates = List.of(
         List.of( // Whitelist
@@ -227,8 +231,7 @@ public class BlockUtils {
     }
 
 
-
-    //Breaks blocks in radius. Updates block b to air.
+    // Breaks blocks in radius. Updates block b to air.
     public static Collection<ItemStack> breakInRadius(Block center, int radius, Player p, List<List<Predicate<Block>>> predicates) {
         ItemStack heldItem = p.getInventory().getItemInMainHand();
 
@@ -245,6 +248,20 @@ public class BlockUtils {
             }
         }
         return drops;
+    }
+
+    public static void breakInVein(Block center, Collection<ItemStack> drops, Material material, Player p) {
+        ItemStack item = p.getInventory().getItemInMainHand();
+        for (Block b : getBlocksInRadius(center, 1)) {
+            if (b.getType().equals(material)) {
+                // Testing claim
+                if (isInClaimOrWilderness(p, b.getLocation())) {
+                    drops.addAll(b.getDrops(item));
+                    b.setType(Material.AIR);
+                    breakInVein(b, drops, material, p);
+                }
+            }
+        }
     }
 
     /**
