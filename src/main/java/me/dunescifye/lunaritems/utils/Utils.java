@@ -21,6 +21,9 @@ import static me.dunescifye.lunaritems.utils.ConfigUtils.isInteger;
 public class Utils {
 
     public static final NamespacedKey autoSmeltKey = new NamespacedKey("lunaritems", "autosmelt");
+    public static final NamespacedKey removeDropKey = new NamespacedKey("lunaritems", "removedrop");
+    public static final NamespacedKey replaceDropKey = new NamespacedKey("lunaritems", "replacedrop");
+    public static final NamespacedKey autoReplantKey = new NamespacedKey("lunaritems", "autoreplant");
 
     public static void runConsoleCommands(String... commands){
         Server server = Bukkit.getServer();

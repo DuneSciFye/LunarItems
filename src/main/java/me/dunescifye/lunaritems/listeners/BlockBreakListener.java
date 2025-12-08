@@ -240,6 +240,9 @@ public class BlockBreakListener implements Listener {
                           "money " + formattedTotal);
                     }
                 }
+                if (container.has(autoReplantKey)) {
+                    replant(b);
+                }
                 // Auto Replant
                 if (itemID.contains("celestialhoe") ||
                   itemID.contains("demonslimehoe") ||
@@ -822,7 +825,25 @@ public class BlockBreakListener implements Listener {
         if (container.has(autoSmeltKey)) {
             drops = drops.stream().map(
               drop -> new ItemStack(smeltMaterial(drop.getType()), drop.getAmount())
-              ).collect(Collectors.toList());
+            ).collect(Collectors.toList());
+        }
+        // Remove a specific drop material
+        String removeDrop = container.get(removeDropKey, PersistentDataType.STRING);
+        if (removeDrop != null) {
+            Material mat = Material.getMaterial(removeDrop.toUpperCase());
+            if (mat != null) {
+                drops.removeIf(drop -> drop.getType().equals(mat));
+            }
+        }
+        // Remove all drops with this drop
+        String replaceDrop = container.get(replaceDropKey, PersistentDataType.STRING);
+        if (replaceDrop != null) {
+            Material mat = Material.getMaterial(replaceDrop.toUpperCase());
+            if (mat != null) {
+                drops = drops.stream().map(
+                  drop -> new ItemStack(mat, drop.getAmount()))
+                  .collect(Collectors.toList());
+            }
         }
 
         items = dropAllItemStacks(world, loc, drops);
