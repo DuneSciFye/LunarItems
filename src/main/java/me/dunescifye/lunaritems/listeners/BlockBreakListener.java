@@ -240,6 +240,17 @@ public class BlockBreakListener implements Listener {
                           "money " + formattedTotal);
                     }
                 }
+                if (container.has(autoSellKey) && container.has(keyMoney, PersistentDataType.DOUBLE)) {
+                    e.setDropItems(false);
+                    BigDecimal totalPrice = BigDecimal.valueOf(container.get(keyMoney, PersistentDataType.DOUBLE));
+                    Double price = container.get(new NamespacedKey("score", "score-" + b.getType().toString().toLowerCase()), PersistentDataType.DOUBLE);
+                    if (price != null) {
+                        totalPrice = totalPrice.add(BigDecimal.valueOf(price));
+                        String formattedTotal = totalPrice.setScale(4, RoundingMode.HALF_UP).toPlainString();
+                        runConsoleCommands("ei console-modification set variable " + p.getName() + " -1 " +
+                          "money " + formattedTotal);
+                    }
+                }
                 if (container.has(autoReplantKey)) {
                     replant(b);
                 }

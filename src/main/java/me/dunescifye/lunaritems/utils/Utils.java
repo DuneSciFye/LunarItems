@@ -24,6 +24,7 @@ public class Utils {
     public static final NamespacedKey removeDropKey = new NamespacedKey("lunaritems", "removedrop");
     public static final NamespacedKey replaceDropKey = new NamespacedKey("lunaritems", "replacedrop");
     public static final NamespacedKey autoReplantKey = new NamespacedKey("lunaritems", "autoreplant");
+    public static final NamespacedKey autoSellKey = new NamespacedKey("lunaritems", "autosell");
 
     public static void runConsoleCommands(String... commands){
         Server server = Bukkit.getServer();
