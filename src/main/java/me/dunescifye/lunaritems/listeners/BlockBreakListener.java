@@ -576,18 +576,20 @@ public class BlockBreakListener implements Listener {
                             item.setItemMeta(meta);
                         }
 
-                        Collection<ItemStack> newDrops = new ArrayList<>();
-                        for (ItemStack drop : drops) {
-                            if (drop.getType() == Material.RED_SAND) newDrops.add(drop.withType(Material.RED_SANDSTONE));
-                            else if (drop.getType() == Material.CLAY_BALL) newDrops.add(drop.withType(Material.BRICK));
-                            else if (drop.getType() == Material.CLAY) newDrops.add(drop.withType(Material.BRICKS));
-                            else if (drop.getType() == Material.SAND) newDrops.add(drop.withType(Material.SANDSTONE));
-                            else newDrops.add(drop);
-                        }
+                        // Replace sand with sandstone and clay with bricks
+                         drops = drops.stream().map(
+                             drop -> switch (drop.getType()) {
+                                 case RED_SAND -> drop.withType(Material.RED_SANDSTONE);
+                                 case CLAY_BALL -> drop.withType(Material.BRICK);
+                                 case CLAY -> drop.withType(Material.BRICKS);
+                                 case SAND -> drop.withType(Material.SANDSTONE);
+                                 default -> drop;
+                             })
+                           .collect(Collectors.toList());
 
                     }
                     else if (itemID.contains("ancienttshovel"))
-                        items = dropAllItemStacks(world, loc, breakInFacing(b, radius, depth, p, ancientShovelPredicates));
+                        drops = breakInFacing(b, radius, depth, p, ancientShovelPredicates);
                     else if (itemID.contains("creakingshovel")) {
                         drops = breakInFacing(b, radius, depth, p, ancientShovelPredicates);
                         // Auto Sell
@@ -846,13 +848,13 @@ public class BlockBreakListener implements Listener {
                 drops.removeIf(drop -> drop.getType().equals(mat));
             }
         }
-        // Remove all drops with this drop
+        // Replace all drops with this drop
         String replaceDrop = container.get(replaceDropKey, PersistentDataType.STRING);
         if (replaceDrop != null) {
             Material mat = Material.getMaterial(replaceDrop.toUpperCase());
             if (mat != null) {
                 drops = drops.stream().map(
-                  drop -> new ItemStack(mat, drop.getAmount()))
+                  drop -> drop.withType(mat))
                   .collect(Collectors.toList());
             }
         }
