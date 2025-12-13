@@ -51,7 +51,7 @@ public class Config {
 
         factions = config.getBoolean("Factions", false);
 
-        baseRaidersDebug = ConfigUtils.setupConfig("BaseRaiders.Debug", config, false, List.of("Enable debug logging for BaseRaiders protection checks"));
+        baseRaidersDebug = ConfigUtils.setupConfig("BaseRaiders.Debug", config, false);
 
         plugin.saveConfig();
     }
