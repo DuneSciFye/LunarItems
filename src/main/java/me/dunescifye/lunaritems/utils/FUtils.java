@@ -2,7 +2,6 @@ package me.dunescifye.lunaritems.utils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import me.dunescifye.lunaritems.LunarItems;
-import me.fivekfubi.api.BaseRaidersAPI;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
@@ -56,7 +55,7 @@ public class FUtils {
         }
         // Check BaseRaiders (FiveK protection)
         if (LunarItems.baseRaidersEnabled) {
-            if (!BaseRaidersAPI.get().has_permission(player, location, "break")) {
+            if (!BaseRaidersUtils.hasPermission(player, location, "break")) {
                 return false;
             }
         }
