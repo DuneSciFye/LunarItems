@@ -1,5 +1,6 @@
 package me.dunescifye.lunaritems.utils;
 
+import me.dunescifye.lunaritems.files.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -25,9 +26,6 @@ public class BaseRaidersUtils {
     private static Field membersMapField;
     private static Method getOwnerUuidMethod;
 
-    // Set to true to enable debug logging
-    public static boolean debug = false;
-
     /**
      * Initialize the reflection hooks for BaseRaiders API.
      * Call this once during plugin enable.
@@ -37,39 +35,39 @@ public class BaseRaidersUtils {
         initialized = true;
 
         try {
-            if (debug) logger.info("[LunarItems] BaseRaiders: Looking for Records class...");
+            if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: Looking for Records class...");
 
             // Get Records class and the static 'protection' field
             Class<?> recordsClass = Class.forName("me.fivekfubi.baseraiders.Records");
             Field protectionField = recordsClass.getField("protection");
             recordsProtection = protectionField.get(null);
-            if (debug) logger.info("[LunarItems] BaseRaiders: Got Records.protection: " + recordsProtection.getClass().getName());
+            if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: Got Records.protection: " + recordsProtection.getClass().getName());
 
             // Get the getFromWithinLocation method
             getFromWithinLocationMethod = recordsProtection.getClass().getMethod("getFromWithinLocation", Location.class, int.class);
-            if (debug) logger.info("[LunarItems] BaseRaiders: Found getFromWithinLocation method");
+            if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: Found getFromWithinLocation method");
 
             // Get DATA_Protection class and its fields/methods
             Class<?> dataProtectionClass = Class.forName("me.fivekfubi.baseraiders.Protection.Data.DATA_Protection");
             membersMapField = dataProtectionClass.getField("members_map");
-            if (debug) logger.info("[LunarItems] BaseRaiders: Found members_map field");
+            if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: Found members_map field");
 
             getOwnerUuidMethod = dataProtectionClass.getMethod("get_owner_uuid");
-            if (debug) logger.info("[LunarItems] BaseRaiders: Found get_owner_uuid method");
+            if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: Found get_owner_uuid method");
 
             available = true;
-            if (debug) logger.info("[LunarItems] BaseRaiders: API initialized successfully!");
+            if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: API initialized successfully!");
         } catch (ClassNotFoundException e) {
-            if (debug) logger.warning("[LunarItems] BaseRaiders: Class not found - " + e.getMessage());
+            if (Config.baseRaidersDebug) logger.warning("[LunarItems] BaseRaiders: Class not found - " + e.getMessage());
             available = false;
         } catch (NoSuchMethodException e) {
-            if (debug) logger.warning("[LunarItems] BaseRaiders: Method not found - " + e.getMessage());
+            if (Config.baseRaidersDebug) logger.warning("[LunarItems] BaseRaiders: Method not found - " + e.getMessage());
             available = false;
         } catch (NoSuchFieldException e) {
-            if (debug) logger.warning("[LunarItems] BaseRaiders: Field not found - " + e.getMessage());
+            if (Config.baseRaidersDebug) logger.warning("[LunarItems] BaseRaiders: Field not found - " + e.getMessage());
             available = false;
         } catch (IllegalAccessException e) {
-            if (debug) logger.warning("[LunarItems] BaseRaiders: Access error - " + e.getMessage());
+            if (Config.baseRaidersDebug) logger.warning("[LunarItems] BaseRaiders: Access error - " + e.getMessage());
             available = false;
         }
     }
@@ -94,7 +92,7 @@ public class BaseRaidersUtils {
     @SuppressWarnings("unchecked")
     public static boolean hasPermission(Player player, Location location, String permission) {
         if (!available) {
-            if (debug) logger.info("[LunarItems] BaseRaiders: API not available, allowing action");
+            if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: API not available, allowing action");
             return true;
         }
 
@@ -104,7 +102,7 @@ public class BaseRaidersUtils {
 
             if (protectionData == null) {
                 // No protection here - wilderness, allow
-                if (debug) logger.info("[LunarItems] BaseRaiders: No protection at " +
+                if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: No protection at " +
                     location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + " - allowing");
                 return true;
             }
@@ -114,24 +112,24 @@ public class BaseRaidersUtils {
             // Check if player is owner
             String ownerUuid = (String) getOwnerUuidMethod.invoke(protectionData);
             if (playerUuid.equals(ownerUuid)) {
-                if (debug) logger.info("[LunarItems] BaseRaiders: Player " + player.getName() + " is OWNER - allowing");
+                if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: Player " + player.getName() + " is OWNER - allowing");
                 return true;
             }
 
             // Check if player is a member
             Map<String, String> membersMap = (Map<String, String>) membersMapField.get(protectionData);
             if (membersMap != null && membersMap.containsKey(playerUuid)) {
-                if (debug) logger.info("[LunarItems] BaseRaiders: Player " + player.getName() + " is MEMBER - allowing");
+                if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: Player " + player.getName() + " is MEMBER - allowing");
                 return true;
             }
 
             // Player is an outsider - deny
-            if (debug) logger.info("[LunarItems] BaseRaiders: Player " + player.getName() + " is OUTSIDER at " +
+            if (Config.baseRaidersDebug) logger.info("[LunarItems] BaseRaiders: Player " + player.getName() + " is OUTSIDER at " +
                 location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + " - DENYING");
             return false;
 
         } catch (Exception e) {
-            if (debug) logger.warning("[LunarItems] BaseRaiders: Error checking permission - " + e.getClass().getName() + ": " + e.getMessage());
+            if (Config.baseRaidersDebug) logger.warning("[LunarItems] BaseRaiders: Error checking permission - " + e.getClass().getName() + ": " + e.getMessage());
             e.printStackTrace();
             return true;
         }
