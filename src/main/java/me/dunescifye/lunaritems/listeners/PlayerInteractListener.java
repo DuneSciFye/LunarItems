@@ -6,6 +6,7 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.files.BlocksConfig;
+import me.dunescifye.lunaritems.gui.ColorGUI;
 import me.dunescifye.lunaritems.utils.BlockUtils;
 import me.dunescifye.lunaritems.utils.CooldownManager;
 import me.dunescifye.lunaritems.utils.Utils;
@@ -14,7 +15,9 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -35,6 +38,35 @@ public class PlayerInteractListener implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
+    // Block shulker box opening for elevator/teleport_pad - runs first with HIGH priority
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onShulkerInteract(PlayerInteractEvent e) {
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (e.getHand() == EquipmentSlot.OFF_HAND) return;
+
+        Block b = e.getClickedBlock();
+        if (b == null) return;
+
+        // Check if it's a shulker box
+        if (!BlocksConfig.isShulkerBox(b.getType())) return;
+
+        // Check if it's an elevator or teleport_pad
+        PersistentDataContainer pdc = new CustomBlockData(b, LunarItems.getPlugin());
+        String blockID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
+
+        if (blockID != null && (blockID.equals("elevator") || blockID.equals("teleport_pad"))) {
+            // Block the shulker from opening
+            e.setCancelled(true);
+
+            Player p = e.getPlayer();
+
+            // If sneaking, open color GUI
+            if (p.isSneaking()) {
+                new ColorGUI(p, b, blockID);
+            }
+        }
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player p = e.getPlayer();
@@ -50,25 +82,29 @@ public class PlayerInteractListener implements Listener {
                     if (blockID != null) {
                         switch (blockID) {
                             case "teleport_pad" -> {
-                                String uuid = pdc.get(LunarItems.keyUUID, PersistentDataType.STRING);
-                                if (uuid != null) {
-                                    DHAPI.removeHologram(uuid);
-                                    pdc.remove(LunarItems.keyUUID);
-                                } else {
-                                    String hologramID = UUID.randomUUID().toString();
-                                    pdc.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
-                                    DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.teleport_padHologramOffset, 0), true, BlocksConfig.teleport_padHologram);
+                                if (LunarItems.decentHologramsEnabled) {
+                                    String uuid = pdc.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                                    if (uuid != null) {
+                                        DHAPI.removeHologram(uuid);
+                                        pdc.remove(LunarItems.keyUUID);
+                                    } else {
+                                        String hologramID = UUID.randomUUID().toString();
+                                        pdc.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
+                                        DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.teleport_padHologramOffset, 0), true, BlocksConfig.teleport_padHologram);
+                                    }
                                 }
                             }
                             case "elevator" -> {
-                                String uuid = pdc.get(LunarItems.keyUUID, PersistentDataType.STRING);
-                                if (uuid != null) {
-                                    DHAPI.removeHologram(uuid);
-                                    pdc.remove(LunarItems.keyUUID);
-                                } else {
-                                    String hologramID = UUID.randomUUID().toString();
-                                    pdc.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
-                                    DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.elevatorHologramOffset, 0), true, BlocksConfig.elevatorHologram);
+                                if (LunarItems.decentHologramsEnabled) {
+                                    String uuid = pdc.get(LunarItems.keyUUID, PersistentDataType.STRING);
+                                    if (uuid != null) {
+                                        DHAPI.removeHologram(uuid);
+                                        pdc.remove(LunarItems.keyUUID);
+                                    } else {
+                                        String hologramID = UUID.randomUUID().toString();
+                                        pdc.set(LunarItems.keyUUID, PersistentDataType.STRING, hologramID);
+                                        DHAPI.createHologram(hologramID, b.getLocation().toCenterLocation().add(0, BlocksConfig.elevatorHologramOffset, 0), true, BlocksConfig.elevatorHologram);
+                                    }
                                 }
                             }
                         }
