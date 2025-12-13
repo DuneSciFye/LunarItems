@@ -8,4 +8,5 @@ softdepend:
   - WorldGuard
   - Factions
   - BaseRaiders
+  - Vault
 api-version: '1.21'

@@ -16,7 +16,7 @@ public class Config {
     public static String prefix, cooldownMessageHours, cooldownMessageMinutes, cooldownMessageSeconds, invalidTargetLocation,
         teleportPadPlaceFirstMessage, teleportPadPlaceSecondMessage, changeVariableMessage, spawnerCommand, infinitePouchCommand, receiveItemMessage,
         cannotHatMessage, speedRemovedMessage;
-    public static boolean factions;
+    public static boolean factions, baseRaidersDebug;
     public static List<String> radiusMiningDisabledWorlds;
     public static void setup(LunarItems plugin) {
         plugin.reloadConfig();
@@ -50,6 +50,8 @@ public class Config {
         TrashCommand.message = LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + ConfigUtils.setupConfig("TrashCommand.Message", config, "&cYou cannot trash non vanilla items!"));
 
         factions = config.getBoolean("Factions", false);
+
+        baseRaidersDebug = ConfigUtils.setupConfig("BaseRaiders.Debug", config, false);
 
         plugin.saveConfig();
     }

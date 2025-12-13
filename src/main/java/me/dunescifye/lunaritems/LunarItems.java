@@ -6,8 +6,10 @@ import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.network.CommandAPIProtocol;
 import me.dunescifye.lunaritems.commands.*;
 import me.dunescifye.lunaritems.files.*;
+import me.dunescifye.lunaritems.gui.ColorGUI;
 import me.dunescifye.lunaritems.listeners.*;
 import me.dunescifye.lunaritems.utils.BaseRaidersUtils;
+import me.dunescifye.lunaritems.utils.VaultUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -76,6 +78,7 @@ public final class LunarItems extends JavaPlugin {
     public static boolean griefPreventionEnabled, decentHologramsEnabled, factionsUUIDEnabled;
     public static boolean worldGuardEnabled;
     public static boolean baseRaidersEnabled;
+    public static boolean vaultEnabled;
 
     public static LunarItems getPlugin() {
         return plugin;
@@ -133,6 +136,10 @@ public final class LunarItems extends JavaPlugin {
                 baseRaidersEnabled = true;
             }
         }
+        if (VaultUtils.setupEconomy()) {
+            logger.info("Detected Vault, enabling economy support.");
+            vaultEnabled = true;
+        }
 
         logger.info("Lunar Custom Items Enabled.");
     }
@@ -163,6 +170,7 @@ public final class LunarItems extends JavaPlugin {
         pm.registerEvents(new ArmorStandListener(), this);
         pm.registerEvents(new PlayerFishListener(), this);
         pm.registerEvents(new EntityBreedListener(), this);
+        ColorGUI.registerEvents(this);
     }
 
     private void registerCommands() {
