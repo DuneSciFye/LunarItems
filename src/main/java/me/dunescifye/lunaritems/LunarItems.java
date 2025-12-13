@@ -7,6 +7,7 @@ import dev.jorel.commandapi.network.CommandAPIProtocol;
 import me.dunescifye.lunaritems.commands.*;
 import me.dunescifye.lunaritems.files.*;
 import me.dunescifye.lunaritems.listeners.*;
+import me.dunescifye.lunaritems.utils.BaseRaidersUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -74,6 +75,7 @@ public final class LunarItems extends JavaPlugin {
     }
     public static boolean griefPreventionEnabled, decentHologramsEnabled, factionsUUIDEnabled;
     public static boolean worldGuardEnabled;
+    public static boolean baseRaidersEnabled;
 
     public static LunarItems getPlugin() {
         return plugin;
@@ -123,6 +125,13 @@ public final class LunarItems extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
             logger.info("Detected WorldGuard, enabling support for it.");
             worldGuardEnabled = true;
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("BaseRaiders")) {
+            BaseRaidersUtils.init();
+            if (BaseRaidersUtils.isAvailable()) {
+                logger.info("Detected BaseRaiders, enabling support for it.");
+                baseRaidersEnabled = true;
+            }
         }
 
         logger.info("Lunar Custom Items Enabled.");

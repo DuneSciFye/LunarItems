@@ -781,7 +781,9 @@ public class BlockBreakListener implements Listener {
                     }
                 }
                 // Axes
-                else if (item.getType().equals(Material.NETHERITE_AXE) && testBlock(b, axePredicates)) {
+                else if (item.getType().equals(Material.NETHERITE_AXE)) {
+                    // Early return if block doesn't match axe predicates - prevents item deletion bug with mushrooms
+                    if (!testBlock(b, axePredicates)) return;
                     e.setCancelled(true);
                     if (itemID.contains("ancienttaxe"))
                         drops = BlockUtils.breakInFacing(b, radius, depth, p, ancientAxePredicates);

@@ -7,4 +7,5 @@ softdepend:
   - GriefPrevention
   - WorldGuard
   - Factions
+  - BaseRaiders
 api-version: '1.21'
