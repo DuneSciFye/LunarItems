@@ -26,7 +26,7 @@ public class BaseRaidersUtils {
     private static Method getOwnerUuidMethod;
 
     // Set to true to enable debug logging
-    public static boolean debug = true;
+    public static boolean debug = false;
 
     /**
      * Initialize the reflection hooks for BaseRaiders API.
