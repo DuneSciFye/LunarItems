@@ -49,13 +49,15 @@ public class PlayerToggleSneakListener implements Listener {
                                 PlaceholderAPI.setPlaceholders(p, Config.prefix + Config.invalidTargetLocation)
                             ));
                         } else {
-                            targetLoc.setYaw(p.getYaw());
-                            targetLoc.setPitch(p.getPitch());
-                            p.teleport(targetLoc);
+                            // Add 0.5 X/Z for center, +1 Y to land on top of shulker
+                            Location tpLoc = targetLoc.clone().add(0.5, 1, 0.5);
+                            tpLoc.setYaw(p.getYaw());
+                            tpLoc.setPitch(p.getPitch());
+                            p.teleport(tpLoc);
                         }
                     }
                     case "elevator" -> {
-                        for (int y = -2; y > -450; y--) {
+                        for (int y = -1; y > -450; y--) {
                             Block relative = b.getRelative(0, y, 0);
                             PersistentDataContainer relativeContainer = new CustomBlockData(relative, LunarItems.getPlugin());
                             String relativeID = relativeContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
