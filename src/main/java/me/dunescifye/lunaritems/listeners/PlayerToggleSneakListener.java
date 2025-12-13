@@ -49,8 +49,11 @@ public class PlayerToggleSneakListener implements Listener {
                                 PlaceholderAPI.setPlaceholders(p, Config.prefix + Config.invalidTargetLocation)
                             ));
                         } else {
-                            // Add 0.5 X/Z for center, +1 Y to land on top of shulker
-                            Location tpLoc = targetLoc.clone().add(0.5, 1, 0.5);
+                            // Use block coordinates + 0.5 X/Z for center, +1 Y to land on top of shulker
+                            Location tpLoc = new Location(targetLoc.getWorld(),
+                                targetLoc.getBlockX() + 0.5,
+                                targetLoc.getBlockY() + 1,
+                                targetLoc.getBlockZ() + 0.5);
                             tpLoc.setYaw(p.getYaw());
                             tpLoc.setPitch(p.getPitch());
                             p.teleport(tpLoc);
