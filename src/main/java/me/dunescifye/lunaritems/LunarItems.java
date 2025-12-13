@@ -74,6 +74,7 @@ public final class LunarItems extends JavaPlugin {
     }
     public static boolean griefPreventionEnabled, decentHologramsEnabled, factionsUUIDEnabled;
     public static boolean worldGuardEnabled;
+    public static boolean baseRaidersEnabled;
 
     public static LunarItems getPlugin() {
         return plugin;
@@ -123,6 +124,10 @@ public final class LunarItems extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
             logger.info("Detected WorldGuard, enabling support for it.");
             worldGuardEnabled = true;
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("BaseRaiders")) {
+            logger.info("Detected BaseRaiders, enabling support for it.");
+            baseRaidersEnabled = true;
         }
 
         logger.info("Lunar Custom Items Enabled.");

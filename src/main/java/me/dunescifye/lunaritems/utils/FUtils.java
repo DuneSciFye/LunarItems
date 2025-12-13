@@ -2,6 +2,7 @@ package me.dunescifye.lunaritems.utils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import me.dunescifye.lunaritems.LunarItems;
+import me.fivekfubi.api.BaseRaidersAPI;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
@@ -46,12 +47,22 @@ public class FUtils {
         dropAllItemStacks(center.getWorld(), center.getLocation(), drops);
     }
     public static boolean isInClaimOrWilderness(final Player player, final Location location) {
+        // Check GriefPrevention first
         if (LunarItems.griefPreventionEnabled) {
             final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
-            return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
-        } //else if (LunarItems.factionsUUIDEnabled) {
-//            return playerCanBuildDestroyBlock(player, location, "destroy", true);
-//        }
+            if (claim != null && !claim.getOwnerID().equals(player.getUniqueId()) && !claim.hasExplicitPermission(player, ClaimPermission.Build)) {
+                return false;
+            }
+        }
+        // Check BaseRaiders (FiveK protection)
+        if (LunarItems.baseRaidersEnabled) {
+            if (!BaseRaidersAPI.get().has_permission(player, location, "break")) {
+                return false;
+            }
+        }
+        //if (LunarItems.factionsUUIDEnabled) {
+        //    return playerCanBuildDestroyBlock(player, location, "destroy", true);
+        //}
         return true;
     }
 }
