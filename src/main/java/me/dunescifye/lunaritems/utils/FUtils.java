@@ -46,12 +46,22 @@ public class FUtils {
         dropAllItemStacks(center.getWorld(), center.getLocation(), drops);
     }
     public static boolean isInClaimOrWilderness(final Player player, final Location location) {
+        // Check GriefPrevention first
         if (LunarItems.griefPreventionEnabled) {
             final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
-            return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
-        } //else if (LunarItems.factionsUUIDEnabled) {
-//            return playerCanBuildDestroyBlock(player, location, "destroy", true);
-//        }
+            if (claim != null && !claim.getOwnerID().equals(player.getUniqueId()) && !claim.hasExplicitPermission(player, ClaimPermission.Build)) {
+                return false;
+            }
+        }
+        // Check BaseRaiders (FiveK protection)
+        if (LunarItems.baseRaidersEnabled) {
+            if (!BaseRaidersUtils.hasPermission(player, location, "break")) {
+                return false;
+            }
+        }
+        //if (LunarItems.factionsUUIDEnabled) {
+        //    return playerCanBuildDestroyBlock(player, location, "destroy", true);
+        //}
         return true;
     }
 }
