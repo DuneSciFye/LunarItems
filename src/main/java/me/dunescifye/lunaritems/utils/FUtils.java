@@ -19,13 +19,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.massivecraft.factions.listeners.FactionsBlockListener.playerCanBuildDestroyBlock;
 import static me.dunescifye.lunaritems.utils.BlockUtils.*;
 import static me.dunescifye.lunaritems.utils.Utils.getBlocksInFacing;
 import static me.dunescifye.lunaritems.utils.Utils.testBlock;
 
 public class FUtils {
-    //Breaks blocks in direction player is facing. Updates block b to air.
+    // Breaks blocks in direction player is facing. Updates block b to air.
     public static void breakInFacingDoubleOres(Block center, int radius, int depth, Player p, List<List<Predicate<Block>>> predicates, int exp) {
         Collection<ItemStack> drops = new ArrayList<>();
         ItemStack heldItem = p.getInventory().getItemInMainHand();
@@ -55,9 +54,7 @@ public class FUtils {
         }
         // Check BaseRaiders (FiveK protection)
         if (LunarItems.baseRaidersEnabled) {
-            if (!BaseRaidersUtils.hasPermission(player, location, "break")) {
-                return false;
-            }
+          return BaseRaidersUtils.hasPermission(player, location, "break");
         }
         //if (LunarItems.factionsUUIDEnabled) {
         //    return playerCanBuildDestroyBlock(player, location, "destroy", true);
