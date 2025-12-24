@@ -22,6 +22,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ColorGUI implements Listener, InventoryHolder {
@@ -120,6 +121,12 @@ public class ColorGUI implements Listener, InventoryHolder {
             String blockID = blockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
             String hologramID = blockContainer.get(LunarItems.keyUUID, PersistentDataType.STRING);
             Location targetLocation = blockContainer.get(LunarItems.keyLocation, DataType.LOCATION);
+
+            // Compare the two blocks to prevent a shulker dupe bug
+            Block currentBlock = block.getLocation().getBlock();
+            PersistentDataContainer currentBlockContainer = new CustomBlockData(currentBlock, LunarItems.getPlugin());
+            String currentBlockID = currentBlockContainer.get(LunarItems.keyEIID, PersistentDataType.STRING);
+            if (!Objects.equals(currentBlockID, blockID)) return;
 
             // Set the new shulker box type
             block.setType(clickedOption.shulkerMaterial);
