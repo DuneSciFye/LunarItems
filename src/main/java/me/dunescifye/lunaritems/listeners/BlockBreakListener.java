@@ -688,7 +688,7 @@ public class BlockBreakListener implements Listener {
                     }
                     else if (itemID.contains("jollypick")) {
                         drops = new ArrayList<>();
-                        breakInVein(b, drops, b.getType(), p);
+                        if (oreBlocks.contains(b.getType())) breakInVein(b, drops, b.getType(), p, 0);
                         drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
                         drops.removeIf(drop -> {
                             Material dropMat = drop.getType();

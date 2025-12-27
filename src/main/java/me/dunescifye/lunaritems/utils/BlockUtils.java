@@ -249,15 +249,16 @@ public class BlockUtils {
         return drops;
     }
 
-    public static void breakInVein(Block center, Collection<ItemStack> drops, Material material, Player p) {
+    public static void breakInVein(Block center, Collection<ItemStack> drops, Material material, Player p, int count) {
         ItemStack item = p.getInventory().getItemInMainHand();
+        if (count > 30) return;
         for (Block b : getBlocksInRadius(center, 1)) {
             if (b.getType().equals(material)) {
                 // Testing claim
                 if (isInClaimOrWilderness(p, b.getLocation())) {
                     drops.addAll(b.getDrops(item));
                     b.setType(Material.AIR);
-                    breakInVein(b, drops, material, p);
+                    breakInVein(b, drops, material, p, count + 1);
                 }
             }
         }
