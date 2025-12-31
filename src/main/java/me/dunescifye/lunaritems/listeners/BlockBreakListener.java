@@ -690,16 +690,20 @@ public class BlockBreakListener implements Listener {
                         drops = new ArrayList<>();
                         if (oreBlocks.contains(b.getType())) breakInVein(b, drops, b.getType(), p, 0);
                         drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
-                        drops.removeIf(drop -> {
-                            Material dropMat = drop.getType();
-                            if (smeltedOres.containsKey(dropMat)) {
-                                Material smeltedMat = smeltedOres.get(dropMat);
-                                runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
-                                  " " + smeltedMat.toString() + " " + 1);
-                                return true;
-                            }
-                            return false;
-                        });
+                        // Check if drop-ores mode is enabled (storage mode disabled)
+                        boolean dropOresEnabled = container.has(me.dunescifye.lunaritems.commands.ModifyStorageCommand.keyDropOres, PersistentDataType.INTEGER);
+                        if (!dropOresEnabled) {
+                            drops.removeIf(drop -> {
+                                Material dropMat = drop.getType();
+                                if (smeltedOres.containsKey(dropMat)) {
+                                    Material smeltedMat = smeltedOres.get(dropMat);
+                                    runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
+                                      " " + smeltedMat.toString() + " " + 1);
+                                    return true;
+                                }
+                                return false;
+                            });
+                        }
                     }
                     else if (itemID.contains("sunpick")) {
                         drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
