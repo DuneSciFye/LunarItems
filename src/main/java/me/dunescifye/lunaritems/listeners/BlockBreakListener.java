@@ -251,9 +251,7 @@ public class BlockBreakListener implements Listener {
                           "money " + formattedTotal);
                     }
                 }
-                System.out.println("a");
                 if (container.has(autoReplantKey)) {
-                    System.out.println("b");
                     replant(b);
                 }
                 // Auto Replant
@@ -356,7 +354,7 @@ public class BlockBreakListener implements Listener {
         if (radiusMiningDisabledWorlds.contains(p.getWorld().getName())) return;
 
         List<Item> items = null;
-        Collection<ItemStack> drops = new  ArrayList<>();
+        Collection<ItemStack> drops = new ArrayList<>();
 
         if (container.has(LunarItems.keyRadius, PersistentDataType.DOUBLE)) {
             int radius = (int) (double) container.getOrDefault(keyRadius, PersistentDataType.DOUBLE, 0.0);
@@ -365,6 +363,9 @@ public class BlockBreakListener implements Listener {
                 int depth = (int) (double) container.getOrDefault(keyDepth, PersistentDataType.DOUBLE, 0.0);
                 // Custom drop
                 String customDrop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
+
+                // Increment block break statistic
+                p.incrementStatistic(Statistic.MINE_BLOCK, b.getType());
 
                 if (itemID.contains("jollyaxe")) {
                     drops = breakInFacing(b, radius, depth, p, axePredicates);
@@ -689,19 +690,8 @@ public class BlockBreakListener implements Listener {
                         drops.addAll(quartz);
                     }
                     else if (itemID.contains("jollypick")) {
-                        drops = new ArrayList<>();
                         if (oreBlocks.contains(b.getType())) breakInVein(b, drops, b.getType(), p, 0);
                         drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
-                        drops.removeIf(drop -> {
-                            Material dropMat = drop.getType();
-                            if (smeltedOres.containsKey(dropMat)) {
-                                Material smeltedMat = smeltedOres.get(dropMat);
-                                runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
-                                  " " + smeltedMat.toString() + " " + 1);
-                                return true;
-                            }
-                            return false;
-                        });
                     }
                     else if (itemID.contains("sunpick")) {
                         drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
@@ -861,6 +851,20 @@ public class BlockBreakListener implements Listener {
                   drop -> drop.withType(mat))
                   .collect(Collectors.toList());
             }
+        }
+        // Ore Storage
+        String oreStorage = container.get(oreStorageKey, PersistentDataType.STRING);
+        if ("Enabled".equals(oreStorage)) {
+            drops.removeIf(drop -> {
+                Material dropMat = drop.getType();
+                if (smeltedOres.containsKey(dropMat)) {
+                    Material smeltedMat = smeltedOres.get(dropMat);
+                    runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
+                      " " + smeltedMat.toString() + " " + 1);
+                    return true;
+                }
+                return false;
+            });
         }
 
         items = dropAllItemStacks(world, loc, drops);

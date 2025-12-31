@@ -23,6 +23,7 @@ public class Utils {
     public static final NamespacedKey autoSmeltKey = new NamespacedKey("lunaritems", "autosmelt");
     public static final NamespacedKey removeDropKey = new NamespacedKey("lunaritems", "removedrop");
     public static final NamespacedKey replaceDropKey = new NamespacedKey("lunaritems", "replacedrop");
+    public static final NamespacedKey oreStorageKey = new NamespacedKey("score", "score-orestorage");
     public static final NamespacedKey autoReplantKey = new NamespacedKey("lunaritems", "autoreplant");
     public static final NamespacedKey autoSellKey = new NamespacedKey("lunaritems", "autosell");
 
