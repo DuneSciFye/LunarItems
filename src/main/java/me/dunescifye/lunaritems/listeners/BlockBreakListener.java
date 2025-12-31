@@ -364,6 +364,9 @@ public class BlockBreakListener implements Listener {
                 // Custom drop
                 String customDrop = container.get(LunarItems.keyDrop, PersistentDataType.STRING);
 
+                // Increment block break statistic for center block
+                p.incrementStatistic(Statistic.MINE_BLOCK, b.getType());
+
                 if (itemID.contains("jollyaxe")) {
                     drops = breakInFacing(b, radius, depth, p, axePredicates);
                     // Custom Drops
