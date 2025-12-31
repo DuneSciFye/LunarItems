@@ -251,7 +251,9 @@ public class BlockBreakListener implements Listener {
                           "money " + formattedTotal);
                     }
                 }
+                System.out.println("a");
                 if (container.has(autoReplantKey)) {
+                    System.out.println("b");
                     replant(b);
                 }
                 // Auto Replant
