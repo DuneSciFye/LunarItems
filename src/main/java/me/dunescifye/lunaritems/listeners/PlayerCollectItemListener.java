@@ -20,6 +20,7 @@ public class PlayerCollectItemListener implements Listener {
   public static final NamespacedKey keyVoidMaterial = new NamespacedKey("score", "score-void_material");
   public static final NamespacedKey keyVoidMaterial2 = new NamespacedKey("score", "score-void_material2");
   public static final NamespacedKey keyVoidMaterial3 = new NamespacedKey("score", "score-void_material3");
+  public static final NamespacedKey keyBlackListMaterial = new NamespacedKey("score", "score-blacklist_material");
 
   @EventHandler
   public void onPlayerCollectItem(EntityPickupItemEvent e) {
@@ -48,24 +49,46 @@ public class PlayerCollectItemListener implements Listener {
 
     ItemStack offhand = inv.getItemInOffHand();
     ItemMeta meta = offhand.getItemMeta();
-    if (meta == null) return;
-    PersistentDataContainer pdc = meta.getPersistentDataContainer();
-    String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
-    if (itemID == null) return;
-    if (itemID.contains("autumnsmoker")) {
-      ItemStack item = e.getItem().getItemStack();
-      if (Utils.rawOres.containsKey(item.getType())) {
-        inv.addItem(item.withType(Utils.rawOres.get(item.getType())));
-        e.setCancelled(true);
-        e.getItem().remove();
-        Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " 40 cookedfood " + item.getAmount());
-      } else if (Utils.smeltedFoods.containsKey(item.getType())) {
-        inv.addItem(item.withType(Utils.smeltedFoods.get(item.getType())));
-        e.setCancelled(true);
-        e.getItem().remove();
-        Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " 40 cookedfood " + item.getAmount());
+    if (meta != null) {
+      PersistentDataContainer pdc = meta.getPersistentDataContainer();
+      String itemID = pdc.get(LunarItems.keyEIID, PersistentDataType.STRING);
+      if (itemID != null) {
+        if (itemID.contains("autumnsmoker")) {
+          ItemStack item = e.getItem().getItemStack();
+          if (Utils.rawOres.containsKey(item.getType())) {
+            inv.addItem(item.withType(Utils.rawOres.get(item.getType())));
+            e.setCancelled(true);
+            e.getItem().remove();
+            Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " 40 cookedfood " + item.getAmount());
+          } else if (Utils.smeltedFoods.containsKey(item.getType())) {
+            inv.addItem(item.withType(Utils.smeltedFoods.get(item.getType())));
+            e.setCancelled(true);
+            e.getItem().remove();
+            Utils.runConsoleCommands("ei console-modification modification variable " + p.getName() + " 40 cookedfood " + item.getAmount());
+          }
+        }
       }
     }
+
+    ItemStack hand = inv.getItemInMainHand();
+    ItemMeta meta2 = hand.getItemMeta();
+    if (meta2 != null) {
+      PersistentDataContainer pdc2 = meta2.getPersistentDataContainer();
+      String itemID2 = pdc2.get(LunarItems.keyEIID, PersistentDataType.STRING);
+      if (itemID2 != null) {
+        if (itemID2.contains("starlightpick")) {
+          String matString = pdc2.get(keyBlackListMaterial, PersistentDataType.STRING);
+          if (matString != null) {
+            Material mat = Material.getMaterial(matString);
+            ItemStack item = e.getItem().getItemStack();
+            if (item.getType().equals(mat)) {
+              e.setCancelled(true);
+            }
+          }
+        }
+      }
+    }
+
   }
 
 }

@@ -867,6 +867,41 @@ public class BlockBreakListener implements Listener {
             });
         }
 
+        // Auto Strip Wood
+        String autoStripWood = container.get(keyAutoStripWood, PersistentDataType.STRING);
+        if ("Enabled".equals(autoStripWood)) {
+            drops = drops.stream().map(
+                drop -> stripWood.containsKey(drop.getType()) ? drop.withType(stripWood.get(drop.getType())) : drop)
+              .collect(Collectors.toList());
+        }
+
+        // Convert one material to another
+        String materialFrom = container.get(keyMaterialFrom, PersistentDataType.STRING);
+        String materialTo = container.get(keyMaterialTo, PersistentDataType.STRING);
+        if (materialFrom != null && materialTo != null) {
+            Material matFrom = Material.getMaterial(materialFrom.toUpperCase());
+            Material matTo = Material.getMaterial(materialTo.toUpperCase());
+            if (matFrom != null && matTo != null) {
+                drops = drops.stream().map(
+                    drop -> matFrom.equals(drop.getType()) ? drop.withType(matTo) : drop)
+                  .collect(Collectors.toList());
+            }
+        }
+
+        // Duplicate Ore Drops
+        System.out.println("a");
+        Double chance = container.get(keyDuplicateOres, PersistentDataType.DOUBLE);
+        if (chance != null && chance != 0) {
+            drops = drops.stream().map(
+                drop -> {
+                    if (rawOres.containsValue(drop.getType()) && ThreadLocalRandom.current().nextDouble() <= chance) {
+                        return drop.asQuantity(drop.getAmount() * 2);
+                    }
+                    return drop;
+                })
+              .collect(Collectors.toList());
+        }
+
         items = dropAllItemStacks(world, loc, drops);
 
         // Call block drop event on custom dropped items
