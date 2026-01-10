@@ -889,7 +889,6 @@ public class BlockBreakListener implements Listener {
         }
 
         // Duplicate Ore Drops
-        System.out.println("a");
         Double chance = container.get(keyDuplicateOres, PersistentDataType.DOUBLE);
         if (chance != null && chance != 0) {
             drops = drops.stream().map(
