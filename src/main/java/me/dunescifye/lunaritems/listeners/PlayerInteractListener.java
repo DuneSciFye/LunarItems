@@ -196,7 +196,7 @@ public class PlayerInteractListener implements Listener {
                                 if (err != null || location == null) p.sendMessage(Utils.translateMessage("&6&lCUSTOM" +
                                   " &8&l▶ &7No biome found nearby."));
                                 else {
-                                    p.teleportAsync(location);
+                                    p.teleportAsync(world.getHighestBlockAt(location).getLocation());
                                     CooldownManager.setCooldown(CooldownManager.seraphimXpCDs, p.getUniqueId(), Duration.ofMinutes(8));
                                 }
                             });
