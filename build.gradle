@@ -52,6 +52,7 @@ dependencies {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
     // BaseRaiders (FiveK protection) - loaded via reflection, no compile dependency needed
+    compileOnly fileTree(dir: 'libs', include: ['*.jar']) // LibsDisguises, LeafAPI (local JARs)
     implementation 'com.jeff-media:MorePersistentDataTypes:2.4.0'
     implementation 'com.jeff-media:custom-block-data:2.2.3'
     implementation "dev.jorel:commandapi-bukkit-shade:10.1.0"

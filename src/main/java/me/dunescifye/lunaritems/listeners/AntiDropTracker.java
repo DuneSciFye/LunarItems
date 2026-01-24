@@ -15,9 +15,11 @@ import org.bukkit.persistence.PersistentDataContainer;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static me.dunescifye.lunaritems.files.Config.prefix;
+import static me.dunescifye.lunaritems.utils.Overflow.addOverflow;
 
 public class AntiDropTracker implements Listener {
     public static boolean enabled;
@@ -53,7 +55,13 @@ public class AntiDropTracker implements Listener {
         } else count = 1;
         drops.put(uuid, new DropData(item, count + 1, Instant.now()));
         p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + message.replace("%amount%", String.valueOf(requiredCount - count))));
-        e.setCancelled(true);
+        // Restore item to offhand if it was dropped from there
+        if (p.getInventory().getItemInOffHand().getType() == Material.AIR) {
+            p.getInventory().setItemInOffHand(item.clone());
+        }
+        e.getItemDrop().remove();
+        Map<Integer, ItemStack> excess = p.getInventory().addItem(item);
+        addOverflow(p, excess);
     }
 
     private record DropData(ItemStack item, int count, Instant time) {
