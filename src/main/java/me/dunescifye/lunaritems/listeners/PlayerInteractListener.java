@@ -7,10 +7,7 @@ import io.papermc.paper.registry.RegistryKey;
 import me.dunescifye.lunaritems.LunarItems;
 import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.gui.ColorGUI;
-import me.dunescifye.lunaritems.utils.BlockUtils;
-import me.dunescifye.lunaritems.utils.CooldownManager;
-import me.dunescifye.lunaritems.utils.FUtils;
-import me.dunescifye.lunaritems.utils.Utils;
+import me.dunescifye.lunaritems.utils.*;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -143,6 +140,7 @@ public class PlayerInteractListener implements Listener {
             }
             else if (itemID.contains("amberlightbuilderschisel") && b != null) {
                 if (!FUtils.isInClaimOrWilderness(p, b.getLocation())) return;
+                if (!WorldGuardUtils.getRegions(p.getLocation()).isEmpty()) return;
                 int radius = (int) (double) container.getOrDefault(LunarItems.keyRadius,  PersistentDataType.DOUBLE,
                   0.0);
                 for (Block block : Utils.getBlocksInRadius(b, radius)) {
