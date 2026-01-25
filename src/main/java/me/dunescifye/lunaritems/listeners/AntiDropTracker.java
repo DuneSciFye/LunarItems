@@ -55,10 +55,6 @@ public class AntiDropTracker implements Listener {
         } else count = 1;
         drops.put(uuid, new DropData(item, count + 1, Instant.now()));
         p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + message.replace("%amount%", String.valueOf(requiredCount - count))));
-        // Restore item to offhand if it was dropped from there
-        if (p.getInventory().getItemInOffHand().getType() == Material.AIR) {
-            p.getInventory().setItemInOffHand(item.clone());
-        }
         e.getItemDrop().remove();
         Map<Integer, ItemStack> excess = p.getInventory().addItem(item);
         addOverflow(p, excess);
