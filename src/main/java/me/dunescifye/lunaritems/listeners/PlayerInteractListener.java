@@ -17,12 +17,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.generator.structure.Structure;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BiomeSearchResult;
+import org.bukkit.util.StructureSearchResult;
+import org.checkerframework.checker.units.qual.N;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -64,7 +67,7 @@ public class PlayerInteractListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler()
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (e.getHand() == EquipmentSlot.OFF_HAND) return;
@@ -119,7 +122,35 @@ public class PlayerInteractListener implements Listener {
         if (itemID == null) return;
 
         if (e.getAction().isRightClick()) {
-            if (itemID.contains("nexushoe")) {
+            if (itemID.contains("erospick")) {
+                if (!p.isSneaking()) {
+                    if (CooldownManager.hasCooldown(CooldownManager.erosPickCDs, p.getUniqueId())) {
+                        CooldownManager.sendCooldownMessage(p, CooldownManager.getRemainingCooldown(CooldownManager.erosPickCDs, p.getUniqueId()));
+                    } else {
+                        Structure structure = RegistryAccess.registryAccess().getRegistry(RegistryKey.STRUCTURE).get(new NamespacedKey(
+                            "minecraft",
+                            container.getOrDefault(new NamespacedKey("score", "score-structure"), PersistentDataType.STRING,
+                                "trial_chambers").toLowerCase())
+                        );
+                        if (structure != null) {
+                            CooldownManager.setCooldown(CooldownManager.erosPickCDs, p.getUniqueId(),
+                                Duration.ofSeconds(5));
+                            World world = p.getWorld();
+                            CompletableFuture<Location> cf = new CompletableFuture<>();
+                            StructureSearchResult searchResult = world.locateNearestStructure(p.getLocation(), structure, 5000, false);
+                            if (searchResult == null) p.sendMessage(Utils.translateMessage("&6&lCUSTOM" +
+                                " &8&l▶ &7No Structure found nearby."));
+                            else {
+                                Location location = searchResult.getLocation();
+                                p.sendMessage(Utils.translateMessage("&6&lCUSTOM" +
+                                    " &8&l▶ &7Nearest Structure at " + location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ()));
+                                CooldownManager.setCooldown(CooldownManager.erosPickCDs, p.getUniqueId(), Duration.ofMinutes(8));
+                            }
+                        }
+                    }
+                }
+            }
+            else if (itemID.contains("nexushoe")) {
                 if (p.isSneaking()) {
                     //If has cooldown
                     if (CooldownManager.hasCooldown(CooldownManager.nexusHoeCooldowns, p.getUniqueId()))

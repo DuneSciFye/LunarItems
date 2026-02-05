@@ -16,6 +16,7 @@ public class CooldownManager {
 
     public static final Map<UUID, Instant> nexusHoeCooldowns = new HashMap<>();
     public static final Map<UUID, Instant> seraphimXpCDs = new HashMap<>();
+    public static final Map<UUID, Instant> erosPickCDs = new HashMap<>();
 
     // Set cooldown
     public static void setCooldown(Map<UUID, Instant> map, UUID key, Duration duration) {

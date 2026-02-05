@@ -860,11 +860,17 @@ public class BlockBreakListener implements Listener {
                 if (smeltedOres.containsKey(dropMat)) {
                     Material smeltedMat = smeltedOres.get(dropMat);
                     runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
-                      " " + smeltedMat.toString() + " " + 1);
+                        " " + smeltedMat.toString() + " " + 1);
                     return true;
                 }
                 return false;
             });
+        }
+        // Auto Ore Pickup
+        String autoPickupOres = container.get(autoPickupOresKey, PersistentDataType.STRING);
+        if ("Enabled".equals(autoPickupOres)) {
+            Inventory inv = p.getInventory();
+            drops.removeIf(drop -> inv.addItem(drop).isEmpty());
         }
 
         // Auto Strip Wood
