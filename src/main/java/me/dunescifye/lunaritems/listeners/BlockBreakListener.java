@@ -693,19 +693,6 @@ public class BlockBreakListener implements Listener {
                         if (oreBlocks.contains(b.getType())) breakInVein(b, drops, b.getType(), p, 0);
                         drops.addAll(breakInFacing(b, radius, depth, p, pickaxePredicates));
                     }
-                    else if (itemID.contains("sunpick")) {
-                        drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
-                        drops.removeIf(drop -> {
-                            Material dropMat = drop.getType();
-                            if (smeltedOres.containsKey(dropMat)) {
-                                Material smeltedMat = smeltedOres.get(dropMat);
-                                runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 " +
-                                  " " + smeltedMat.toString() + " " + 1);
-                                return true;
-                            }
-                            return false;
-                        });
-                    }
                     else if (itemID.contains("creakingpick")) {
                         drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
                         if (("Enabled").equals(container.get(keyVoid, PersistentDataType.STRING))) {
