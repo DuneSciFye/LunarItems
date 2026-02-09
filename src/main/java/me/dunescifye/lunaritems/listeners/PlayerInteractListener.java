@@ -67,7 +67,7 @@ public class PlayerInteractListener implements Listener {
         }
     }
 
-    @EventHandler()
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (e.getHand() == EquipmentSlot.OFF_HAND) return;
