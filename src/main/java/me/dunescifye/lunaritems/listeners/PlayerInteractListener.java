@@ -25,7 +25,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BiomeSearchResult;
 import org.bukkit.util.StructureSearchResult;
-import org.checkerframework.checker.units.qual.N;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -135,17 +134,24 @@ public class PlayerInteractListener implements Listener {
                         if (structure != null) {
                             CooldownManager.setCooldown(CooldownManager.erosPickCDs, p.getUniqueId(),
                                 Duration.ofSeconds(5));
-                            World world = p.getWorld();
-                            CompletableFuture<Location> cf = new CompletableFuture<>();
-                            StructureSearchResult searchResult = world.locateNearestStructure(p.getLocation(), structure, 5000, false);
-                            if (searchResult == null) p.sendMessage(Utils.translateMessage("&6&lCUSTOM" +
-                                " &8&l▶ &7No Structure found nearby."));
-                            else {
-                                Location location = searchResult.getLocation();
-                                p.sendMessage(Utils.translateMessage("&6&lCUSTOM" +
-                                    " &8&l▶ &7Nearest Structure at " + location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ()));
-                                CooldownManager.setCooldown(CooldownManager.erosPickCDs, p.getUniqueId(), Duration.ofMinutes(8));
-                            }
+//                            World world = p.getWorld();
+//                            Location loc = p.getLocation();
+//                            UUID uuid = p.getUniqueId();
+//
+//                            Bukkit.getScheduler().runTask(LunarItems.getPlugin(), () -> {
+//                                StructureSearchResult searchResult = world.locateNearestStructure(loc, structure, 1000, false);
+//                                Player player = Bukkit.getPlayer(uuid);
+//                                if (player == null) return; // player logged out
+//
+//                                if (searchResult == null) player.sendMessage(Utils.translateMessage("&6&lCUSTOM" +
+//                                    " &8&l▶ &7No Structure found nearby."));
+//                                else {
+//                                    Location location = searchResult.getLocation();
+//                                    player.sendMessage(Utils.translateMessage("&6&lCUSTOM" +
+//                                        " &8&l▶ &7Nearest Structure at " + location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ()));
+//                                    CooldownManager.setCooldown(CooldownManager.erosPickCDs, uuid, Duration.ofMinutes(8));
+//                                }
+//                            });
                         }
                     }
                 }

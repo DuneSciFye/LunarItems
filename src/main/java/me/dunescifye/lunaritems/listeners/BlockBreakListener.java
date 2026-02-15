@@ -857,7 +857,11 @@ public class BlockBreakListener implements Listener {
         String autoPickupOres = container.get(autoPickupOresKey, PersistentDataType.STRING);
         if ("Enabled".equals(autoPickupOres)) {
             Inventory inv = p.getInventory();
-            drops.removeIf(drop -> inv.addItem(drop).isEmpty());
+            drops.removeIf(drop -> {
+                if (rawOres.containsKey(drop.getType())) {
+                    return inv.addItem(drop).isEmpty();
+                } else return false;
+            });
         }
 
         // Auto Strip Wood
