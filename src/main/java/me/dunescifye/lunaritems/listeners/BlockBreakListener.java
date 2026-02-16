@@ -916,11 +916,11 @@ public class BlockBreakListener implements Listener {
             p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "1x Farm Key")));
         }
         if (ThreadLocalRandom.current().nextInt(parrotSpawnEggChance) == 0) {
-            drops.add(new ItemStack(Material.PARROT_SPAWN_EGG));
+            Utils.runConsoleCommands("commandutils:give " + p.getName() + " parrot_spawn_egg 1");
             p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "a Parrot Spawn Egg")));
         }
         if (ThreadLocalRandom.current().nextInt(fireworkChance) == 0) {
-            drops.add(new ItemStack(Material.FIREWORK_ROCKET));
+            Utils.runConsoleCommands("commandutils:give " + p.getName() + " firework_rocket 1");
             p.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + Config.receiveItemMessage.replace("%item%", "a Firework Rocket")));
         }
         if (ThreadLocalRandom.current().nextInt(parrotSpawnerChance) == 0) {
