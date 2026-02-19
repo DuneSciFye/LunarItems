@@ -40,7 +40,7 @@ public class AntiDropTracker implements Listener {
         Material mat = item.getType();
         String matString = mat.toString();
         if (!pdc.has(AntiDropCommand.keyAntiDrop) && !pdc.has(LunarItems.keyEIID) && !pdc.has(LunarItems.keyInfiniteBlock) && !pdc.has(LunarItems.keyCosmosEnchant)
-          && mat != Material.BLAZE_ROD && mat != Material.TRIPWIRE_HOOK && !matString.contains("SHULKER_BOX")) return;
+          && mat != Material.BLAZE_ROD && mat != Material.TRIPWIRE_HOOK && mat != Material.MACE && !matString.contains("SHULKER_BOX")) return;
 
         Player p = e.getPlayer();
         UUID uuid = p.getUniqueId();
