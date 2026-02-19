@@ -11,7 +11,7 @@ public class UpdateLoreCommand {
 
     public static void register() {
         new CommandAPICommand("updatelore")
-            .withArguments(new PlayerArgument("Player"))
+            .withArguments(new EntitySelectorArgument.OnePlayer("Player"))
             .withArguments(new IntegerArgument("Item Slot"))
             .withArguments(new TextArgument("Old Text"))
             .withArguments(new TextArgument("New Text"))

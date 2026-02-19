@@ -3,6 +3,7 @@ package me.dunescifye.lunaritems;
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import dev.jorel.commandapi.CommandAPIPaperConfig;
 import dev.jorel.commandapi.network.CommandAPIProtocol;
 import me.dunescifye.lunaritems.commands.*;
 import me.dunescifye.lunaritems.files.*;
@@ -90,7 +91,7 @@ public final class LunarItems extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(this).beLenientForMinorVersions(true));
+        CommandAPI.onLoad(new CommandAPIPaperConfig(this));
     }
 
     @Override

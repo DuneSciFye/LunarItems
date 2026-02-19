@@ -21,7 +21,7 @@ public class ResetItemCommand {
 
     public static void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         StringArgument slotArg = new StringArgument("Slot");
         IntegerArgument loreLinesArg = new IntegerArgument("Lore Lines");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "lore", "attributes", "name");

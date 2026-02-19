@@ -1,8 +1,8 @@
 package me.dunescifye.lunaritems.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import me.dunescifye.lunaritems.LunarItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,7 +21,7 @@ public class WallOfFireCommand {
 
     public static void register() {
         new CommandAPICommand("walloffire")
-            .withArguments(new PlayerArgument("Player"))
+            .withArguments(new EntitySelectorArgument.OnePlayer("Player"))
             .withArguments(new IntegerArgument("Time", 0))
             .executes((sender, args) -> {
                 Player p = (Player) args.get("Player");

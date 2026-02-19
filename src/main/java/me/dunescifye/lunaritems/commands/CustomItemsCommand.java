@@ -23,7 +23,7 @@ public class CustomItemsCommand {
                 })
             )
             .then(new LiteralArgument("give")
-                .then(new PlayerArgument("Player")
+                .then(new EntitySelectorArgument.OnePlayer("Player")
                     .then(new StringArgument("Item ID")
                         .replaceSuggestions(ArgumentSuggestions.strings(
                             LunarItems.items.keySet()
