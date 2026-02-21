@@ -230,14 +230,22 @@ public class BlockBreakListener implements Listener {
                 }
                 // Auto Sell
                 if (("Enabled").equals(container.get(keyAutoSell, PersistentDataType.STRING))) {
-                    e.setDropItems(false);
                     BigDecimal totalPrice = BigDecimal.valueOf(container.get(keyMoney, PersistentDataType.DOUBLE));
-                    Double price = container.get(new NamespacedKey("score", "score-" + b.getType().toString().toLowerCase()), PersistentDataType.DOUBLE);
-                    if (price != null) {
-                        totalPrice = totalPrice.add(BigDecimal.valueOf(price));
-                        String formattedTotal = totalPrice.setScale(4, RoundingMode.HALF_UP).toPlainString();
-                        runConsoleCommands("ei console-modification set variable " + p.getName() + " -1 " +
-                          "money " + formattedTotal);
+                    e.setDropItems(false);
+
+                    Collection<ItemStack> crops = b.getDrops(item);
+                    for (ItemStack crop : crops) {
+                        if (cropMaterials.contains(crop.getType())) {
+                            Double price = container.get(new NamespacedKey("score", "score-" + b.getType().toString().toLowerCase()), PersistentDataType.DOUBLE);
+                            if (price != null) {
+                                totalPrice = totalPrice.add(BigDecimal.valueOf(price));
+                                String formattedTotal = totalPrice.setScale(4, RoundingMode.HALF_UP).toPlainString();
+                                runConsoleCommands("ei console-modification set variable " + p.getName() + " -1 " +
+                                    "money " + formattedTotal);
+                                break;
+                            }
+                        }
+
                     }
                 }
                 if (container.has(autoSellKey) && container.has(keyMoney, PersistentDataType.DOUBLE)) {
