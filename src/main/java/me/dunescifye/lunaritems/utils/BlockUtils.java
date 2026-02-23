@@ -114,6 +114,7 @@ public class BlockUtils {
         block -> block.getType().equals(Material.FURNACE),
         block -> block.getType().equals(Material.BLAST_FURNACE),
         block -> block.getType().equals(Material.SMOKER),
+          block -> block.getType().equals(Material.COPPER_CHEST),
         block -> Tag.SHULKER_BOXES.isTagged(block.getType())
       )
     );
@@ -136,6 +137,7 @@ public class BlockUtils {
             block -> block.getType().equals(Material.BARREL),
             block -> block.getType().equals(Material.CHEST),
             block -> block.getType().equals(Material.TRAPPED_CHEST),
+            block -> Tag.WOODEN_SHELVES.isTagged(block.getType()),
             block -> Tag.ALL_SIGNS.isTagged(block.getType()),
           block -> block.getType().equals(Material.MUSHROOM_STEM),
           block -> block.getType().equals(Material.BROWN_MUSHROOM_BLOCK),
@@ -158,6 +160,7 @@ public class BlockUtils {
             block -> block.getType().equals(Material.FURNACE),
             block -> block.getType().equals(Material.BLAST_FURNACE),
             block -> block.getType().equals(Material.SMOKER),
+            block -> block.getType().equals(Material.COPPER_CHEST),
             block -> Tag.SHULKER_BOXES.isTagged(block.getType())
         )
     );
@@ -186,6 +189,7 @@ public class BlockUtils {
             block -> block.getType().equals(Material.BARREL),
             block -> block.getType().equals(Material.CHEST),
             block -> block.getType().equals(Material.TRAPPED_CHEST),
+            block -> Tag.WOODEN_SHELVES.isTagged(block.getType()),
             block -> Tag.ALL_SIGNS.isTagged(block.getType())
         )
     );
