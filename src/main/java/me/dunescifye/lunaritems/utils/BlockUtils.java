@@ -355,17 +355,6 @@ public class BlockUtils {
         Map.entry(Material.NETHER_WART, Material.NETHER_WART)
     );
 
-    public static Collection<Material> cropMaterials = List.of(
-        Material.NETHER_WART,
-        Material.POTATO,
-        Material.PUMPKIN,
-        Material.MELON,
-        Material.BEETROOT,
-        Material.WHEAT,
-        Material.COCOA_BEANS,
-        Material.CARROT
-    );
-
     public static void replantFromInv(Player p, Block b, int newAge) {
         Material mat = b.getType();
         if (!cropToSeed.containsKey(mat)) return;
