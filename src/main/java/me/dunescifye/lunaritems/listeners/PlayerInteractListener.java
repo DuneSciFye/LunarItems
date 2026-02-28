@@ -59,8 +59,12 @@ public class PlayerInteractListener implements Listener {
 
             Player p = e.getPlayer();
 
-            // If sneaking, open color GUI
+            // If sneaking, open color GUI (with protection check)
             if (p.isSneaking()) {
+                if (!p.hasPermission(BlocksConfig.colorChangeBypassPermission)
+                    && !FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+                    return;
+                }
                 new ColorGUI(p, b, blockID);
             }
         }

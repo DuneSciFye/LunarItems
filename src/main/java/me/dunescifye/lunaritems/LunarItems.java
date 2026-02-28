@@ -10,6 +10,7 @@ import me.dunescifye.lunaritems.files.*;
 import me.dunescifye.lunaritems.gui.ColorGUI;
 import me.dunescifye.lunaritems.listeners.*;
 import me.dunescifye.lunaritems.utils.BaseRaidersUtils;
+import me.dunescifye.lunaritems.utils.BentoBoxUtils;
 import me.dunescifye.lunaritems.utils.VaultUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -83,6 +84,7 @@ public final class LunarItems extends JavaPlugin {
     public static boolean griefPreventionEnabled, decentHologramsEnabled, factionsUUIDEnabled;
     public static boolean worldGuardEnabled;
     public static boolean baseRaidersEnabled;
+    public static boolean bentoBoxEnabled;
     public static boolean vaultEnabled;
 
     public static LunarItems getPlugin() {
@@ -139,6 +141,13 @@ public final class LunarItems extends JavaPlugin {
             if (BaseRaidersUtils.isAvailable()) {
                 logger.info("Detected BaseRaiders, enabling support for it.");
                 baseRaidersEnabled = true;
+            }
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("BentoBox")) {
+            BentoBoxUtils.init();
+            if (BentoBoxUtils.isAvailable()) {
+                logger.info("Detected BentoBox, enabling support for it.");
+                bentoBoxEnabled = true;
             }
         }
         if (VaultUtils.setupEconomy()) {

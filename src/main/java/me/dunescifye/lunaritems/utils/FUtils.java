@@ -54,7 +54,15 @@ public class FUtils {
         }
         // Check BaseRaiders (FiveK protection)
         if (LunarItems.baseRaidersEnabled) {
-          return BaseRaidersUtils.hasPermission(player, location, "break");
+            if (!BaseRaidersUtils.hasPermission(player, location, "break")) {
+                return false;
+            }
+        }
+        // Check BentoBox (island protection)
+        if (LunarItems.bentoBoxEnabled) {
+            if (!BentoBoxUtils.hasPermission(player, location)) {
+                return false;
+            }
         }
         //if (LunarItems.factionsUUIDEnabled) {
         //    return playerCanBuildDestroyBlock(player, location, "destroy", true);

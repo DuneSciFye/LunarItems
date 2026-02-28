@@ -8,5 +8,6 @@ softdepend:
   - WorldGuard
   - Factions
   - BaseRaiders
+  - BentoBox
   - Vault
 api-version: '1.21'
