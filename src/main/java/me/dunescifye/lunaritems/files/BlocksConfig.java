@@ -27,6 +27,7 @@ public class BlocksConfig {
     public static String colorChangeSuccessMessage;
     public static String colorChangeNoPermissionMessage;
     public static String colorChangeNoMoneyMessage;
+    public static String colorChangeBypassPermission;
     public static Map<String, ColorOption> colorOptions = new LinkedHashMap<>();
 
     public static class ColorOption {
@@ -102,6 +103,7 @@ public class BlocksConfig {
             config.addDefault("color_gui.success_message", "&aSuccessfully changed color to %color%!");
             config.addDefault("color_gui.no_permission_message", "&cYou don't have permission to use this color!");
             config.addDefault("color_gui.no_money_message", "&cYou need %cost% to change to this color!");
+            config.addDefault("color_gui.bypass_permission", "lunaritems.colorchange.bypass");
 
             // Default color options
             setupDefaultColorOption(config, "white", Material.WHITE_CONCRETE, Material.WHITE_SHULKER_BOX, "&fWhite", 0, 0, "lunaritems.color.white");
@@ -135,6 +137,7 @@ public class BlocksConfig {
         colorChangeSuccessMessage = ConfigUtils.setupConfig("color_gui.success_message", config, "&aSuccessfully changed color to %color%!");
         colorChangeNoPermissionMessage = ConfigUtils.setupConfig("color_gui.no_permission_message", config, "&cYou don't have permission to use this color!");
         colorChangeNoMoneyMessage = ConfigUtils.setupConfig("color_gui.no_money_message", config, "&cYou need %cost% to change to this color!");
+        colorChangeBypassPermission = ConfigUtils.setupConfig("color_gui.bypass_permission", config, "lunaritems.colorchange.bypass");
 
         // Load color options
         ConfigurationSection colorsSection = config.getConfigurationSection("color_gui.colors");
