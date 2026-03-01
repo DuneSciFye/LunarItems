@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import me.dunescifye.lunaritems.LunarItems;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -41,6 +43,15 @@ public class TrashCommand implements Listener {
             .register();
     }
 
+    private static boolean isProtectedItem(ItemStack item) {
+        if (!item.hasItemMeta()) return false;
+        if (item.getType() == Material.POTION && item.getItemMeta() instanceof PotionMeta
+            && !item.getItemMeta().getPersistentDataContainer().has(LunarItems.keyEIID)) {
+            return false;
+        }
+        return true;
+    }
+
     // Prevent any EI items from going into trash
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
@@ -52,9 +63,9 @@ public class TrashCommand implements Listener {
         final ItemStack clickedItem = e.getCurrentItem();
 
         if (e.getRawSlot() < 54) {
-            if (!cursorItem.hasItemMeta()) return;
+            if (!isProtectedItem(cursorItem)) return;
         } else {
-            if (!e.getClick().isShiftClick() || clickedItem == null || !clickedItem.hasItemMeta()) return;
+            if (!e.getClick().isShiftClick() || clickedItem == null || !isProtectedItem(clickedItem)) return;
         }
         e.setCancelled(true);
         p.sendMessage(message);
@@ -67,7 +78,7 @@ public class TrashCommand implements Listener {
         if (!inv.equals(inventories.get(uuid))) return;
         inventories.remove(uuid);
         for (ItemStack item : inv.getContents()) { // Give the player any EI items that somehow made it into the trash
-            if (item == null || !item.hasItemMeta()) continue;
+            if (item == null || !isProtectedItem(item)) continue;
             e.getPlayer().getInventory().addItem(item);
         }
     }
