@@ -8,6 +8,7 @@ import me.dunescifye.lunaritems.files.AncienttItemsConfig;
 import me.dunescifye.lunaritems.files.BlocksConfig;
 import me.dunescifye.lunaritems.files.Config;
 import me.dunescifye.lunaritems.utils.BlockUtils;
+import me.dunescifye.lunaritems.utils.CooldownManager;
 import me.dunescifye.lunaritems.utils.FUtils;
 import me.dunescifye.lunaritems.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -36,6 +37,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -941,7 +943,11 @@ public class BlockBreakListener implements Listener {
                 //Testing claim
                 if (isInClaimOrWilderness(player, b.getLocation())) {
                     drops.addAll(b.getDrops(item));
-                    if (ThreadLocalRandom.current().nextInt(4) == 0) drops.addAll(b.getDrops(item));
+                    if (!CooldownManager.hasCooldown(CooldownManager.nightmarePickDoubleCDs, player.getUniqueId())
+                        && ThreadLocalRandom.current().nextInt(4) == 0) {
+                        drops.addAll(b.getDrops(item));
+                        CooldownManager.setCooldown(CooldownManager.nightmarePickDoubleCDs, player.getUniqueId(), Duration.ofMinutes(5));
+                    }
                     b.setType(Material.AIR);
                     this.veinMineOres25ChanceDouble(b, drops, material, player, item);
                 }
