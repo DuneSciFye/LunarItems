@@ -2,9 +2,6 @@ package me.dunescifye.lunaritems.utils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import me.dunescifye.lunaritems.LunarItems;
-import me.ryanhamshire.GriefPrevention.Claim;
-import me.ryanhamshire.GriefPrevention.ClaimPermission;
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -45,10 +42,9 @@ public class FUtils {
         dropAllItemStacks(center.getWorld(), center.getLocation(), drops);
     }
     public static boolean isInClaimOrWilderness(final Player player, final Location location) {
-        // Check GriefPrevention first
+        // Check GriefPrevention first (isolated class to avoid NoClassDefFoundError)
         if (LunarItems.griefPreventionEnabled) {
-            final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
-            if (claim != null && !claim.getOwnerID().equals(player.getUniqueId()) && !claim.hasExplicitPermission(player, ClaimPermission.Build)) {
+            if (!GriefPreventionUtils.hasPermission(player, location)) {
                 return false;
             }
         }
