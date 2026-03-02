@@ -46,9 +46,9 @@ public class BentoBoxUtils {
             // Get getIslandAt(Location) method from IslandsManager
             getIslandAtMethod = islandsManager.getClass().getMethod("getIslandAt", Location.class);
 
-            // Get getMemberSet() method from Island class
+            // Get getMemberSet(int) method from Island class - filters by minimum rank
             Class<?> islandClass = Class.forName("world.bentobox.bentobox.database.objects.Island");
-            getMemberSetMethod = islandClass.getMethod("getMemberSet");
+            getMemberSetMethod = islandClass.getMethod("getMemberSet", int.class);
 
             available = true;
             logger.info("[LunarItems] BentoBox: API initialized successfully!");
@@ -71,14 +71,18 @@ public class BentoBoxUtils {
         return available;
     }
 
+    // BentoBox rank constants
+    private static final int MEMBER_RANK = 500;
+
     /**
      * Check if player has permission to modify blocks at location.
      * Returns true if:
      * - No island at location (wilderness)
-     * - Player is in the island's member set (owner, sub-owner, member, trusted)
+     * - Player is in the island's member set with rank >= MEMBER (owner, sub-owner, member)
      *
      * Returns false if:
-     * - Location is on an island and player is not a member
+     * - Location is on an island and player is not at least a member
+     * - Trusted players (rank 400) are excluded - they cannot break blocks
      */
     @SuppressWarnings("unchecked")
     public static boolean hasPermission(Player player, Location location) {
@@ -95,8 +99,9 @@ public class BentoBoxUtils {
 
                 Object island = opt.get();
 
-                // Get member set (includes owner, sub-owners, members, trusted)
-                Set<UUID> memberSet = (Set<UUID>) getMemberSetMethod.invoke(island);
+                // Get member set with minimum rank of MEMBER (500)
+                // This excludes TRUSTED (400) and lower ranks
+                Set<UUID> memberSet = (Set<UUID>) getMemberSetMethod.invoke(island, MEMBER_RANK);
                 return memberSet.contains(player.getUniqueId());
             }
 
