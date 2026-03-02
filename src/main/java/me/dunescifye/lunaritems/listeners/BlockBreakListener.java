@@ -369,34 +369,6 @@ public class BlockBreakListener implements Listener {
 
                 if (itemID.contains("jollyaxe")) {
                     drops = breakInFacing(b, radius, depth, p, axePredicates);
-                    // Custom Drops
-                    if (customDrop != null && !customDrop.isEmpty()) {
-                        Material log = Material.getMaterial(customDrop + "_LOG");
-                        Material strippedLog = Material.getMaterial("STRIPPED_" + customDrop + "_LOG");
-                        Material wood = Material.getMaterial(customDrop + "_WOOD");
-                        Material strippedWood = Material.getMaterial("STRIPPED_" + customDrop + "_WOOD");
-
-                        if (log != null && strippedLog != null && wood != null && strippedWood != null) {
-                            drops = drops.stream().map(drop -> {
-                                String dropString = drop.getType().toString();
-                                if (dropString.contains("LOG"))
-                                    return new ItemStack(dropString.contains("STRIPPED_") ? strippedLog : log,
-                                      drop.getAmount());
-                                else if (dropString.contains("WOOD"))
-                                    return new ItemStack(dropString.contains("STRIPPED_") ? strippedWood : wood,
-                                      drop.getAmount());
-                              return drop;
-                            }).collect(Collectors.toList());
-                        }
-                    }
-                    // Add to Inventory
-                    Inventory inv = p.getInventory();
-                    drops.removeIf(drop -> {
-                        String dropString = drop.getType().toString();
-                        if (dropString.contains("LOG") || dropString.contains("WOOD"))
-                            return inv.addItem(drop).isEmpty();
-                        return false;
-                    });
                 } else if (itemID.contains("amberlightpick")) {
                     drops = breakInFacing(b, radius, depth, p, pickaxePredicates);
                     // Put items in shulker
