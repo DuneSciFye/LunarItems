@@ -175,6 +175,7 @@ public final class LunarItems extends JavaPlugin {
         pm.registerEvents(new ArmorStandListener(), this);
         pm.registerEvents(new PlayerFishListener(), this);
         pm.registerEvents(new EntityBreedListener(), this);
+        pm.registerEvents(new PlayerLaunchProjectileListener(), this);
         ColorGUI.registerEvents(this);
     }
 
