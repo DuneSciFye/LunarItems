@@ -1,7 +1,7 @@
 package me.dunescifye.lunaritems.listeners;
 
 import me.dunescifye.lunaritems.LunarItems;
-import org.bukkit.NamespacedKey;
+import me.dunescifye.lunaritems.utils.Utils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -12,12 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import static me.dunescifye.lunaritems.LunarItems.keyAutoSell;
-import static me.dunescifye.lunaritems.LunarItems.keyMoney;
-import static me.dunescifye.lunaritems.utils.Utils.runConsoleCommands;
+import static me.dunescifye.lunaritems.utils.Utils.*;
 
 public class PlayerFishListener implements Listener {
 
@@ -40,6 +36,14 @@ public class PlayerFishListener implements Listener {
       if (("Enabled").equals(pdc.get(keyAutoSell, PersistentDataType.STRING)) && !caughtItem.getItemStack().hasItemMeta()) {
         runConsoleCommands("ei console-modification modification variable " + p.getName() + " -1 fish 1");
         caught.remove();
+      }
+    }
+
+    String autoSmelt = pdc.get(autoSmeltScoreKey, PersistentDataType.STRING);
+    if ("Enabled".equals(autoSmelt)) {
+      ItemStack itemStack = caughtItem.getItemStack();
+      if (!itemStack.hasItemMeta()) {
+        caughtItem.setItemStack(new ItemStack(Utils.smeltMaterial(itemStack.getType()), itemStack.getAmount()));
       }
     }
   }
